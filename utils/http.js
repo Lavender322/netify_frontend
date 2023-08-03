@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const LOCALHOST = 'http://localhost:3000';
 const BACKEND_URL = 'https://netify.iqust.top';
 
 export async function authenticate(state, code) {
@@ -39,4 +38,18 @@ export async function fetchTags() {
   });
 
   return response.data.data;
+};
+
+export function setTags(userTags, token) {
+  let body = {userTags};
+  return axios({
+    method: 'POST',
+    url: BACKEND_URL + '/user/setUserInfo',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
 };

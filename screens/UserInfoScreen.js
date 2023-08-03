@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Alert} from 'react-native';
+import { StyleSheet, Text, View, Image} from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import { fetchUserInfo } from '../utils/http';
 import { UserContext } from '../store/context/user-context';
@@ -12,6 +12,7 @@ function UserInfoScreen({ navigation }) {
   const [avatarUrl, setAvatarUrl] = useState(null);
 
   const { token } = useContext(UserContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTEwOTc5OTcsImV4cCI6MTY5MTE4NDM5N30.2Uz2Yr_oTvB9NVuJYWcgAl6KVr9Ae-kpBZp_JutNml9Bzw986g2NYWujuE2CDmNc6_JAgb5z9IWgBCo89-CGJA';
 
   useEffect(() => {
     if (token) {
@@ -21,7 +22,7 @@ function UserInfoScreen({ navigation }) {
           const userInfo = await fetchUserInfo(token);
           setEmail(userInfo.email);
           setName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
-          setAvatarUrl(userInfo.userImage[0]);
+          setAvatarUrl(userInfo.userImage[3]);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -30,7 +31,7 @@ function UserInfoScreen({ navigation }) {
 
       getUserInfo();
     };
-  }, [token]);
+  }, []);
 
   function previousStepHandler() {
     navigation.navigate('Landing');
@@ -97,11 +98,12 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold'
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
+    borderRadius: 35
   },
   userInfoName: {
-    marginTop: 42,
+    marginTop: 36,
   },
   userInfoTitle: {
     marginBottom: 12,

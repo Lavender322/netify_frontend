@@ -5,7 +5,7 @@ import * as Linking from 'expo-linking';
 import UserContextProvider from './store/context/user-context';
 import AppNavigator from './navigation/AppNavigator';
 import { useFonts } from 'expo-font';
-// import AppLoading from 'expo-app-loading';
+import LoadingOverlay from './components/ui/LoadingOverlay';
 
 export default function App() {
   const config = {
@@ -39,9 +39,9 @@ export default function App() {
     'inter-semibold': require('./assets/fonts/Inter-SemiBold.ttf'),
   });
   
-  // if (!fontLoaded) {
-  //   return <AppLoading />;
-  // };
+  if (!fontLoaded) {
+    return <LoadingOverlay />
+  };
 
   return (
     <>

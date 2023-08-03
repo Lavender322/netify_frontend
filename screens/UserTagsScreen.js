@@ -1,14 +1,13 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import TagItem from '../components/TagItem';
 import IconButton from '../components/ui/IconButton';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { UserContext } from '../store/context/user-context';
 import { fetchTags } from '../utils/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { setTags } from '../utils/http';
 
 function UserTagsScreen({ navigation }) {
-  // const sectorTags = ["EUMI", "FS", "IPS", "TMT", "RCL", "H&P", "ESG"];
-  // const gradeTags = ["Associate", "Senior Associate", "Manager", "Senior Manager", "Director", "Partner"];
-
   const [isFetching, setIsFetching] = useState(true);
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
@@ -18,15 +17,18 @@ function UserTagsScreen({ navigation }) {
   const [grade, setGrade] = useState(null);
   const [flag, setFlag] = useState(false);
 
+  const { token } = useContext(UserContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTEwOTc5OTcsImV4cCI6MTY5MTE4NDM5N30.2Uz2Yr_oTvB9NVuJYWcgAl6KVr9Ae-kpBZp_JutNml9Bzw986g2NYWujuE2CDmNc6_JAgb5z9IWgBCo89-CGJA';
+
   useEffect(() => {
     async function getTags() {
       setIsFetching(true);
       try {
         const tags = await fetchTags();
-        const fetchedSectorTags = tags.find(
+        const fetchedSectorTags = tags.filter(
           tag => tag.tagType === 'team'
         );
-        const fetchedGradeTags = tags.find(
+        const fetchedGradeTags = tags.filter(
           tag => tag.tagType === 'grade'
         );
         setSectorTags(fetchedSectorTags);
@@ -80,9 +82,16 @@ function UserTagsScreen({ navigation }) {
     navigation.navigate('UserInfo');
   };
 
-  function nextStepHandler() {
+  async function nextStepHandler() {
     if (flag) {
-      navigation.navigate('UserOverview');
+      setIsFetching(true);
+      try {
+        await setTags([sector.id.toString(), grade.id.toString()], token);
+        navigation.navigate('UserOverview');
+      } catch (error) {
+        console.log(error.response.data);
+        setIsFetching(false);
+      };    
     };
   };
 
@@ -98,7 +107,7 @@ function UserTagsScreen({ navigation }) {
         <Text style={styles.sectorTagTitle}>Select Your Sector Team</Text>
         <View style={styles.sectorTagsContainer}>
           {sectorTags.map((tag, idx) => (
-            <Pressable onPress={handleSelectSectorTag.bind(this, idx)}>
+            <Pressable onPress={handleSelectSectorTag.bind(this, idx)} key={tag.id}>
               <TagItem tagText={tag.tagName} isSelected={isSelectedSector[idx]} />
             </Pressable>
           ))}
@@ -106,7 +115,7 @@ function UserTagsScreen({ navigation }) {
         <Text style={styles.gradeTagTitle}>Select Your Grade</Text>
         <View style={styles.gradeTagsContainer}>
           {gradeTags.map((tag, idx) => (
-            <Pressable onPress={handleSelectGradeTag.bind(this, idx)}>
+            <Pressable onPress={handleSelectGradeTag.bind(this, idx)} key={tag.id}>
               <TagItem tagText={tag.tagName} isSelected={isSelectedGrade[idx]} />
             </Pressable>
           ))}
@@ -141,7 +150,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerText: {
-    marginTop: 32,
+    marginTop: 38,
     marginBottom: 55,
     fontSize: 28,
     fontFamily: 'roboto-bold'
