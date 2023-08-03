@@ -32,4 +32,4 @@ jobs:
         with:
           name: result-ios
           path: |
-            /home/runner/work/test_netify/test_netify/*.aab
+            /home/runner/work/netify_frontend/netify_frontend/*.aab
