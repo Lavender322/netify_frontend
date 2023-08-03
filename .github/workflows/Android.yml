@@ -25,11 +25,11 @@ jobs:
         run: npm install
 
       - name: 🚀 Build app
-        run: eas build --non-interactive --platform android --type apk --local
+        run: eas build --non-interactive --platform android --buildType apk --local
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: result
           path: |
-            /home/runner/work/test_netify/test_netify/*.aab
+            /home/runner/work/netify_frontend/netify_frontend/*.aab
