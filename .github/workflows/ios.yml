@@ -32,4 +32,4 @@ jobs:
         with:
           name: result-ios
           path: |
-            /home/runner/work/netify_frontend/netify_frontend/*.tar.gz
+            /Users/runner/work/netify_frontend/netify_frontend/*.tar.gz
