@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const DUMMY_EVENTS = [
   {
@@ -51,35 +52,40 @@ export const DUMMY_EVENTS = [
   }
 ];
 
-export const UserContext = createContext({
-  token: null,
-  // addFavorite: (id) => {},
-  // removeFavorite: (id) => {}
+export const AuthContext = createContext({
+  token: '',
+  isAuthenticated: false,
+  authenticate: (token) => {},
+  logout: () => {},
+  firstName: null
 });
 
-function UserContextProvider({ children }) {
-  const [token, setToken] = useState(null);
+function AuthContextProvider({ children }) {
+  const [authToken, setAuthToken] = useState();
+  const [firstName, setFirstName] = useState();
 
-  // function addFavorite(id) {
-  //   setFavoriteMealIds((currentFavIds) => [...currentFavIds, id]);
-  // };
+  function authenticate(token) {
+    setAuthToken(token);
+    AsyncStorage.setItem('token', token);
+  };
 
-  // function removeFavorite(id) {
-  //   setFavoriteMealIds((currentFavIds) => currentFavIds.filter(mealId => mealId !== id));
-  // };
+  function logout() {
+    setAuthToken(null);
+    AsyncStorage.removeItem('token');
+  };
 
   const value = {
-    token,
-    setToken,
-    // addFavorite: addFavorite,
-    // removeFavorite: removeFavorite
+    token: authToken,
+    isAuthenticated: !!authToken,
+    authenticate: authenticate,
+    logout: logout,
+    firstName,
+    setFirstName,
   }
 
   return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   )
 }
 
-export default UserContextProvider;
+export default AuthContextProvider;

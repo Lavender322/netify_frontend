@@ -1,6 +1,6 @@
-import CreateEventItem from "./CreateEventItem";
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
+import { StyleSheet, View, Image, Pressable, Linking, Alert, Text, TextInput } from 'react-native';
+import CreateEventItem from "./CreateEventItem";
 
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);

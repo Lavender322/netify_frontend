@@ -1,6 +1,6 @@
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
 
 function LoginButton() {
   const [returnedUrl, setReturnedUrl] = useState(null);

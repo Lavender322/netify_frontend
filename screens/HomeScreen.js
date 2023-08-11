@@ -1,24 +1,57 @@
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { DUMMY_EVENTS, AuthContext } from '../store/context/user-context';
+import { fetchOverallEventStatus } from '../utils/http';
 import EventsList from '../components/EventsList';
 import EventFilters from '../components/EventFilters';
-import { DUMMY_EVENTS } from '../store/context/user-context';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function HomeScreen() {
+  const [isFetching, setIsFetching] = useState(true);
+  const [confirmedEvents, setConfirmedEvents] = useState(null);
+  const [pendingRequests, setPendingRequests] = useState(null);
+  const [receivedInvitations, setReceivedInvitations] = useState(null);
+
+  const { token, firstName } = useContext(AuthContext);
+  // const { firstName } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+
+  useEffect(() => {
+    async function getOverallEventStatus() {
+      setIsFetching(true);
+      try {
+        const eventStatus = await fetchOverallEventStatus(token);
+        setConfirmedEvents(eventStatus.confirmedEvents);
+        setPendingRequests(eventStatus.pendingEventRequests);
+        setReceivedInvitations(eventStatus.invitationsReceived);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetching(false);
+    };
+
+    getOverallEventStatus();
+  }, []);
+
+  if (isFetching) {
+    return <LoadingOverlay />
+  };
+
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Hi, Richard</Text>
+        <Text style={styles.headerText}>Hi, {firstName}</Text>
         <View style={styles.outerPanelContainer}>
           <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-            <Text style={styles.panelNumber}>3</Text> 
+            <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
             <Text style={styles.panelText}>Confirmed Meeting</Text> 
           </View>
           <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-            <Text style={styles.panelNumber}>5</Text> 
+            <Text style={styles.panelNumber}>{pendingRequests}</Text> 
             <Text style={styles.panelText}>Pending Request</Text> 
           </View>
           <View style={styles.innerPanelContainer}>
-            <Text style={styles.panelNumber}>9</Text> 
+            <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
             <Text style={styles.panelText}>Invitations Received</Text> 
           </View>
         </View>

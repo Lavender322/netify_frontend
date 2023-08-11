@@ -38,7 +38,8 @@ export function UserOverview() {
         name='Activities' 
         component={ActivitiesScreen} 
         options={{
-          tabBarIcon: ({color, size}) => <Feather name='check-square' color={color} size={size} />
+          tabBarIcon: ({color, size}) => <Feather name='check-square' color={color} size={size} />,
+          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Activities</Text>
         }}
       />
       <BottomTabs.Screen 
@@ -58,14 +59,16 @@ export function UserOverview() {
         name='Chat' 
         component={ChatScreen} 
         options={{
-          tabBarIcon: ({color, size}) => <Feather name='message-square' color={color} size={size} />
+          tabBarIcon: ({color, size}) => <Feather name='message-square' color={color} size={size} />,
+          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Chat</Text>
         }}
       />
       <BottomTabs.Screen 
         name='Profile' 
         component={ProfileScreen} 
         options={{
-          tabBarIcon: ({color, size}) => <Feather name='user' color={color} size={size} />
+          tabBarIcon: ({color, size}) => <Feather name='user' color={color} size={size} />,
+          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Profile</Text>
         }}
       />
     </BottomTabs.Navigator> 
@@ -79,7 +82,7 @@ function AppNavigator() {
         headerShown: false
       }}
     >
-      <Stack.Screen 
+      {/* <Stack.Screen 
         name="Landing" 
         component={LandingScreen}
         options={{
@@ -90,7 +93,7 @@ function AppNavigator() {
         component={LoginScreen}
         options={{
         }} 
-      /> 
+      />  */}
       <Stack.Screen 
         name="UserInfo" 
         component={UserInfoScreen}

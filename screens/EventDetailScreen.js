@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
-import IconButton from '../components/ui/IconButton';
 import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import IconButton from '../components/ui/IconButton';
 
 function EventDetailScreen({ navigation }) {
   function previousStepHandler() {

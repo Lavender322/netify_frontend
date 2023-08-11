@@ -1,7 +1,35 @@
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { AuthContext } from '../store/context/user-context';
+import { fetchEventFilters } from '../utils/http';
+import LoadingOverlay from './ui/LoadingOverlay';
 
 function EventFilters() {
+  const [isFetching, setIsFetching] = useState(true);
+
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+  
+  useEffect(() => {
+    async function getEventFilters() {
+      setIsFetching(true);
+      try {
+        const eventFilters = await fetchEventFilters(token);
+        console.log(eventFilters);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetching(false);
+    };
+
+    getEventFilters();
+  }, []);
+
+  if (isFetching) {
+    return <LoadingOverlay />
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.dropdownContainer}>

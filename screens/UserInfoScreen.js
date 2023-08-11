@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Image} from 'react-native';
-import IconButton from '../components/ui/IconButton';
-import { fetchUserInfo } from '../utils/http';
-import { UserContext } from '../store/context/user-context';
 import { useContext, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image} from 'react-native';
+import { AuthContext } from '../store/context/user-context';
+import { fetchUserInfo } from '../utils/http';
+import IconButton from '../components/ui/IconButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function UserInfoScreen({ navigation }) {
@@ -11,8 +11,9 @@ function UserInfoScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
 
-  const { token } = useContext(UserContext);
-  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTEwOTc5OTcsImV4cCI6MTY5MTE4NDM5N30.2Uz2Yr_oTvB9NVuJYWcgAl6KVr9Ae-kpBZp_JutNml9Bzw986g2NYWujuE2CDmNc6_JAgb5z9IWgBCo89-CGJA';
+  const { token, setFirstName } = useContext(AuthContext);
+  // const { setFirstName } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
     if (token) {
@@ -23,6 +24,7 @@ function UserInfoScreen({ navigation }) {
           setEmail(userInfo.email);
           setName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
           setAvatarUrl(userInfo.userImage[3]);
+          setFirstName(userInfo.localizedfirstname);
         } catch (error) {
           console.log(error.response.data);
         };

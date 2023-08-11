@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BACKEND_URL = 'https://netify.iqust.top';
 
-export async function authenticate(state, code) {
+export async function authenticateUser(state, code) {
   let body = {state, code};
   const response = await axios({
     method: 'POST',
@@ -52,4 +52,28 @@ export function setTags(userTags, token) {
     },
     data: JSON.stringify(body)
   });
+};
+
+export async function fetchOverallEventStatus(token) {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + '/event/get_overall_event_status',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  });
+
+  return response.data.data;
+};
+
+export async function fetchEventFilters(token) {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + '/event/get_event_filter',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  });
+
+  return response.data.data;
 };

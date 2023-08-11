@@ -1,5 +1,5 @@
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
 import { useEffect, useState } from 'react';
+import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 function CreateEventItem({ icon, text, placeholder, onPress }) {
