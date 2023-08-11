@@ -1,7 +1,4 @@
-on:
-  push:
-    branches:
-      - master
+on: workflow_dispatch
 jobs:
   build:
     runs-on: macos-latest
@@ -32,4 +29,4 @@ jobs:
         with:
           name: result-ios
           path: |
-            /home/runner/work/netify_frontend/netify_frontend/build-*
+            /Users/runner/work/netify_frontend/netify_frontend/*.tar.gz
