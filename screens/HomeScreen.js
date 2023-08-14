@@ -1,13 +1,14 @@
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
-import { fetchOverallEventStatus } from '../utils/http';
+import { fetchOverallEventStatus, fetchEventList } from '../utils/http';
 import EventsList from '../components/EventsList';
 import EventFilters from '../components/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function HomeScreen() {
   const [isFetching, setIsFetching] = useState(true);
+  const [isFetchingEvents, setIsFetchingEvents] = useState(true);
   const [confirmedEvents, setConfirmedEvents] = useState(null);
   const [pendingRequests, setPendingRequests] = useState(null);
   const [receivedInvitations, setReceivedInvitations] = useState(null);
@@ -34,9 +35,20 @@ function HomeScreen() {
     getOverallEventStatus();
   }, []);
 
-  function updateEventList(events) {
-    setLoadedEvents(events);
-  };
+  useEffect(() => {
+    async function getEventList() {
+      setIsFetchingEvents(true);
+      try {
+        const eventList = await fetchEventList([], [], ["ONE_TO_ONE", "GROUP_EVENT"], token);
+        setLoadedEvents(eventList);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetchingEvents(false);
+    };
+    
+    getEventList();
+  }, []);
 
   if (isFetching) {
     return <LoadingOverlay />
@@ -60,9 +72,10 @@ function HomeScreen() {
             <Text style={styles.panelText}>Invitations Received</Text> 
           </View>
         </View>
-        <EventFilters style={styles.eventFilters} updateEventList={updateEventList} />
+
+        <EventFilters style={styles.eventFilters} />
         
-        <EventsList events={loadedEvents} />
+        <EventsList events={loadedEvents} isFetchingEvents={isFetchingEvents} />
       </View>
    </>
   )

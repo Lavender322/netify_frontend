@@ -88,8 +88,8 @@ function AuthStack() {
         headerShown: false
       }}
     >
-      {/* <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />  */}
+      <Stack.Screen name="Landing" component={LandingScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} /> 
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
     </Stack.Navigator>

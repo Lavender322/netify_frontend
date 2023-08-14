@@ -7,8 +7,8 @@ function renderEventItem(itemData) {
   );
 };
 
-function EventsList({ events }) {
-  if (events.length === 0) {
+function EventsList({ events, isFetchingEvents }) {
+  if (events.length === 0 && !isFetchingEvents) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>

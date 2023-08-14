@@ -5,8 +5,7 @@ import { AuthContext } from '../store/context/auth-context';
 import { fetchEventFilters, fetchEventList } from '../utils/http';
 import EventFilter from './EventFilter';
 
-function EventFilters({ style, updateEventList }) {
-  const [isFetching, setIsFetching] = useState(true);
+function EventFilters({ style, updateEventList, setIsFetching }) {
   const [gradeFilters, setGradeFilters] = useState([]);
   const [groupFilters, setGroupFilters] = useState([]);
   const [industryFilters, setIndustryFilters] = useState([]);
@@ -19,27 +18,11 @@ function EventFilters({ style, updateEventList }) {
 
   const { token } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
-  
-  useEffect(() => {
-    async function getEventList() {
-      setIsFetching(true);
-      try {
-        const eventList = await fetchEventList([], [], ["ONE_TO_ONE", "GROUP_EVENT"], token);
-        updateEventList(eventList);
-      } catch (error) {
-        console.log(error.response.data);
-      };
-      setIsFetching(false);
-    };
-    
-    getEventList();
-  }, []);
 
   useEffect(() => {
     async function getEventFilters() {
       try {
         const eventFilters = await fetchEventFilters(token);
-        console.log("eventFilters: ", eventFilters);
         setGradeFilters(eventFilters.experienceTypeList);
         setIndustryFilters(eventFilters.sectorTypeList);
         setGroupFilters(eventFilters.meetingTypeList);
