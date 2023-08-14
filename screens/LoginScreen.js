@@ -1,4 +1,5 @@
 import { useEffect, useContext } from 'react';
+import { Alert } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
 import { authenticateUser } from '../utils/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
@@ -15,9 +16,11 @@ function LoginScreen({ navigation, route }) {
         try {
           const token = await authenticateUser(state, code);
           authenticate(token);
+          Alert.alert("token", token);
           navigation.navigate('UserInfo');
         } catch (error) {
           console.log(error.response.data);
+          Alert.alert("error", JSON.stringify(error.response.data));
         }
       };
 
