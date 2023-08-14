@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image} from 'react-native';
-import { AuthContext } from '../store/context/user-context';
+import { AuthContext } from '../store/context/auth-context';
 import { fetchUserInfo } from '../utils/http';
 import IconButton from '../components/ui/IconButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';

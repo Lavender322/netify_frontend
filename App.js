@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import * as Linking from 'expo-linking';
 import { Feather } from '@expo/vector-icons';
@@ -9,7 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AuthContextProvider, { AuthContext } from './store/context/user-context';
+import AuthContextProvider, { AuthContext } from './store/context/auth-context';
 import LandingScreen from './screens/LandingScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import UserTagsScreen from './screens/UserTagsScreen';
@@ -152,7 +153,7 @@ function Navigation() {
 
 function Root() {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
-  const { authenticate } = useContext(AuthContext);
+  const { authenticate, logout } = useContext(AuthContext);
 
   useEffect(() => {
     async function fetchToken() {
@@ -160,6 +161,7 @@ function Root() {
 
       if (storedToken) {
         authenticate(storedToken);
+        // logout();
       };
 
       setIsTryingLogin(false);

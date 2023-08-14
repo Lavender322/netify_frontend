@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react';
-import { AuthContext } from '../store/context/user-context';
+import { AuthContext } from '../store/context/auth-context';
 import { authenticateUser } from '../utils/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 

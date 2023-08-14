@@ -1,7 +1,12 @@
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { useContext } from 'react';
+import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getFormattedDate } from '../utils/date';
+import { AuthContext } from '../store/context/auth-context';
 
-function EventItem({ id, name, grade, sector, period, date, onPress}) {
+function EventItem({ id, eventHost, eventStartTime, eventEndTime, onPress}) {
+  const { sectorTags, gradeTags } = useContext(AuthContext);
+
   const navigation = useNavigation();
 
   function eventDetailHandler() {
@@ -10,21 +15,29 @@ function EventItem({ id, name, grade, sector, period, date, onPress}) {
     });
   };
 
+  const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+    return eventHost.userTag.includes(gradeTag.id.toString());
+  });
+
+  const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+    return eventHost.userTag.includes(sectorTag.id.toString());
+  });
+
   return (
     <View style={styles.container}>
       <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatar} />
+        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
         <View style={styles.infoOuterContainer}>
-          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           <View style={styles.infoInnerContainer}>
-            <Text style={styles.grade}>{grade}</Text>
+            <Text style={styles.grade}>{eventHostGradeTag[0].tagName}</Text>
             <View style={styles.sectorContainer}>
-              <Text style={styles.sector}>{sector}</Text>
+              <Text style={styles.sector}>{eventHostSectorTag[0].tagName}</Text>
             </View>
           </View>
           <View style={styles.infoInnerContainer}>
-            <Text style={styles.period}>{period}</Text>
-            <Text style={styles.date}>{date}</Text>
+            <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+            <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text>
           </View>
         </View>
       </Pressable>
@@ -47,7 +60,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E0E0E0',
     borderBottomWidth: 1, 
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   leftContainer: {
     flexDirection: 'row',
@@ -56,7 +69,8 @@ const styles = StyleSheet.create({
   avatar: {
     width: 60,
     height: 60,
-    marginRight: 10
+    marginRight: 10,
+    borderRadius: 30
   },
   infoOuterContainer: {
     padding: 4,

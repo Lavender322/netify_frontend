@@ -77,3 +77,24 @@ export async function fetchEventFilters(token) {
 
   return response.data.data;
 };
+
+export async function fetchEventList(gradeFilters, industryFilters, groupFilters, token) {
+  let body = {
+    experienceTypeList: gradeFilters,
+    sectorTypeList: industryFilters,
+    meetingTypeList: groupFilters,
+  };
+  
+  const response = await axios({
+    method: 'POST',
+    url: BACKEND_URL + '/event/list',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
+
+  return response.data.data;
+};

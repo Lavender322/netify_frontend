@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
-import { DUMMY_EVENTS, AuthContext } from '../store/context/user-context';
+import { StyleSheet, View, Text } from 'react-native';
+import { AuthContext } from '../store/context/auth-context';
 import { fetchOverallEventStatus } from '../utils/http';
 import EventsList from '../components/EventsList';
 import EventFilters from '../components/EventFilters';
@@ -11,6 +11,7 @@ function HomeScreen() {
   const [confirmedEvents, setConfirmedEvents] = useState(null);
   const [pendingRequests, setPendingRequests] = useState(null);
   const [receivedInvitations, setReceivedInvitations] = useState(null);
+  const [loadedEvents, setLoadedEvents] = useState([]);
 
   const { token, firstName } = useContext(AuthContext);
   // const { firstName } = useContext(AuthContext);
@@ -32,6 +33,10 @@ function HomeScreen() {
 
     getOverallEventStatus();
   }, []);
+
+  function updateEventList(events) {
+    setLoadedEvents(events);
+  };
 
   if (isFetching) {
     return <LoadingOverlay />
@@ -55,8 +60,9 @@ function HomeScreen() {
             <Text style={styles.panelText}>Invitations Received</Text> 
           </View>
         </View>
-        <EventFilters />
-        <EventsList events={DUMMY_EVENTS} />
+        <EventFilters style={styles.eventFilters} updateEventList={updateEventList} />
+        
+        <EventsList events={loadedEvents} />
       </View>
    </>
   )
@@ -103,5 +109,8 @@ const styles = StyleSheet.create({
     color: '#6F8698',
     fontSize: 13,
     fontFamily: 'roboto-medium'
+  },
+  eventFilters: {
+    zIndex: 100,
   }
 });
