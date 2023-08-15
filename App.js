@@ -18,7 +18,7 @@ import ActivitiesScreen from './screens/ActivitiesScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ChatScreen from './screens/ChatScreen';
 import EventDetailScreen from './screens/EventDetailScreen';
-import LoginScreen from './screens/LoginScreen';
+// import LoginScreen from './screens/LoginScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
 import IconButton from './components/ui/IconButton';
 
@@ -95,7 +95,7 @@ function AuthStack() {
     >
       {/* // TO COMMENT OUT */}
       <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} /> 
+      {/* <Stack.Screen name="Login" component={LoginScreen} />  */}
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
     </Stack.Navigator>
@@ -127,8 +127,8 @@ function Navigation() {
 
   const config = {
     screens: {
-      Landing: 'landing',
-      Login: 'login',
+      Landing: 'login',
+      // Login: 'login',
       UserInfo: 'userinfo',
       UserTags: 'usertags',
       UserOverview: {
