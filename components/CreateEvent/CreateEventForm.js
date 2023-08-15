@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Pressable, Text, TextInput } from 'react-native';
 import CreateEventItem from "./CreateEventItem";
 
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);
+  const [isOneToOne, setIsOneToOne] = useState(true);
+
+
+  function oneToOneHandler() {
+    setIsOneToOne(true);
+  };
+
+  function groupEventHandler() {
+    setIsOneToOne(false);
+  };
 
   function nextStepHandler() {
     
@@ -11,6 +21,20 @@ function CreateEventForm() {
 
   return (
     <View>
+      <View style={styles.meetingTypes}>
+        <Pressable 
+          style={({pressed}) => [styles.meetingType, styles.meetingTypeLeft, isOneToOne ? styles.selectedMeetingType : styles.unselectedMeetingType, pressed && styles.pressed]}
+          onPress={oneToOneHandler}
+        >
+          <Text style={[styles.meetingTypeText, isOneToOne ? styles.selectedMeetingTypeText : styles.unselectedMeetingTypeText]}>One to One</Text>
+        </Pressable>
+        <Pressable 
+          style={({pressed}) => [styles.meetingType, styles.meetingTypeRight, isOneToOne ? styles.unselectedMeetingType : styles.selectedMeetingType, pressed && styles.pressed]}
+          onPress={groupEventHandler}
+        >
+            <Text style={[styles.meetingTypeText, isOneToOne ? styles.unselectedMeetingTypeText : styles.selectedMeetingTypeText]}>Group event</Text>
+        </Pressable>
+      </View>
       <View style={styles.meetingTitleContainer}>
         <Text style={styles.meetingTitle}>Meeting Title</Text>
         <TextInput 
@@ -43,6 +67,41 @@ function CreateEventForm() {
 export default CreateEventForm;
 
 const styles = StyleSheet.create({
+  meetingTypes: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    marginHorizontal: 12
+  }, 
+  meetingType: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10
+  }, 
+  meetingTypeLeft: {
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8
+  },
+  meetingTypeRight: {
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8
+  },
+  selectedMeetingType: {
+    backgroundColor: '#1A4821',
+  },
+  unselectedMeetingType: {
+    backgroundColor: '#E6E6E6',
+  },
+  meetingTypeText: {
+    fontFamily: 'roboto-medium',
+    fontSize: 16
+  },
+  selectedMeetingTypeText: {
+    color: '#FFFFFF'
+  },
+  unselectedMeetingTypeText: {
+    color: '#6A6A6A'
+  },
   meetingTitleContainer: {
     padding: 12,
   },

@@ -26,6 +26,7 @@ function UserTagsScreen({ navigation }) {
       setIsFetching(true);
       try {
         const tags = await fetchTags();
+        console.log("tags", tags);
         const fetchedSectorTags = tags.filter(
           tag => tag.tagType === 'team'
         );
@@ -87,7 +88,7 @@ function UserTagsScreen({ navigation }) {
     if (flag) {
       setIsFetching(true);
       try {
-        await setTags([sector.id.toString(), grade.id.toString()], token);
+        await setTags([sector.tagId.toString(), grade.tagId.toString()], token);
         authenticate(token);
       } catch (error) {
         console.log(error.response.data);

@@ -2,34 +2,53 @@ import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFormattedDate } from '../utils/date';
+import { joinEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
+import LoadingOverlay from './ui/LoadingOverlay';
 
-function EventItem({ id, eventHost, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
+function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const navigation = useNavigation();
 
   function eventDetailHandler() {
     navigation.navigate('EventDetail', {
-      eventId: id,
+      eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags
     });
   };
 
-  useEffect(() => {
-    const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-      return eventHost.userTag.includes(gradeTag.id.toString());
-    });
-  
-    const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-      return eventHost.userTag.includes(sectorTag.id.toString());
-    });
+  // const { token } = useContext(AuthContext);
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
-    setEventHostGradeTag(eventHostGradeTag[0].tagName);
-    setEventHostSectorTag(eventHostSectorTag[0].tagName);
-  }, []);
+  useEffect(() => {
+    if (eventHost && eventHost.userTag) {
+      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+        return eventHost.userTag.includes(gradeTag.tagId.toString());
+      });
+    
+      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+        return eventHost.userTag.includes(sectorTag.tagId.toString());
+      });
+  
+      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
+      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
+    };
+  }, [eventHost]);
+
+  async function requestToJoinEventHandler(token, eventId) {
+    setIsSubmitting(true);
+    try {
+      await joinEvent(token, eventId);
+    } catch (error) {
+      console.log("error", error);
+      // setError('Could not save data - please try again later!');
+    };
+    setIsSubmitting(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -38,9 +57,9 @@ function EventItem({ id, eventHost, eventStartTime, eventEndTime, sectorTags, gr
         <View style={styles.infoOuterContainer}>
           <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           <View style={styles.infoInnerContainer}>
-            <Text style={styles.grade}>{eventHostGradeTag}</Text>
+            <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text>
             <View style={styles.sectorContainer}>
-              <Text style={styles.sector}>{eventHostSectorTag}</Text>
+              <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
             </View>
           </View>
           <View style={styles.infoInnerContainer}>
@@ -49,10 +68,16 @@ function EventItem({ id, eventHost, eventStartTime, eventEndTime, sectorTags, gr
           </View>
         </View>
       </Pressable>
-      <Pressable onPress={() => {}}>
-        <View style={styles.requestContainer}>
-          <Text style={styles.requestText}>Request</Text>
-        </View>
+      <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
+        {myStateInTheEvent === "REQUESTED" ? (
+          <View style={[styles.statusContainer, styles.pendingContainer]}>
+            <Text style={[styles.text, styles.pendingText]}>Pending</Text>
+          </View>
+        ) : (
+          <View style={[styles.statusContainer, styles.requestContainer]}>
+            <Text style={[styles.text, styles.requestText]}>Request</Text>
+          </View>
+        )}
       </Pressable>
     </View>
   )
@@ -122,16 +147,26 @@ const styles = StyleSheet.create({
     color: '#3B4852',
     fontFamily: 'roboto-medium'
   },
-  requestContainer: {
-    backgroundColor: '#1A4821',
+  statusContainer: {
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 23
   },
-  requestText: {
-    color: '#A6E291',
+  requestContainer: {
+    backgroundColor: '#1A4821'
+  },
+  pendingContainer: {
+    backgroundColor: '#6AA173'
+  },
+  text: {
     fontSize: 16,
     fontFamily: 'roboto'
+  },
+  requestText: {
+    color: '#A6E291'
+  },
+  pendingText: {
+    color: '#1A4821'
   },
   pressed: {
     opacity: 0.75

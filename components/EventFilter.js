@@ -1,23 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import EventFilterItem from "./EventFilterItem";
 
-function EventFilter({ filters, isGroupFilters, selectFilters }) {
+function EventFilter({ filters, isGroupFilters, selectFilters, setSelectedFilter, setUpdateEventList }) {
   const [numSelected, setNumSelected] = useState(filters.length);
 
-  function handleUpdateEvents() {
+  async function handleUpdateEvents() {
     selectFilters(numSelected);
-
-
-
-    // TODO: get event list
+    setUpdateEventList(true);
   };
 
-  function filterChangeHandler(isChecked) {
+  function filterChangeHandler(isChecked, filterId) {
     if (isChecked) {
       setNumSelected(prev => prev + 1);
+      if (filterId) {
+        setSelectedFilter(prev => [...prev, filterId]);
+      }
     } else {
       setNumSelected(prev => prev - 1);
+      setSelectedFilter(prev => prev.filter((filter) => filter !== filterId));
     };
   };
 

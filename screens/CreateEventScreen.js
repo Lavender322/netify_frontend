@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     marginTop: 15,
-    marginBottom: 40,
+    marginBottom: 26,
     alignItems: 'center'
   },
   cancelBtn: {

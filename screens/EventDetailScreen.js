@@ -2,13 +2,14 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import IconButton from '../components/ui/IconButton';
-import { fetchEvent } from '../utils/http';
+import { fetchEvent, joinEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { getFormattedDate } from '../utils/date';
 
 function EventDetailScreen({ navigation, route }) {
   const [isFetching, setIsFetching] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
@@ -40,21 +41,33 @@ function EventDetailScreen({ navigation, route }) {
   }, [eventId]);
 
   useEffect(() => {
-    if (eventDetails && gradeTags.length && sectorTags.length) {
+    if (eventDetails && eventDetails.eventHost.userTag && gradeTags.length && sectorTags.length) {
       const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-        return eventDetails.eventHost.userTag.includes(gradeTag.id.toString());
+        return eventDetails.eventHost.userTag.includes(gradeTag.tagId.toString());
       });
     
       const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-        return eventDetails.eventHost.userTag.includes(sectorTag.id.toString());
+        return eventDetails.eventHost.userTag.includes(sectorTag.tagId.toString());
       });
   
-      setEventHostGradeTag(eventHostGradeTag[0].tagName);
-      setEventHostSectorTag(eventHostSectorTag[0].tagName);
+      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
+      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
     };
   }, [eventDetails, gradeTags, sectorTags]);
 
-  if (isFetching) {
+  async function requestToJoinEventHandler(token, eventId) {
+    setIsSubmitting(true);
+    try {
+      await joinEvent(token, eventId);
+      navigation.goBack();
+    } catch (error) {
+      // setError('Could not save data - please try again later!');
+      console.log("error", error);
+      setIsSubmitting(false);
+    };
+  };
+
+  if (isFetching || isSubmitting) {
     return <LoadingOverlay />;
   };
 
@@ -66,9 +79,9 @@ function EventDetailScreen({ navigation, route }) {
         <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
         <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
         <View style={[styles.detailInnerContainer, styles.roleContainer]}>
-          <Text style={styles.grade}>{eventHostGradeTag}</Text>
+          <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
           <View style={styles.sectorContainer}>
-            <Text style={styles.sector}>{eventHostSectorTag}</Text>
+            <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
           </View>
         </View>
         <View style={styles.detailInnerContainer}>
@@ -83,9 +96,9 @@ function EventDetailScreen({ navigation, route }) {
         <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
       </ScrollView>
       <View style={styles.submitFormContainer}>
-        <Pressable onPress={() => {}} style={({pressed}) => pressed && styles.pressed}>
+        <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
           <View style={styles.submitBtnContainer}>
-            <Text style={styles.submitBtnText}>Book this session</Text>
+            <Text style={styles.submitBtnText}>Request</Text>
           </View>
         </Pressable>
       </View>
@@ -98,7 +111,6 @@ export default EventDetailScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 16,
   },
   goBackButton: {
     marginTop: 56,

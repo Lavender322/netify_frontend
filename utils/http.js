@@ -110,3 +110,13 @@ export async function fetchEvent(token, eventId) {
 
   return response.data.data;
 };
+
+export function joinEvent(token, eventId) {
+  return axios({
+    method: 'POST',
+    url: BACKEND_URL + `/event/join/${eventId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  });
+};

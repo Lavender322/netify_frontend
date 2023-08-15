@@ -15,6 +15,10 @@ function HomeScreen() {
   const [loadedEvents, setLoadedEvents] = useState([]);
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState([]);
+  const [updateEventList, setUpdateEventList] = useState(false);
 
   // TO COMMENT OUT
   const { token, firstName } = useContext(AuthContext);
@@ -64,7 +68,7 @@ function HomeScreen() {
     async function getEventList() {
       setIsFetchingEvents(true);
       try {
-        const eventList = await fetchEventList([], [], ["ONE_TO_ONE", "GROUP_EVENT"], token);
+        const eventList = await fetchEventList(selectedGrade, selectedIndustry, selectedGroup, token);
         setLoadedEvents(eventList);
       } catch (error) {
         console.log(error.response.data);
@@ -74,6 +78,24 @@ function HomeScreen() {
     
     getEventList();
   }, []);
+
+  useEffect(() => {
+    if (updateEventList) {
+      async function getEventList() {
+        setIsFetchingEvents(true);
+        try {
+          const eventList = await fetchEventList(selectedGrade, selectedIndustry, selectedGroup, token);
+          setLoadedEvents(eventList);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+        setIsFetchingEvents(false);
+      };
+      
+      getEventList();
+      setUpdateEventList(false);
+    };
+  }, [updateEventList]);
 
   if (isFetching) {
     return <LoadingOverlay />
@@ -98,15 +120,27 @@ function HomeScreen() {
           </View>
         </View>
 
-        <EventFilters style={styles.eventFilters} />
+        <EventFilters 
+          style={styles.eventFilters} 
+          setSelectedGrade={setSelectedGrade} 
+          setSelectedIndustry={setSelectedIndustry}
+          setSelectedGroup={setSelectedGroup}
+          selectedGroup={selectedGroup}
+          setUpdateEventList={setUpdateEventList} 
+        />
         
-        <EventsList events={loadedEvents} isFetchingEvents={isFetchingEvents} sectorTags={sectorTags} gradeTags={gradeTags} />
+        <EventsList 
+          events={loadedEvents} 
+          isFetchingEvents={isFetchingEvents} 
+          sectorTags={sectorTags} 
+          gradeTags={gradeTags} 
+        />
       </View>
    </>
   )
 }
 
-export default HomeScreen
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -4,25 +4,30 @@ import Checkbox from 'expo-checkbox';
 
 function EventFilterItem({ filter, isGroupFilter, isFilterChecked }) {
   const [isChecked, setIsChecked] = useState(false);
+  const [groupFilter, setGroupFilter] = useState();
 
   useEffect(() => {
     isFilterChecked(true);
+
+    if (filter.parameter === 'ONE_TO_ONE') {
+      setGroupFilter('One to One');
+    } else if (filter.parameter === 'GROUP_EVENT') {
+      setGroupFilter('Group Event');
+    };
   }, []);
-
+  
   useEffect(() => {
-    isFilterChecked(isChecked);
+    if (!isGroupFilter) {
+      isFilterChecked(isChecked, filter.tagId.toString());
+    } else {
+      isFilterChecked(isChecked, filter.parameter);
+    };
   }, [isChecked]);
-
-  if (filter.parameter === 'ONE_TO_ONE') {
-    filter = 'One to One';
-  } else if (filter.parameter === 'GROUP_EVENT') {
-    filter = 'Group Event';
-  };
 
   return (
     <View style={styles.filterItemContainer}>
       <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setIsChecked} color={isChecked ? '#3C8722' : undefined} />
-      <Text style={styles.text}>{isGroupFilter ? filter : filter.tagName}</Text>
+      <Text style={styles.text}>{isGroupFilter ? groupFilter : filter.tagName}</Text>
     </View>
   )
 }

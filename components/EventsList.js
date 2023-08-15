@@ -1,5 +1,6 @@
 import { FlatList, Text, StyleSheet, View } from 'react-native';
 import EventItem from './EventItem';
+import LoadingOverlay from './ui/LoadingOverlay';
 
 function renderEventItem(itemData, sectorTags, gradeTags) {
   return (
@@ -8,7 +9,13 @@ function renderEventItem(itemData, sectorTags, gradeTags) {
 };
 
 function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
-  if (events.length === 0 && !isFetchingEvents) {
+  if (isFetchingEvents) {
+    return (
+      <LoadingOverlay />
+    )
+  };
+
+  if ((!events || events.length === 0) && !isFetchingEvents) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>

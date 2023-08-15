@@ -2,10 +2,10 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { AuthContext } from '../store/context/auth-context';
-import { fetchEventFilters, fetchEventList } from '../utils/http';
+import { fetchEventFilters } from '../utils/http';
 import EventFilter from './EventFilter';
 
-function EventFilters({ style, updateEventList, setIsFetching }) {
+function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelectedGroup, setUpdateEventList }) {
   const [gradeFilters, setGradeFilters] = useState([]);
   const [groupFilters, setGroupFilters] = useState([]);
   const [industryFilters, setIndustryFilters] = useState([]);
@@ -124,13 +124,29 @@ function EventFilters({ style, updateEventList, setIsFetching }) {
         </Pressable>
       </View>
       <View style={[!showGrade && styles.hide, styles.filtersContainer]}>
-        <EventFilter filters={gradeFilters} selectFilters={selectedGradeFilterHandler} />
+        <EventFilter 
+          filters={gradeFilters} 
+          selectFilters={selectedGradeFilterHandler} 
+          setSelectedFilter={setSelectedGrade} 
+          setUpdateEventList={setUpdateEventList} 
+        />
       </View>
       <View style={[!showIndustry && styles.hide, styles.filtersContainer, styles.industryFiltersContainer]}>
-        <EventFilter filters={industryFilters} selectFilters={selectedIndustryFilterHandler} />
+        <EventFilter 
+          filters={industryFilters} 
+          selectFilters={selectedIndustryFilterHandler} 
+          setSelectedFilter={setSelectedIndustry} 
+          setUpdateEventList={setUpdateEventList} 
+        />
       </View>
       <View style={[!showGroup && styles.hide, styles.filtersContainer, styles.groupFiltersContainer]}>
-        <EventFilter filters={groupFilters} isGroupFilters={true} selectFilters={selectedGroupFilterHandler} />
+        <EventFilter 
+          filters={groupFilters} 
+          isGroupFilters={true} 
+          selectFilters={selectedGroupFilterHandler} 
+          setSelectedFilter={setSelectedGroup} 
+          setUpdateEventList={setUpdateEventList} 
+        />
       </View>
     </View>
   )
