@@ -1,13 +1,13 @@
 import { FlatList, Text, StyleSheet, View } from 'react-native';
 import EventItem from './EventItem';
 
-function renderEventItem(itemData) {
+function renderEventItem(itemData, sectorTags, gradeTags) {
   return (
-    <EventItem {...itemData.item} />
+    <EventItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
   );
 };
 
-function EventsList({ events, isFetchingEvents }) {
+function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
   if (events.length === 0 && !isFetchingEvents) {
     return (
       <View style={styles.fallbackContainer}>
@@ -22,7 +22,7 @@ function EventsList({ events, isFetchingEvents }) {
   return (
     <FlatList 
       data={events} 
-      renderItem={renderEventItem} 
+      renderItem={(item) => renderEventItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
   )

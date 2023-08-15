@@ -1,17 +1,36 @@
+import { useState } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import EventFilterItem from "./EventFilterItem";
 
+function EventFilter({ filters, isGroupFilters, selectFilters }) {
+  const [numSelected, setNumSelected] = useState(filters.length);
 
-function EventFilter({ filters, isGroupFilters }) {
   function handleUpdateEvents() {
+    selectFilters(numSelected);
 
+
+
+    // TODO: get event list
+  };
+
+  function filterChangeHandler(isChecked) {
+    if (isChecked) {
+      setNumSelected(prev => prev + 1);
+    } else {
+      setNumSelected(prev => prev - 1);
+    };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.filtersContainer}>
         {filters.map((filter, idx) => (
-          <EventFilterItem filter={filter} isGroupFilter={isGroupFilters} />
+          <EventFilterItem 
+            key={filter.id ? filter.id : 50+idx}
+            filter={filter} 
+            isGroupFilter={isGroupFilters} 
+            isFilterChecked={filterChangeHandler} 
+          />
         ))}
       </View>
       <Pressable style={({pressed}) => pressed && styles.pressed} onPress={handleUpdateEvents}>

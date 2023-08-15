@@ -2,8 +2,16 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
-function EventFilterItem({ filter, isGroupFilter }) {
-  const [isChecked, setChecked] = useState(false);
+function EventFilterItem({ filter, isGroupFilter, isFilterChecked }) {
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    isFilterChecked(true);
+  }, []);
+
+  useEffect(() => {
+    isFilterChecked(isChecked);
+  }, [isChecked]);
 
   if (filter.parameter === 'ONE_TO_ONE') {
     filter = 'One to One';
@@ -13,7 +21,7 @@ function EventFilterItem({ filter, isGroupFilter }) {
 
   return (
     <View style={styles.filterItemContainer}>
-      <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} color={isChecked ? '#3C8722' : undefined} />
+      <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setIsChecked} color={isChecked ? '#3C8722' : undefined} />
       <Text style={styles.text}>{isGroupFilter ? filter : filter.tagName}</Text>
     </View>
   )

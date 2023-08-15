@@ -1,27 +1,35 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFormattedDate } from '../utils/date';
 import { AuthContext } from '../store/context/auth-context';
 
-function EventItem({ id, eventHost, eventStartTime, eventEndTime, onPress}) {
-  const { sectorTags, gradeTags } = useContext(AuthContext);
-
+function EventItem({ id, eventHost, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
+  const [eventHostSectorTag, setEventHostSectorTag] = useState();
+  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  
   const navigation = useNavigation();
 
   function eventDetailHandler() {
     navigation.navigate('EventDetail', {
-      eventId: id
+      eventId: id,
+      sectorTags: sectorTags,
+      gradeTags: gradeTags
     });
   };
 
-  const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-    return eventHost.userTag.includes(gradeTag.id.toString());
-  });
+  useEffect(() => {
+    const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+      return eventHost.userTag.includes(gradeTag.id.toString());
+    });
+  
+    const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+      return eventHost.userTag.includes(sectorTag.id.toString());
+    });
 
-  const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-    return eventHost.userTag.includes(sectorTag.id.toString());
-  });
+    setEventHostGradeTag(eventHostGradeTag[0].tagName);
+    setEventHostSectorTag(eventHostSectorTag[0].tagName);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -30,9 +38,9 @@ function EventItem({ id, eventHost, eventStartTime, eventEndTime, onPress}) {
         <View style={styles.infoOuterContainer}>
           <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           <View style={styles.infoInnerContainer}>
-            <Text style={styles.grade}>{eventHostGradeTag[0].tagName}</Text>
+            <Text style={styles.grade}>{eventHostGradeTag}</Text>
             <View style={styles.sectorContainer}>
-              <Text style={styles.sector}>{eventHostSectorTag[0].tagName}</Text>
+              <Text style={styles.sector}>{eventHostSectorTag}</Text>
             </View>
           </View>
           <View style={styles.infoInnerContainer}>

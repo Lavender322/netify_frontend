@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
-import { fetchOverallEventStatus, fetchEventList } from '../utils/http';
+import { fetchOverallEventStatus, fetchEventList, fetchTags } from '../utils/http';
 import EventsList from '../components/EventsList';
 import EventFilters from '../components/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
@@ -13,6 +13,8 @@ function HomeScreen() {
   const [pendingRequests, setPendingRequests] = useState(null);
   const [receivedInvitations, setReceivedInvitations] = useState(null);
   const [loadedEvents, setLoadedEvents] = useState([]);
+  const [sectorTags, setSectorTags] = useState([]);
+  const [gradeTags, setGradeTags] = useState([]);
 
   // TO COMMENT OUT
   const { token, firstName } = useContext(AuthContext);
@@ -34,6 +36,28 @@ function HomeScreen() {
     };
 
     getOverallEventStatus();
+  }, []);
+
+  useEffect(() => {
+    async function getTags() {
+      // setIsFetching(true);
+      try {
+        const tags = await fetchTags();
+        const fetchedSectorTags = tags.filter(
+          tag => tag.tagType === 'team'
+        );
+        const fetchedGradeTags = tags.filter(
+          tag => tag.tagType === 'grade'
+        );
+        setSectorTags(fetchedSectorTags);
+        setGradeTags(fetchedGradeTags);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetching(false);
+    };
+
+    getTags();
   }, []);
 
   useEffect(() => {
@@ -76,7 +100,7 @@ function HomeScreen() {
 
         <EventFilters style={styles.eventFilters} />
         
-        <EventsList events={loadedEvents} isFetchingEvents={isFetchingEvents} />
+        <EventsList events={loadedEvents} isFetchingEvents={isFetchingEvents} sectorTags={sectorTags} gradeTags={gradeTags} />
       </View>
    </>
   )

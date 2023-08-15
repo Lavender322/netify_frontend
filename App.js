@@ -1,7 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { useState, useContext, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import * as Linking from 'expo-linking';
@@ -25,6 +24,9 @@ import IconButton from './components/ui/IconButton';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export function UserOverview() {
   return (
@@ -88,6 +90,7 @@ function AuthStack() {
         headerShown: false
       }}
     >
+      {/* // TO COMMENT OUT */}
       <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="Login" component={LoginScreen} /> 
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
@@ -153,28 +156,48 @@ function Navigation() {
 
 function Root() {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
-  const { authenticate, logout } = useContext(AuthContext);
+  const { authenticate, setFirstName, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    async function fetchToken() {
+    async function fetchLocalStorage() {
       const storedToken = await AsyncStorage.getItem('token');
+      const storedFirstName = await AsyncStorage.getItem('first-name');
 
       if (storedToken) {
         authenticate(storedToken);
         // logout();
       };
 
+      if (storedFirstName) {
+        setFirstName(storedFirstName);
+      };
+
       setIsTryingLogin(false);
     };
 
-    fetchToken();
+    fetchLocalStorage();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (!isTryingLogin) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [isTryingLogin]);
+
   if (isTryingLogin) {
-    return <AppLoading />;
+    return null;
   };
 
-  return <Navigation />;
+  return (
+    <View onLayout={onLayoutRootView} style={styles.container}>
+      <Navigation />
+    </View>
+  );
 };
 
 export default function App() {
@@ -184,17 +207,30 @@ export default function App() {
     'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
     'inter-semibold': require('./assets/fonts/Inter-SemiBold.ttf'),
   });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontLoaded) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [fontLoaded]);
   
   if (!fontLoaded) {
-    return <AppLoading />
+    return null;
   };
 
   return (
     <>
       <StatusBar style='dark' />
-      <AuthContextProvider>
-        <Root />
-      </AuthContextProvider>
+      <View onLayout={onLayoutRootView} style={styles.container}>
+        <AuthContextProvider>
+          <Root />
+        </AuthContextProvider>
+      </View>
     </>
   );
 };
@@ -207,5 +243,8 @@ const styles = StyleSheet.create({
     borderRadius: 29,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  container: {
+    flex: 1
   }
 });

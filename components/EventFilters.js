@@ -15,6 +15,9 @@ function EventFilters({ style, updateEventList, setIsFetching }) {
   const [gradeFilterApplied, setGradeFilterApplied] = useState(false);
   const [industryFilterApplied, setIndustryFilterApplied] = useState(false);
   const [groupFilterApplied, setGroupFilterApplied] = useState(false);
+  const [numSelectedGrade, setNumSelectedGrade] = useState();
+  const [numSelectedIndustry, setNumSelectedIndustry] = useState();
+  const [numSelectedGroup, setNumSelectedGroup] = useState();
 
   // TO COMMENT OUT
   const { token } = useContext(AuthContext);
@@ -53,36 +56,81 @@ function EventFilters({ style, updateEventList, setIsFetching }) {
     setShowIndustry(false);
   };
 
+  function selectedGradeFilterHandler(numFilters) {
+    setNumSelectedGrade(numFilters);
+    if (numFilters > 0) {
+      setGradeFilterApplied(true);
+    } else {
+      setGradeFilterApplied(false);
+    };
+    setShowGrade(false);
+  };
+
+  function selectedIndustryFilterHandler(numFilters) {
+    setNumSelectedIndustry(numFilters);
+    if (numFilters > 0) {
+      setIndustryFilterApplied(true);
+    } else {
+      setIndustryFilterApplied(false);
+    };
+    setShowIndustry(false);
+  };
+
+  function selectedGroupFilterHandler(numFilters) {
+    setNumSelectedGroup(numFilters);
+    if (numFilters > 0) {
+      setGroupFilterApplied(true);
+    } else {
+      setGroupFilterApplied(false);
+    };
+    setShowGroup(false);
+  };
+
   return (
     <View style={[styles.outerContainer, style]}>
       <View style={styles.container}>
         <Pressable onPress={onToggleGradeFilters} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.dropdownContainer, gradeFilterApplied && styles.colorContainer]}>
             <Text style={[styles.filterText, gradeFilterApplied && styles.colorText]}>Grade</Text>
+              <View style={styles.numSelectedContainer}>
+                {gradeFilterApplied && (
+                  <Text style={styles.numSelected}>{numSelectedGrade}</Text>
+                )}
+              </View>
             <Feather name="chevron-down" size={24} color={gradeFilterApplied ? 'white' : '#1A1A1A'} />
           </View>
         </Pressable>
         <Pressable onPress={onToggleIndustryFilters} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.dropdownContainer, industryFilterApplied && styles.colorContainer]}>
             <Text style={[styles.filterText, industryFilterApplied && styles.colorText]}>Industry</Text>
+                <View style={styles.numSelectedContainer}>
+                  {industryFilterApplied && (
+                    <Text style={styles.numSelected}>{numSelectedIndustry}</Text>
+                  )}
+                </View>
             <Feather name="chevron-down" size={24} color={industryFilterApplied ? 'white' : '#1A1A1A'} />
           </View>
         </Pressable>
         <Pressable onPress={onToggleGroupFilters} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.dropdownContainer, groupFilterApplied && styles.colorContainer]}>
             <Text style={[styles.filterText, groupFilterApplied && styles.colorText]}>Meeting Type</Text>
+              <View style={styles.numSelectedContainer}>
+                {groupFilterApplied && (
+                  <Text style={styles.numSelected}>{numSelectedGroup}</Text>
+                )}
+              </View>
             <Feather name="chevron-down" size={24} color={groupFilterApplied ? 'white' : '#1A1A1A'} />
           </View>
         </Pressable>
       </View>
       <View style={[!showGrade && styles.hide, styles.filtersContainer]}>
-        <EventFilter filters={gradeFilters} />
+        <EventFilter filters={gradeFilters} selectFilters={selectedGradeFilterHandler} />
       </View>
       <View style={[!showIndustry && styles.hide, styles.filtersContainer, styles.industryFiltersContainer]}>
-        <EventFilter filters={industryFilters} />
+        <EventFilter filters={industryFilters} selectFilters={selectedIndustryFilterHandler} />
       </View>
       <View style={[!showGroup && styles.hide, styles.filtersContainer, styles.groupFiltersContainer]}>
-        <EventFilter filters={groupFilters} isGroupFilters={true} />
+        <EventFilter filters={groupFilters} isGroupFilters={true} selectFilters={selectedGroupFilterHandler} />
       </View>
     </View>
   )
@@ -125,15 +173,30 @@ const styles = StyleSheet.create({
     top: 60
   },
   industryFiltersContainer: {
-    left: 90
+    // left: 90
+    left: 107.5
   },
   groupFiltersContainer: {
-    left: 192
+    // left: 192
+    left: 229
   },
   hide: {
     display: 'none'
   },
   pressed: {
     opacity: 0.75
+  },
+  numSelectedContainer: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  numSelected: {
+    color: '#3C8722',
+    fontFamily: 'roboto-medium',
+    fontSize: 12
   }
 });

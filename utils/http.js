@@ -98,3 +98,15 @@ export async function fetchEventList(gradeFilters, industryFilters, groupFilters
 
   return response.data.data;
 };
+
+export async function fetchEvent(token, eventId) {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/event/${eventId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  });
+
+  return response.data.data;
+};

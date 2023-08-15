@@ -4,6 +4,7 @@ import { AuthContext } from '../store/context/auth-context';
 import { fetchUserInfo } from '../utils/http';
 import IconButton from '../components/ui/IconButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function UserInfoScreen({ navigation }) {
   const [isFetching, setIsFetching] = useState(true);
@@ -26,6 +27,7 @@ function UserInfoScreen({ navigation }) {
           setName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
           setAvatarUrl(userInfo.userImage[3]);
           setFirstName(userInfo.localizedfirstname);
+          AsyncStorage.setItem('first-name', userInfo.localizedfirstname);
         } catch (error) {
           console.log(error.response.data);
         };

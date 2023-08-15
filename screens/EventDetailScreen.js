@@ -1,36 +1,86 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import IconButton from '../components/ui/IconButton';
+import { fetchEvent } from '../utils/http';
+import { AuthContext } from '../store/context/auth-context';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { getFormattedDate } from '../utils/date';
 
-function EventDetailScreen({ navigation }) {
+function EventDetailScreen({ navigation, route }) {
+  const [isFetching, setIsFetching] = useState(true);
+  const [eventDetails, setEventDetails] = useState();
+  const [eventHostSectorTag, setEventHostSectorTag] = useState();
+  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+
   function previousStepHandler() {
     navigation.goBack();
+  };
+
+  const eventId = route.params?.eventId;
+  const sectorTags = route.params?.sectorTags;
+  const gradeTags = route.params?.gradeTags;
+
+  // const { token } = useContext(AuthContext);
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+
+  useEffect(() => {
+    async function getEventDetails() {
+      setIsFetching(true);
+      try {
+        const eventDetails = await fetchEvent(token, eventId);
+        setEventDetails(eventDetails);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetching(false);
+    };
+
+    getEventDetails();
+  }, [eventId]);
+
+  useEffect(() => {
+    if (eventDetails && gradeTags.length && sectorTags.length) {
+      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+        return eventDetails.eventHost.userTag.includes(gradeTag.id.toString());
+      });
+    
+      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+        return eventDetails.eventHost.userTag.includes(sectorTag.id.toString());
+      });
+  
+      setEventHostGradeTag(eventHostGradeTag[0].tagName);
+      setEventHostSectorTag(eventHostSectorTag[0].tagName);
+    };
+  }, [eventDetails, gradeTags, sectorTags]);
+
+  if (isFetching) {
+    return <LoadingOverlay />;
   };
 
   return (
     <View style={styles.container}>
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <ScrollView style={styles.mainContainer}>
-        <Text style={styles.headerText}>Finance coffee chat</Text> 
-        <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-        <Text style={styles.name}>Albina Ranniaia</Text>
+        <Text style={styles.headerText}>{eventDetails.eventName}</Text> 
+        <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
+        <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
         <View style={[styles.detailInnerContainer, styles.roleContainer]}>
-          <Text style={styles.grade}>Director</Text>
+          <Text style={styles.grade}>{eventHostGradeTag}</Text>
           <View style={styles.sectorContainer}>
-            <Text style={styles.sector}>EUMI</Text>
+            <Text style={styles.sector}>{eventHostSectorTag}</Text>
           </View>
         </View>
         <View style={styles.detailInnerContainer}>
           <Feather name="calendar" size={18} color="#3C8722" />
-          <Text style={styles.period}>12:00 - 12:30</Text>
-          <Text style={styles.date}>Thu, Jul 11</Text>
+          <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
+          <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
         </View>
         <View style={[styles.detailInnerContainer, styles.locationContainer]}>
           <Feather name="map-pin" size={18} color="black" />
           <Text style={styles.location}>London</Text>
         </View>
-        <Text style={styles.detail}>Hello there! I'm Albina, a passionate financial professional eager to connect with you over a coffee chat. Let's discuss anything finance-related, be it investments, budgeting, or career advice. I'm here to share insights and support your financial goals. Together, we can navigate the complexities of the financial world and unlock opportunities. So, don't hesitate – book a coffee chat with me today.</Text>      
+        <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
       </ScrollView>
       <View style={styles.submitFormContainer}>
         <Pressable onPress={() => {}} style={({pressed}) => pressed && styles.pressed}>
@@ -68,7 +118,8 @@ const styles = StyleSheet.create({
   avatar: {
     width: 120,
     height: 120,
-    marginVertical: 36
+    marginVertical: 36,
+    borderRadius: 66
   },
   name: {
     fontFamily: 'roboto-bold',

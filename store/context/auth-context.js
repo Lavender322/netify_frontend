@@ -7,15 +7,11 @@ export const AuthContext = createContext({
   authenticate: (token) => {},
   logout: () => {},
   firstName: null,
-  sectorTags: [],
-  gradeTags: [],
 });
 
 function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
   const [firstName, setFirstName] = useState();
-  const [sectorTags, setSectorTags] = useState([]);
-  const [gradeTags, setGradeTags] = useState([]);
 
   function authenticate(token) {
     setAuthToken(token);
@@ -25,6 +21,7 @@ function AuthContextProvider({ children }) {
   function logout() {
     setAuthToken(null);
     AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('first-name');
   };
 
   const value = {
@@ -34,10 +31,6 @@ function AuthContextProvider({ children }) {
     logout: logout,
     firstName,
     setFirstName,
-    sectorTags,
-    setSectorTags,
-    gradeTags,
-    setGradeTags,
   }
 
   return (

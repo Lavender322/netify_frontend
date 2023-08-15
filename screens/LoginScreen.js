@@ -16,7 +16,6 @@ function LoginScreen({ navigation, route }) {
         try {
           const token = await authenticateUser(state, code);
           authenticate(token);
-          Alert.alert("token", token);
           navigation.navigate('UserInfo');
         } catch (error) {
           console.log(error.response.data);

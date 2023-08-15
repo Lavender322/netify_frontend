@@ -8,6 +8,8 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function UserTagsScreen({ navigation }) {
   const [isFetching, setIsFetching] = useState(true);
+  const [sectorTags, setSectorTags] = useState([]);
+  const [gradeTags, setGradeTags] = useState([]);
   const [isSelectedSector, setIsSelectedSector] = useState([false, false, false, false, false, false, false]);
   const [isSelectedGrade, setIsSelectedGrade] = useState([false, false, false, false, false, false]);
   const [sector, setSector] = useState(null);
@@ -15,8 +17,8 @@ function UserTagsScreen({ navigation }) {
   const [flag, setFlag] = useState(false);
 
 // TO COMMENT OUT
-  const { token, authenticate, sectorTags, setSectorTags, gradeTags, setGradeTags } = useContext(AuthContext);
-  // const { authenticate, sectorTags, setSectorTags, gradeTags, setGradeTags } = useContext(AuthContext);
+  const { token, authenticate } = useContext(AuthContext);
+  // const { authenticate } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
