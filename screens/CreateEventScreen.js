@@ -52,5 +52,8 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.75
+  },
+  form: {
+    flex: 1
   }
 });

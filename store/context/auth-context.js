@@ -30,7 +30,7 @@ function AuthContextProvider({ children }) {
     authenticate: authenticate,
     logout: logout,
     firstName,
-    setFirstName,
+    setFirstName
   }
 
   return (

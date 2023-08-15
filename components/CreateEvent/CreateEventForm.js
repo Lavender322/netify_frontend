@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Pressable, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Pressable, Text, TextInput, ScrollView } from 'react-native';
 import CreateEventItem from "./CreateEventItem";
 
 function CreateEventForm() {
@@ -20,39 +20,39 @@ function CreateEventForm() {
   };
 
   return (
-    <View>
-      <View style={styles.meetingTypes}>
-        <Pressable 
-          style={({pressed}) => [styles.meetingType, styles.meetingTypeLeft, isOneToOne ? styles.selectedMeetingType : styles.unselectedMeetingType, pressed && styles.pressed]}
-          onPress={oneToOneHandler}
-        >
-          <Text style={[styles.meetingTypeText, isOneToOne ? styles.selectedMeetingTypeText : styles.unselectedMeetingTypeText]}>One to One</Text>
-        </Pressable>
-        <Pressable 
-          style={({pressed}) => [styles.meetingType, styles.meetingTypeRight, isOneToOne ? styles.unselectedMeetingType : styles.selectedMeetingType, pressed && styles.pressed]}
-          onPress={groupEventHandler}
-        >
-            <Text style={[styles.meetingTypeText, isOneToOne ? styles.unselectedMeetingTypeText : styles.selectedMeetingTypeText]}>Group event</Text>
-        </Pressable>
-      </View>
-      <View style={styles.meetingTitleContainer}>
-        <Text style={styles.meetingTitle}>Meeting Title</Text>
-        <TextInput 
-          style={styles.textInput} 
-          maxLength={120}
-          placeholder="Please Enter"
-          placeholderTextColor="#6A6A6A"
-        />
-      </View>
+    <View style={styles.container}>
+      <ScrollView>
+        <View style={styles.meetingTypes}>
+          <Pressable 
+            style={({pressed}) => [styles.meetingType, styles.meetingTypeLeft, isOneToOne ? styles.selectedMeetingType : styles.unselectedMeetingType, pressed && styles.pressed]}
+            onPress={oneToOneHandler}
+          >
+            <Text style={[styles.meetingTypeText, isOneToOne ? styles.selectedMeetingTypeText : styles.unselectedMeetingTypeText]}>One to One</Text>
+          </Pressable>
+          <Pressable 
+            style={({pressed}) => [styles.meetingType, styles.meetingTypeRight, isOneToOne ? styles.unselectedMeetingType : styles.selectedMeetingType, pressed && styles.pressed]}
+            onPress={groupEventHandler}
+          >
+              <Text style={[styles.meetingTypeText, isOneToOne ? styles.unselectedMeetingTypeText : styles.selectedMeetingTypeText]}>Group event</Text>
+          </Pressable>
+        </View>
+        <View style={styles.meetingTitleContainer}>
+          <Text style={styles.meetingTitle}>Meeting Title</Text>
+          <TextInput 
+            style={styles.textInput} 
+            maxLength={30}
+            placeholder="Please Enter"
+            placeholderTextColor="#6A6A6A"
+          />
+        </View>
       
-      <CreateEventItem icon='map-pin' text='Location' placeholder='Please Select'/>
-      <CreateEventItem icon='calendar' text='Date' placeholder='Please Select'/>
-      <CreateEventItem icon='clock' text='Time' placeholder='Please Select'/>
-      <CreateEventItem icon='users' text='Group capacity' placeholder='1'/>
-      <CreateEventItem icon='eye' text='Visibility' placeholder='Please Select'/>
-      <CreateEventItem icon='file-text' text='Notes' placeholder=''/>
-
-
+        <CreateEventItem icon='calendar' text='Date' placeholder='Please Select'/>
+        <CreateEventItem icon='clock' text='Time' placeholder='Please Select'/>
+        <CreateEventItem icon='users' text='Activity capacity' placeholder='∞'/>
+        <CreateEventItem icon='map-pin' text='Location' placeholder='Optional'/>
+        <CreateEventItem icon='eye' text='Visibility' placeholder='Visible to all'/>
+        <CreateEventItem icon='file-text' text='Notes' placeholder='Optional'/>
+      </ScrollView>
       <View style={styles.submitFormContainer}>
         <Pressable onPress={nextStepHandler} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
@@ -67,6 +67,9 @@ function CreateEventForm() {
 export default CreateEventForm;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   meetingTypes: {
     flexDirection: 'row',
     marginBottom: 16,

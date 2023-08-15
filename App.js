@@ -95,7 +95,6 @@ function AuthStack() {
     >
       {/* // TO COMMENT OUT */}
       <Stack.Screen name="Landing" component={LandingScreen} />
-      {/* <Stack.Screen name="Login" component={LoginScreen} />  */}
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
     </Stack.Navigator>
@@ -103,7 +102,6 @@ function AuthStack() {
 }
 
 function AuthenticatedStack() {
-  const { logout } = useContext(AuthContext);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -168,7 +166,6 @@ function Root() {
 
       if (storedToken) {
         authenticate(storedToken);
-        // logout();
       };
 
       if (storedFirstName) {
