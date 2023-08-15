@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Pressable, Text, TextInput, ScrollView } from 'react-native';
 import CreateEventItem from "./CreateEventItem";
+import DatePicker from './DatePicker';
 
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);
@@ -47,6 +48,7 @@ function CreateEventForm() {
         </View>
       
         <CreateEventItem icon='calendar' text='Date' placeholder='Please Select'/>
+        <DatePicker />
         <CreateEventItem icon='clock' text='Time' placeholder='Please Select'/>
         <CreateEventItem icon='users' text='Activity capacity' placeholder='∞'/>
         <CreateEventItem icon='map-pin' text='Location' placeholder='Optional'/>

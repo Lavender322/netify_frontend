@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 
 function CreateEventItem({ icon, text, placeholder, onPress }) {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={({pressed}) => pressed && styles.pressed}>
       <View style={styles.itemContainer}>
         <View style={styles.innerContainer}>
           <Feather name={icon} size={18} color="#000000" />
@@ -38,11 +38,13 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontFamily: 'roboto-medium',
     fontSize: 17
-
   },
   placeholderText: {
     color: '#6A6A6A',
     fontSize: 15,
     marginRight: 8,
   },
+  pressed: {
+    opacity: 0.75
+  }
 });

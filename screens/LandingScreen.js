@@ -1,8 +1,9 @@
 import { useEffect, useContext, useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, Alert } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
 import LoginButton from '../components/LoginButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { authenticateUser } from '../utils/http';
 
 function LandingScreen({ navigation, route }) {
   const state = route.params?.state;
@@ -23,7 +24,6 @@ function LandingScreen({ navigation, route }) {
         } catch (error) {
           console.log(error.response.data);
           setIsFetching(false);
-          Alert.alert("error", state + code + JSON.stringify(error.response.data));
         }
       };
 
