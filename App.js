@@ -159,7 +159,7 @@ function Navigation() {
 
 function Root() {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
-  const { authenticate, setFirstName, logout } = useContext(AuthContext);
+  const { authenticate, setFirstName } = useContext(AuthContext);
 
   useEffect(() => {
     async function fetchLocalStorage() {

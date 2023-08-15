@@ -23,7 +23,7 @@ function LandingScreen({ navigation, route }) {
         } catch (error) {
           console.log(error.response.data);
           setIsFetching(false);
-          Alert.alert("error", JSON.stringify(error.response.data));
+          Alert.alert("error", state + code + JSON.stringify(error.response.data));
         }
       };
 
