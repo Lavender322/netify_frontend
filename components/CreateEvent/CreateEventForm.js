@@ -2,11 +2,24 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, Pressable, Text, TextInput, ScrollView } from 'react-native';
 import CreateEventItem from "./CreateEventItem";
 import DatePicker from './DatePicker';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);
   const [isOneToOne, setIsOneToOne] = useState(true);
   const [showDateSelector, setShowDateSelector] = useState(false);
+  const [selectedCapacity, setSelectedCapacity] = useState('∞');
+
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const activityCapacity = route.params?.activityCapacity;
+      setSelectedCapacity(activityCapacity);
+    };
+  }, [route, isFocused]);
 
 
   function oneToOneHandler() {
@@ -23,6 +36,12 @@ function CreateEventForm() {
 
   function selectDateHandler() {
     setShowDateSelector(!showDateSelector);
+  };
+
+  function selectActivityCapacityHandler() {
+    navigation.navigate('ActivityCapacity', {
+      isOneToOne: isOneToOne
+    });
   };
 
   return (
@@ -55,7 +74,7 @@ function CreateEventForm() {
         <CreateEventItem icon='calendar' text='Date' placeholder='Please Select' onPress={selectDateHandler} />
         <DatePicker show={showDateSelector} />
         <CreateEventItem icon='clock' text='Time' placeholder='Please Select'/>
-        <CreateEventItem icon='users' text='Activity capacity' placeholder='∞'/>
+        <CreateEventItem icon='users' text='Activity capacity' placeholder={selectedCapacity} onPress={selectActivityCapacityHandler} />
         <CreateEventItem icon='map-pin' text='Location' placeholder='Optional'/>
         <CreateEventItem icon='eye' text='Visibility' placeholder='Visible to all'/>
         <CreateEventItem icon='file-text' text='Notes' placeholder='Optional'/>

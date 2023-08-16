@@ -16,7 +16,7 @@ function UserTagsScreen({ navigation }) {
   const [grade, setGrade] = useState(null);
   const [flag, setFlag] = useState(false);
 
-// TO COMMENT OUT
+  // TO COMMENT OUT
   const { tempToken, authenticate } = useContext(AuthContext);
   // const { authenticate } = useContext(AuthContext);
   // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';

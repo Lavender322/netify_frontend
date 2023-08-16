@@ -21,6 +21,7 @@ import EventDetailScreen from './screens/EventDetailScreen';
 // import LoginScreen from './screens/LoginScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
 import IconButton from './components/ui/IconButton';
+import ActivityCapacity from './components/CreateEvent/ActivityCapacity';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -93,7 +94,6 @@ function AuthStack() {
         headerShown: false
       }}
     >
-      {/* // TO COMMENT OUT */}
       <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
@@ -114,6 +114,10 @@ function AuthenticatedStack() {
       <Stack.Screen name="UserOverview" component={UserOverview} />
       <Stack.Screen name="EventDetail" component={EventDetailScreen} />
       <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
+      }} />
+      <Stack.Screen name="ActivityCapacity" component={ActivityCapacity} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />

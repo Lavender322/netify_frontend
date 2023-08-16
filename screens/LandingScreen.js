@@ -11,7 +11,7 @@ function LandingScreen({ navigation, route }) {
 
   const [isFetching, setIsFetching] = useState(false);
 
-  const { authenticate } = useContext(AuthContext);
+  const { setTempToken } = useContext(AuthContext);
 
   useEffect(() => {
     if (state && code) {
@@ -19,7 +19,8 @@ function LandingScreen({ navigation, route }) {
         setIsFetching(true);
         try {
           const token = await authenticateUser(state, code);
-          authenticate(token);
+          // authenticate(token);
+          setTempToken(token);
           navigation.navigate('UserInfo');
         } catch (error) {
           console.log(error.response.data);
