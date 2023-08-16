@@ -1,10 +1,10 @@
 import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
 
-function DatePickerItem() {
+function DatePickerItem({ day, date }) {
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, styles.day]}>Fri</Text>
-      <Text style={styles.text}>19</Text>
+      <Text style={[styles.text, styles.day]}>{day}</Text>
+      <Text style={styles.text}>{date}</Text>
     </View>
   )
 }

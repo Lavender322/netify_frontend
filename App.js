@@ -114,7 +114,8 @@ function AuthenticatedStack() {
       <Stack.Screen name="UserOverview" component={UserOverview} />
       <Stack.Screen name="EventDetail" component={EventDetailScreen} />
       <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{
-        presentation: 'modal'
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
       }} />
     </Stack.Navigator>
   );

@@ -6,6 +6,7 @@ import DatePicker from './DatePicker';
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);
   const [isOneToOne, setIsOneToOne] = useState(true);
+  const [showDateSelector, setShowDateSelector] = useState(false);
 
 
   function oneToOneHandler() {
@@ -18,6 +19,10 @@ function CreateEventForm() {
 
   function nextStepHandler() {
     
+  };
+
+  function selectDateHandler() {
+    setShowDateSelector(!showDateSelector);
   };
 
   return (
@@ -47,8 +52,8 @@ function CreateEventForm() {
           />
         </View>
       
-        <CreateEventItem icon='calendar' text='Date' placeholder='Please Select'/>
-        <DatePicker />
+        <CreateEventItem icon='calendar' text='Date' placeholder='Please Select' onPress={selectDateHandler} />
+        <DatePicker show={showDateSelector} />
         <CreateEventItem icon='clock' text='Time' placeholder='Please Select'/>
         <CreateEventItem icon='users' text='Activity capacity' placeholder='∞'/>
         <CreateEventItem icon='map-pin' text='Location' placeholder='Optional'/>
