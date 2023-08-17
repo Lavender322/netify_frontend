@@ -120,3 +120,18 @@ export function joinEvent(token, eventId) {
     },
   });
 };
+
+export async function createEvent(body, token, eventId) {  
+  const response = await axios({
+    method: 'POST',
+    url: BACKEND_URL + `/event/create`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
+
+  return response.data.data;
+};

@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Pressable, Text, TextInput, ScrollView, KeyboardAvoidingView, Switch } from 'react-native';
+import { AuthContext } from '../../store/context/auth-context';
 import CreateEventItem from "./CreateEventItem";
 import DatePicker from './DatePicker';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import LocationInput from './LocationInput';
 import { Ionicons } from '@expo/vector-icons';
 import TimePicker from './TimePicker';
+import { createEvent, fetchTags } from '../../utils/http';
+import LoadingOverlay from '../ui/LoadingOverlay';
+import { getEventStartEndTime } from '../../utils/date';
 
 function CreateEventForm() {
   const [flag, setFlag] = useState(false);
@@ -13,18 +17,29 @@ function CreateEventForm() {
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
+  const [sectorTagIds, setSectorTagIds] = useState([]);
+  const [gradeTagIds, setGradeTagIds] = useState([]);
   const [meetingTitle, setMeetingTitle] = useState('');
+  const [selectedStartTime, setSelectedStartTime] = useState(new Date());
+  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState();
+  const [previewDate, setPreviewDate] = useState('Please Select');
   const [selectedCapacity, setSelectedCapacity] = useState('∞');
   const [selectedLocation, setSelectedLocation] = useState();
   const [previewLocation, setPreviewLocation] = useState('Optional');
   const [notes, setNotes] = useState('');
   const [previewNotes, setPreviewNotes] = useState('Optional');
+  const [visibility, setVisibility] = useState('All');
   const [autoAccept, setAutoAccept] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   function meetingTitleInputHandler(enteredText) {
     setMeetingTitle(enteredText);
   };
-
 
   const toggleSwitch = () => setAutoAccept(previousState => !previousState);
 
@@ -33,15 +48,50 @@ function CreateEventForm() {
   const route = useRoute();
 
   useEffect(() => {
+    async function getTags() {
+      // setIsFetching(true);
+      try {
+        const tags = await fetchTags();
+        const fetchedSectorTags = tags.filter(
+          tag => tag.tagType === 'team'
+        );
+        const fetchedGradeTags = tags.filter(
+          tag => tag.tagType === 'grade'
+        );
+
+        const sectorTagIds = [];
+        const gradeTagIds = [];
+
+        fetchedSectorTags.map((tag) => {
+          sectorTagIds.push(tag.tagId);
+        })
+
+        fetchedGradeTags.map((tag) => {
+          gradeTagIds.push(tag.tagId);
+        })
+
+        setSectorTagIds(sectorTagIds);
+        setGradeTagIds(gradeTagIds);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetching(false);
+    };
+
+    getTags();
+  }, []);
+
+  useEffect(() => {
     if (isFocused && route.params) {
-      const activityCapacity = route.params?.activityCapacity;
-      const notes = route.params?.notes;
-      const previewNotes = route.params?.previewNotes;
+      const activityCapacity = route.params.activityCapacity && route.params.activityCapacity;
+      const notes = route.params.notes && route.params.notes;
+      const previewNotes = route.params.previewNotes && route.params.previewNotes;
       setSelectedCapacity(activityCapacity);
       setPreviewNotes(previewNotes);
       setNotes(notes);
     };
   }, [route, isFocused]);
+
 
   useEffect(() => {
     if (!showLocationInput && selectedLocation) {
@@ -50,6 +100,22 @@ function CreateEventForm() {
       setPreviewLocation('Optional');
     };
   }, [showLocationInput]);
+
+  useEffect(() => {
+    // console.log(meetingTitle, selectedDate, selectedStartTime, selectedEndTime, visibility, selectedCapacity);
+    if (meetingTitle.length !== 0 && selectedDate && selectedStartTime && selectedEndTime && visibility) {
+      if (!isOneToOne) {
+        if (selectedCapacity) {
+          setFlag(true);
+        } else {
+          setFlag(false);
+        }
+      };
+      setFlag(true);
+    } else {
+      setFlag(false);
+    }
+  }, [meetingTitle, selectedDate, selectedStartTime, selectedEndTime, selectedCapacity, selectedLocation, visibility, notes, autoAccept]);
 
 
   function oneToOneHandler() {
@@ -60,8 +126,34 @@ function CreateEventForm() {
     setIsOneToOne(false);
   };
 
-  function nextStepHandler() {
-    
+  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes) {
+    if (flag) {
+      let [eventStartTime, eventEndTime] = getEventStartEndTime();
+      let body = {
+        eventName: meetingTitle,
+        eventTeam: sectorTagIds,
+        eventGrade: gradeTagIds,
+        eventType: isOneToOne ? 'ONE_TO_ONE' : 'GROUP_EVENT',
+        allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 2 : selectedCapacity,
+        eventStartTime: eventStartTime,
+        eventEndTime: eventEndTime,
+        eventDescription: notes
+      };
+      // console.log(body);
+
+      setIsSubmitting(true);
+      try {
+        await createEvent(body, token);
+        navigation.goBack();
+      } catch (error) {
+        console.log(error.response.data);
+        setIsSubmitting(false);
+      };  
+    }
+  };
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
   };
 
   function selectDateHandler() {
@@ -78,6 +170,14 @@ function CreateEventForm() {
       setShowTimeSelector(false);
     };
     setShowLocationInput(!showLocationInput);
+  };
+
+  function selectTimeHandler() {
+    if (!showTimeSelector) {
+      setShowDateSelector(false);
+      setShowLocationInput(false);
+    };
+    setShowTimeSelector(!showTimeSelector);
   };
 
   function selectActivityCapacityHandler() {
@@ -121,12 +221,12 @@ function CreateEventForm() {
             />
           </View>
         
-          <CreateEventItem icon='calendar' text='Date' placeholder='Please Select' onPress={selectDateHandler} expanded={showDateSelector} />
+          <CreateEventItem icon='calendar' text='Date' placeholder={previewDate} onPress={selectDateHandler} expanded={showDateSelector} />
           {showDateSelector && (
-            <DatePicker />
+            <DatePicker setSelectedDate={setSelectedDate} setPreviewDate={setPreviewDate} />
           )}
 
-          <CreateEventItem icon='clock' text='Time' placeholder='Please Select' />
+          <CreateEventItem icon='clock' text='Time' placeholder='Please Select' onPress={selectTimeHandler} expanded={showTimeSelector} />
           {showTimeSelector && (
             <TimePicker />
           )}
@@ -162,14 +262,14 @@ function CreateEventForm() {
                 />
                 <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
               </View>
-              <Pressable onPress={nextStepHandler} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
+              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
                 <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                   <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
                 </View>
               </Pressable>
             </View>
           ) : (
-            <Pressable onPress={nextStepHandler} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes)} style={({pressed}) => pressed && styles.pressed}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>

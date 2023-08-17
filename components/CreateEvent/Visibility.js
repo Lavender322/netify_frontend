@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Switch } from 'react-native';
+import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Switch, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchTags } from '../../utils/http';
@@ -37,8 +37,6 @@ function Visibility({ navigation }) {
     getTags();
   }, []);
 
-  // console.log("gradeTgas", gradeTags);
-
   useEffect(() => {
     if (isEnabled) {
       setFlag(true);
@@ -52,14 +50,22 @@ function Visibility({ navigation }) {
   };
 
   function comfirmVisibilityHandler() {
-
+    navigation.navigate('CreateEvent', {
+      visibility: 'All',
+    });
   };
 
   function toggleGradeAccordionHandler() {
+    if (!showGrade) {
+      setShowSector(false);
+    };
     setShowGrade(!showGrade);
   };
 
   function toggleSectorAccordionHandler() {
+    if (!showSector) {
+      setShowGrade(false);
+    };
     setShowSector(!showSector);
   };
 
@@ -91,46 +97,62 @@ function Visibility({ navigation }) {
           </Pressable>
         </View>
 
-        <View style={styles.noteContainer}>
-          <Text style={styles.note}>Select visibility preferences for your event using grade and industry filters.</Text>
-        </View> 
+        <ScrollView>
+          <View style={styles.noteContainer}>
+            <Text style={styles.note}>Select visibility preferences for your event using grade and industry filters.</Text>
+          </View> 
 
-        <View style={styles.switchContainer}>
-          <Switch 
-            trackColor={{false: '#919191', true: '#3C8722'}}
-            thumbColor={isEnabled ? '#FFFFFF' : '#FFFFFF'}
-            ios_backgroundColor="#919191"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
-          <Text style={styles.switchText}>Public for all grades & industries users</Text>
-        </View>
+          <View style={styles.switchContainer}>
+            <Switch 
+              trackColor={{false: '#919191', true: '#3C8722'}}
+              thumbColor={isEnabled ? '#FFFFFF' : '#FFFFFF'}
+              ios_backgroundColor="#919191"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+            <Text style={styles.switchText}>Public for all grades & industries users</Text>
+          </View>
 
-        <View style={[isEnabled && styles.hide, styles.accordionContainer]}>
-          <Pressable onPress={toggleGradeAccordionHandler}>
-            <View style={styles.accordionHeader}>
-              <Text style={styles.accordionHeaderTitle}>Grade</Text>
-              <Feather name="chevron-down" size={24} color="#1A1A1A" />
+          <View style={[isEnabled && styles.hide, styles.accordionContainer]}>
+            <Pressable onPress={toggleGradeAccordionHandler}>
+              <View style={styles.accordionHeader}>
+                <Text style={styles.accordionHeaderTitle}>Grade</Text>
+                <Feather name="chevron-down" size={24} color="#1A1A1A" />
+              </View>
+            </Pressable>
+            <View style={styles.filtersOuterContainer}>
+              <View style={[!showGrade && styles.hide, styles.filtersContainer]}>
+                <VisibilityFilter
+                  style={styles.filters}
+                  filters={gradeTags}
+                  // selectFilters={selectGradeFilterHandler}
+                  // setSelectedFilter={setSelectedGrade}
+                  // setUpdateEventList 
+                /> 
+              </View>
             </View>
-          </Pressable>
-            {/* <View style={!showGrade && styles.hide}>
-              <VisibilityFilter
-                filters={gradeTags}
-                // selectFilters={selectGradeFilterHandler}
-                // setSelectedFilter={setSelectedGrade}
-                // setUpdateEventList 
-              /> 
-            </View> */}
-        </View>
+          </View>
 
-        <View style={[isEnabled && styles.hide, styles.accordionContainer]}>
-          <Pressable onPress={toggleSectorAccordionHandler}>
-            <View style={styles.accordionHeader}>
-              <Text style={styles.accordionHeaderTitle}>Industry</Text>
-              <Feather name="chevron-down" size={24} color="#1A1A1A" />
+          <View style={[isEnabled && styles.hide, styles.accordionContainer]}>
+            <Pressable onPress={toggleSectorAccordionHandler}>
+              <View style={styles.accordionHeader}>
+                <Text style={styles.accordionHeaderTitle}>Industry</Text>
+                <Feather name="chevron-down" size={24} color="#1A1A1A" />
+              </View>
+            </Pressable>
+            <View style={styles.filtersOuterContainer}>
+              <View style={[!showSector && styles.hide, styles.filtersContainer]}>
+                <VisibilityFilter
+                  style={styles.filters}
+                  filters={sectorTags}
+                  // selectFilters={selectGradeFilterHandler}
+                  // setSelectedFilter={setSelectedGrade}
+                  // setUpdateEventList 
+                /> 
+              </View>
             </View>
-          </Pressable>
-        </View>
+          </View>
+        </ScrollView>
 
         <View style={styles.submitFormContainer}>
           <Pressable onPress={(comfirmVisibilityHandler)} style={({pressed}) => pressed && styles.pressed}>
@@ -209,10 +231,8 @@ const styles = StyleSheet.create({
     lineHeight: 20
   },
   submitFormContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
     marginBottom: 80,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   submitFormText: {
     fontSize: 16,
@@ -251,7 +271,7 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
   accordionContainer: {
-    marginTop: 36,
+    marginTop: 50,
     marginHorizontal: 12
   },
   accordionHeader: {
@@ -259,7 +279,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#F1F1F1',
     padding: 8,
-    borderRadius: 6
+    borderRadius: 6,
+    zIndex: 2
   },
   accordionHeaderTitle: {
     color: '#1A1A1A',
@@ -269,5 +290,14 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: 'none'
+  },
+  filters: {
+    zIndex: 100
+  },
+  filtersContainer: {
+    position: 'absolute',
+    width: '100%'
+  },
+  filtersOuterContainer: {
   }
 });
