@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-function CreateEventItem({ icon, text, placeholder, onPress }) {
+function CreateEventItem({ icon, text, placeholder, onPress, expanded }) {
   return (
     <Pressable onPress={onPress} style={({pressed}) => pressed && styles.pressed}>
       <View style={styles.itemContainer}>
@@ -12,7 +12,7 @@ function CreateEventItem({ icon, text, placeholder, onPress }) {
         </View>
         <View style={styles.innerContainer}>
           <Text style={styles.placeholderText}>{placeholder}</Text>
-          <Feather name="chevron-right" size={24} color="#6A6A6A" />
+          <Feather name={expanded ? "chevron-down" : "chevron-right"} size={24} color="#6A6A6A" />
         </View>
       </View>
     </Pressable>

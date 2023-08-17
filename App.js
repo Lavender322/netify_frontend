@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
@@ -22,6 +23,8 @@ import EventDetailScreen from './screens/EventDetailScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
 import IconButton from './components/ui/IconButton';
 import ActivityCapacity from './components/CreateEvent/ActivityCapacity';
+import Notes from './components/CreateEvent/Notes';
+import Visibility from './components/CreateEvent/Visibility';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -36,7 +39,7 @@ export function UserOverview() {
       tabBarInactiveTintColor: '#3B4852',
       tabBarActiveTintColor: '#3C8722',
       tabBarStyle: {paddingTop: 5, paddingBottom: 25},
-      tabBarLabelStyle: {fontFamily: 'roboto-medium', fontSize: 11}
+      tabBarLabelStyle: {fontFamily: 'roboto-medium', fontSize: 11},
     }}>
       <BottomTabs.Screen 
         name='Home' 
@@ -121,6 +124,14 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
+      <Stack.Screen name="Visibility" component={Visibility} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
+      }} />
+      <Stack.Screen name="Notes" component={Notes} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
+      }} />
     </Stack.Navigator>
   );
 }
@@ -131,7 +142,6 @@ function Navigation() {
   const config = {
     screens: {
       Landing: 'login',
-      // Login: 'login',
       UserInfo: 'userinfo',
       UserTags: 'usertags',
       UserOverview: {
@@ -231,11 +241,13 @@ export default function App() {
   return (
     <>
       <StatusBar style='dark' />
+      <SafeAreaProvider>
       <View onLayout={onLayoutRootView} style={styles.container}>
         <AuthContextProvider>
           <Root />
         </AuthContextProvider>
       </View>
+      </SafeAreaProvider>
     </>
   );
 };
