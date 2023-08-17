@@ -121,7 +121,7 @@ export function joinEvent(token, eventId) {
   });
 };
 
-export async function createEvent(body, token, eventId) {  
+export async function createEvent(body, token) {  
   const response = await axios({
     method: 'POST',
     url: BACKEND_URL + `/event/create`,
