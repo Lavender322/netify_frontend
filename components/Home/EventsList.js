@@ -1,6 +1,8 @@
-import { FlatList, Text, StyleSheet, View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import LoadingOverlay from '../ui/LoadingOverlay';
 import EventItem from './EventItem';
-import LoadingOverlay from './ui/LoadingOverlay';
 
 function renderEventItem(itemData, sectorTags, gradeTags) {
   return (
@@ -9,18 +11,28 @@ function renderEventItem(itemData, sectorTags, gradeTags) {
 };
 
 function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
+  const navigation = useNavigation();
+
+  const eventsDisplayed = (events && events.length != 0) && events.filter((event) => event.myStateInTheEvent !== 'UNKNOWN');
+  
+  function redirectHandler() {
+    navigation.navigate('CreateEvent');
+  };
+
   if (isFetchingEvents) {
     return (
       <LoadingOverlay />
     )
   };
 
-  if ((!events || events.length === 0) && !isFetchingEvents) {
+  if ((!eventsDisplayed || eventsDisplayed.length === 0) && !isFetchingEvents) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
           <Text style={styles.fallback}>There are no upcoming events around you. </Text>
+          <Pressable onPress={redirectHandler}>
           <Text style={styles.fallbackHighlight}>Host one!</Text>
+          </Pressable>
         </Text>
       </View>
     )
@@ -28,7 +40,7 @@ function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
 
   return (
     <FlatList 
-      data={events} 
+      data={eventsDisplayed} 
       renderItem={(item) => renderEventItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />

@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { AuthContext } from '../store/context/auth-context';
-import { fetchEventFilters } from '../utils/http';
+import { AuthContext } from '../../store/context/auth-context';
+import { fetchEventFilters } from '../../utils/http';
 import EventFilter from './EventFilter';
 
 function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelectedGroup, setUpdateEventList }) {

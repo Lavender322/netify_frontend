@@ -36,7 +36,7 @@ export function getEventDates() {
   return eventDates;
 };
 
-function addMinutes(date, minutes) {
+export function addMinutes(date, minutes) {
   date.setMinutes(date.getMinutes() + minutes);
 
   return date;

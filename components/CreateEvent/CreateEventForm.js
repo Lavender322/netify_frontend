@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Pressable, Text, TextInput, ScrollView, KeyboardAvoidingView, Switch } from 'react-native';
+import { StyleSheet, View, Pressable, Text, TextInput, ScrollView, KeyboardAvoidingView, Switch, Modal } from 'react-native';
 import { AuthContext } from '../../store/context/auth-context';
 import CreateEventItem from "./CreateEventItem";
 import DatePicker from './DatePicker';
@@ -20,18 +20,20 @@ function CreateEventForm() {
   const [sectorTagIds, setSectorTagIds] = useState([]);
   const [gradeTagIds, setGradeTagIds] = useState([]);
   const [meetingTitle, setMeetingTitle] = useState('');
+  const [previewTime, setPreviewTime] = useState('Please Select');
   const [selectedStartTime, setSelectedStartTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState();
   const [previewDate, setPreviewDate] = useState('Please Select');
   const [selectedCapacity, setSelectedCapacity] = useState('∞');
-  const [selectedLocation, setSelectedLocation] = useState();
+  const [selectedLocation, setSelectedLocation] = useState('');
   const [previewLocation, setPreviewLocation] = useState('Optional');
   const [notes, setNotes] = useState('');
   const [previewNotes, setPreviewNotes] = useState('Optional');
   const [visibility, setVisibility] = useState('All');
   const [autoAccept, setAutoAccept] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // TO COMMENT OUT
   const { token } = useContext(AuthContext);
@@ -83,9 +85,9 @@ function CreateEventForm() {
 
   useEffect(() => {
     if (isFocused && route.params) {
-      const activityCapacity = route.params.activityCapacity && route.params.activityCapacity;
-      const notes = route.params.notes && route.params.notes;
-      const previewNotes = route.params.previewNotes && route.params.previewNotes;
+      const activityCapacity = route.params.activityCapacity ? route.params.activityCapacity : '∞';
+      const notes = route.params.notes ? route.params.notes : '';
+      const previewNotes = route.params.previewNotes ? route.params.previewNotes : 'Optional';
       setSelectedCapacity(activityCapacity);
       setPreviewNotes(previewNotes);
       setNotes(notes);
@@ -126,7 +128,7 @@ function CreateEventForm() {
     setIsOneToOne(false);
   };
 
-  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes) {
+  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept) {
     if (flag) {
       let [eventStartTime, eventEndTime] = getEventStartEndTime();
       let body = {
@@ -134,12 +136,16 @@ function CreateEventForm() {
         eventTeam: sectorTagIds,
         eventGrade: gradeTagIds,
         eventType: isOneToOne ? 'ONE_TO_ONE' : 'GROUP_EVENT',
-        allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 2 : selectedCapacity,
+        allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 2 : Number(selectedCapacity),
         eventStartTime: eventStartTime,
         eventEndTime: eventEndTime,
-        eventDescription: notes
+        eventDescription: notes,
+        eventLocation: isOneToOne ? '' : selectedLocation,
+        autoAccept: isOneToOne ? autoAccept : false
       };
       // console.log(body);
+
+      // setModalVisible(!modalVisible);
 
       setIsSubmitting(true);
       try {
@@ -187,13 +193,19 @@ function CreateEventForm() {
   function selectNotesHandler() {
     navigation.navigate('Notes');
   };
+
   function selectVisibilityHandler() {
     navigation.navigate('Visibility');
   };
 
+  function onHideModal() {
+    setModalVisible(!modalVisible);
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={styles.container} behavior='position'>
+      <KeyboardAvoidingView style={styles.container} behavior='height'>
         <ScrollView>
           <View style={styles.meetingTypes}>
             <Pressable 
@@ -226,9 +238,16 @@ function CreateEventForm() {
             <DatePicker setSelectedDate={setSelectedDate} setPreviewDate={setPreviewDate} />
           )}
 
-          <CreateEventItem icon='clock' text='Time' placeholder='Please Select' onPress={selectTimeHandler} expanded={showTimeSelector} />
+          <CreateEventItem icon='clock' text='Time' placeholder={previewTime} onPress={selectTimeHandler} expanded={showTimeSelector} />
           {showTimeSelector && (
-            <TimePicker />
+            <TimePicker 
+              startTime={selectedStartTime}
+              setStartTime={setSelectedStartTime}
+              endTime={selectedEndTime}
+              setEndTime={setSelectedEndTime}
+              setPreviewTime={setPreviewTime}
+            
+            />
           )}
 
           {!isOneToOne && (
@@ -239,7 +258,10 @@ function CreateEventForm() {
             <View>
               <CreateEventItem icon='map-pin' text='Location' placeholder={previewLocation} onPress={inputLocationHandler} expanded={showLocationInput} />
               {showLocationInput && (
-                <LocationInput setSelectedLocation={setSelectedLocation} />
+                <LocationInput 
+                  selectedLocation={selectedLocation}
+                  setSelectedLocation={setSelectedLocation} 
+                />
               )}
             </View>
           )}
@@ -262,21 +284,44 @@ function CreateEventForm() {
                 />
                 <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
               </View>
-              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
+              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
                 <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                   <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
                 </View>
               </Pressable>
             </View>
           ) : (
-            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes)} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>
             </Pressable>
           )}
         </View>
+
       </KeyboardAvoidingView>
+
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={modalVisible}
+        // presentationStyle='pageSheet'
+        onRequestClose={() => {
+          // Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Your event is now online!</Text>
+            <Text style={styles.modalText} >Thank you for being part of this community! At the same time, we would like to suggest you that seize this opportunity to build a strong connection during the event and engage with the participants continuously.</Text>
+            <Pressable onPress={onHideModal} style={({pressed}) => pressed && styles.pressed}>
+              <View style={[styles.submitFormBtnContainer, styles.enabledContainer]}>
+                <Text style={[styles.submitFormBtnText, styles.enabledText]}>Close</Text>
+              </View>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -286,6 +331,9 @@ export default CreateEventForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  innerContainer: {
+    justifyContent: 'space-between'
   },
   meetingTypes: {
     flexDirection: 'row',
@@ -341,12 +389,10 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto'
   },
   submitFormContainer: {
-    // backgroundColor: 'blue',
-    // flex: 1, 
     justifyContent: 'flex-end',
-    // marginBottom: 96,
     paddingHorizontal: 12,
-    paddingTop: 16
+    paddingTop: 16,
+    paddingBottom: 50
   },
   submitFormOuterContainer: {
     flexDirection: 'row'
@@ -396,5 +442,35 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.75
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00000080',
+    // opacity: '50%'
+  },
+  modalView: {
+    height: '55%',
+    width: '90%',
+    backgroundColor: '#FCFCFC', 
+    padding: 20,
+    borderRadius: 18,
+    // alignItems: 'center'
+  },
+  modalTitle: {
+    fontSize: 24,
+    color: '#1A4821',
+    fontFamily: 'product-sans-bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    color: '#1A4821',
+    fontFamily: 'roboto',
+    fontSize: 15,
+    lineHeight: 20,
+    marginTop: 36,
+    marginBottom: 45,
+    textAlign: 'center'
   }
 });

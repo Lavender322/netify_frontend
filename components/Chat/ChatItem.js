@@ -6,10 +6,11 @@ import { joinEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 import LoadingOverlay from './ui/LoadingOverlay';
 
-function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
+function ChatItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [eventStatus, setEventStatus] = useState(myStateInTheEvent);
   
   const navigation = useNavigation();
 
@@ -20,9 +21,10 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
       gradeTags: gradeTags
     });
   };
-
-  // const { token } = useContext(AuthContext);
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+ 
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
     if (eventHost && eventHost.userTag) {
@@ -43,6 +45,7 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
     setIsSubmitting(true);
     try {
       await joinEvent(token, eventId);
+      setEventStatus('REQUESTED');
     } catch (error) {
       console.log("error", error);
       // setError('Could not save data - please try again later!');
@@ -69,7 +72,7 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
         </View>
       </Pressable>
       <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
-        {myStateInTheEvent === "REQUESTED" ? (
+        {eventStatus === "REQUESTED" ? (
           <View style={[styles.statusContainer, styles.pendingContainer]}>
             <Text style={[styles.text, styles.pendingText]}>Pending</Text>
           </View>
@@ -83,7 +86,7 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
   )
 }
 
-export default EventItem;
+export default ChatItem;
 
 const styles = StyleSheet.create({
   container: {

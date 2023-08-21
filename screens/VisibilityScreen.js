@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Switch, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchTags } from '../../utils/http';
-import VisibilityFilter from './VisibilityFilter';
+import { fetchTags } from '../utils/http';
+import VisibilityFilter from '../components/CreateEvent/VisibilityFilter';
 
-function Visibility({ navigation }) {
+function VisibilityScreen({ navigation }) {
   const [flag, setFlag] = useState(true);
   const [isEnabled, setIsEnabled] = useState(true);
   const [showGrade, setShowGrade] = useState(false);
@@ -166,7 +166,7 @@ function Visibility({ navigation }) {
   )
 }
 
-export default Visibility;
+export default VisibilityScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -22,8 +22,9 @@ function EventDetailScreen({ navigation, route }) {
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
 
-  // const { token } = useContext(AuthContext);
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
     async function getEventDetails() {
@@ -31,6 +32,7 @@ function EventDetailScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
+        console.log("eventDetails", eventDetails);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -89,10 +91,12 @@ function EventDetailScreen({ navigation, route }) {
           <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
           <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
         </View>
-        <View style={[styles.detailInnerContainer, styles.locationContainer]}>
-          <Feather name="map-pin" size={18} color="black" />
-          <Text style={styles.location}>London</Text>
-        </View>
+        {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
+          <View style={[styles.detailInnerContainer, styles.locationContainer]}>
+            <Feather name="map-pin" size={18} color="black" />
+            <Text style={styles.location}>{eventDetails.eventLocation}</Text>
+          </View>
+        )}
         <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
       </ScrollView>
       <View style={styles.submitFormContainer}>
@@ -174,8 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   locationContainer: {
-    marginTop: 8,
-    marginBottom: 16
+    marginTop: 8
   },
   location: {
     fontFamily: 'roboto-medium',
@@ -187,7 +190,8 @@ const styles = StyleSheet.create({
     color: '#4F4F4F',
     fontFamily: 'roboto',
     lineHeight: 22,
-    fontSize: 15
+    fontSize: 15,
+    marginTop: 16
   },
   submitFormContainer: {
     paddingBottom: 80,

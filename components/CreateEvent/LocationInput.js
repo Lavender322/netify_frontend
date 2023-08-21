@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
 
-function LocationInput({ setSelectedLocation }) {
-  const [enteredText, setEnteredText] = useState('');
+function LocationInput({ selectedLocation, setSelectedLocation }) {
+  const [enteredText, setEnteredText] = useState(selectedLocation);
 
   function textInputHandler(enteredText) {
     setEnteredText(enteredText);

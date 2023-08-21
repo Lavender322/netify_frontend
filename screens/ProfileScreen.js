@@ -11,9 +11,12 @@ function ProfileScreen() {
   };
 
   return (
-    <Pressable style={styles.container} onPress={logoutHandler}>
-      <Text>logout</Text>
-    </Pressable>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Profile</Text>
+    </View>
+    // <Pressable  onPress={logoutHandler}>
+    //   <Text>logout</Text>
+    // </Pressable>
   )
 }
 
@@ -22,7 +25,22 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
+    paddingTop: 16,
+    paddingHorizontal: 7
+  },
+  // headerText: {
+  //   fontSize: 24,
+  //   fontFamily: 'roboto-bold',
+  //   marginTop: 58,
+  //   marginLeft: 13,
+  //   color: '#000000E5'
+  // },
+
+  headerText: {
+    fontFamily: 'roboto-bold',
+    fontSize: 24,
+    color: '#000000E5',
+    marginTop: 58,
+    marginLeft: 13,
+  },
 });

@@ -15,22 +15,51 @@ import LandingScreen from './screens/LandingScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import UserTagsScreen from './screens/UserTagsScreen';
 import HomeScreen from './screens/HomeScreen';
-import ActivitiesScreen from './screens/ActivitiesScreen';
+import ActivitiesReceivedScreen from './screens/ActivitiesReceivedScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ChatScreen from './screens/ChatScreen';
 import EventDetailScreen from './screens/EventDetailScreen';
-// import LoginScreen from './screens/LoginScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
+import NotesScreen from './screens/NotesScreen';
+import VisibilityScreen from './screens/VisibilityScreen';
 import IconButton from './components/ui/IconButton';
-import ActivityCapacity from './components/CreateEvent/ActivityCapacity';
-import Notes from './components/CreateEvent/Notes';
-import Visibility from './components/CreateEvent/Visibility';
+import ActivityCapacityScreen from './screens/ActivityCapacityScreen';
+import ActivitiesSentScreen from './screens/ActivitiesSentScreen';
+import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
+import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
+import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
+
+export function Activities() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name="ActivitiesReceived" component={ActivitiesReceivedScreen} options={{
+        // animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesSent" component={ActivitiesSentScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesConfirmed" component={ActivitiesConfirmedScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
+        animation: 'none'
+      }} />
+    </Stack.Navigator>
+  )
+};
 
 export function UserOverview() {
   return (
@@ -51,7 +80,7 @@ export function UserOverview() {
       />
       <BottomTabs.Screen 
         name='Activities' 
-        component={ActivitiesScreen} 
+        component={Activities} 
         options={{
           tabBarIcon: ({color, size}) => <Feather name='check-square' color={color} size={size} />,
           tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Activities</Text>
@@ -120,18 +149,30 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
-      <Stack.Screen name="ActivityCapacity" component={ActivityCapacity} options={{
+      <Stack.Screen name="ActivityCapacity" component={ActivityCapacityScreen} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
-      <Stack.Screen name="Visibility" component={Visibility} options={{
+      <Stack.Screen name="Visibility" component={VisibilityScreen} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
-      <Stack.Screen name="Notes" component={Notes} options={{
+      <Stack.Screen name="Notes" component={NotesScreen} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
+      {/* <Stack.Screen name="ActivitiesSent" component={ActivitiesSentScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesConfirmed" component={ActivitiesConfirmedScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
+        animation: 'none'
+      }} /> */}
     </Stack.Navigator>
   );
 }
@@ -221,6 +262,8 @@ export default function App() {
     'roboto-medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
     'inter-semibold': require('./assets/fonts/Inter-SemiBold.ttf'),
+    'mulish-semibold': require('./assets/fonts/Mulish-SemiBold.ttf'),
+    'product-sans-bold': require('./assets/fonts/Product-Sans-Bold.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {

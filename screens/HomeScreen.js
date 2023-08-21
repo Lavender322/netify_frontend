@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../store/context/auth-context';
 import { fetchOverallEventStatus, fetchEventList, fetchTags } from '../utils/http';
-import EventsList from '../components/EventsList';
-import EventFilters from '../components/EventFilters';
+import EventsList from '../components/Home/EventsList';
+import EventFilters from '../components/Home/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function HomeScreen() {
@@ -25,6 +26,8 @@ function HomeScreen() {
   // const { firstName } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     async function getOverallEventStatus() {
       setIsFetching(true);
@@ -40,7 +43,7 @@ function HomeScreen() {
     };
 
     getOverallEventStatus();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     async function getTags() {
@@ -77,7 +80,7 @@ function HomeScreen() {
     };
     
     getEventList();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     if (updateEventList) {
@@ -102,41 +105,39 @@ function HomeScreen() {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <Text style={styles.headerText}>Hi, {firstName}</Text>
-        <View style={styles.outerPanelContainer}>
-          <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-            <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
-            <Text style={styles.panelText}>Confirmed Meeting</Text> 
-          </View>
-          <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-            <Text style={styles.panelNumber}>{pendingRequests}</Text> 
-            <Text style={styles.panelText}>Pending Request</Text> 
-          </View>
-          <View style={styles.innerPanelContainer}>
-            <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
-            <Text style={styles.panelText}>Invitations Received</Text> 
-          </View>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Hi, {firstName}</Text>
+      <View style={styles.outerPanelContainer}>
+        <View style={[styles.innerPanelContainer, styles.innerPanel]}>
+          <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
+          <Text style={styles.panelText}>Confirmed Meeting</Text> 
         </View>
-
-        <EventFilters 
-          style={styles.eventFilters} 
-          setSelectedGrade={setSelectedGrade} 
-          setSelectedIndustry={setSelectedIndustry}
-          setSelectedGroup={setSelectedGroup}
-          selectedGroup={selectedGroup}
-          setUpdateEventList={setUpdateEventList} 
-        />
-        
-        <EventsList 
-          events={loadedEvents} 
-          isFetchingEvents={isFetchingEvents} 
-          sectorTags={sectorTags} 
-          gradeTags={gradeTags} 
-        />
+        <View style={[styles.innerPanelContainer, styles.innerPanel]}>
+          <Text style={styles.panelNumber}>{pendingRequests}</Text> 
+          <Text style={styles.panelText}>Pending Request</Text> 
+        </View>
+        <View style={styles.innerPanelContainer}>
+          <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
+          <Text style={styles.panelText}>Invitations Received</Text> 
+        </View>
       </View>
-   </>
+
+      <EventFilters 
+        style={styles.eventFilters} 
+        setSelectedGrade={setSelectedGrade} 
+        setSelectedIndustry={setSelectedIndustry}
+        setSelectedGroup={setSelectedGroup}
+        selectedGroup={selectedGroup}
+        setUpdateEventList={setUpdateEventList} 
+      />
+      
+      <EventsList 
+        events={loadedEvents} 
+        isFetchingEvents={isFetchingEvents} 
+        sectorTags={sectorTags} 
+        gradeTags={gradeTags} 
+      />
+    </View>
   )
 }
 

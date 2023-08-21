@@ -3,36 +3,29 @@ import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text } fr
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-function Notes({ navigation }) {
+function ActivityCapacityScreen({ navigation }) {
   const [flag, setFlag] = useState(false);
-  const [enteredText, setEnteredText] = useState('');
-  const [previewText, setPreviewText] = useState('');
-
-  useEffect(() => {
-    if (enteredText.length !== 0) {
-      setFlag(true);
-      if (enteredText.length <= 13) {
-        setPreviewText(enteredText);
-      } else {
-        setPreviewText(enteredText.substring(0,13) + '...');
-      };
-    } else {
-      setFlag(false);
-    };
-  }, [enteredText]);
-
-  function textInputHandler(enteredText) {
-    setEnteredText(enteredText);
-  };
+  const [enteredNumber, setEnteredNumber] = useState('');
 
   function previousStepHandler() {
     navigation.goBack();
   };
 
-  function comfirmNotesHandler() {
+  function numberInputHandler(enteredText) {
+    setEnteredNumber(enteredText);
+  };
+
+  useEffect(() => {
+    if (!isNaN(enteredNumber) && enteredNumber > 1 && enteredNumber < 100) {
+      setFlag(true);
+    } else {
+      setFlag(false);
+    }
+  }, [enteredNumber]);
+
+  function comfirmCapacityHandler() {
     navigation.navigate('CreateEvent', {
-      previewNotes: previewText,
-      notes: enteredText
+      activityCapacity: enteredNumber,
     });
   };
 
@@ -42,8 +35,8 @@ function Notes({ navigation }) {
         <View style={styles.headerContainer}>
           <View style={styles.placeholder}></View>
           <View style={styles.innerContainer}>
-            <Feather name='file-text' size={18} color="#000000" />
-            <Text style={styles.title}>Notes</Text>
+            <Feather name='users' size={18} color="#000000" />
+            <Text style={styles.title}>Activity capacity</Text>
           </View>
           <Pressable onPress={previousStepHandler} style={({pressed}) => [pressed && styles.pressed, styles.placeholder, styles.closeBtnContainer]}>
             <View style={styles.closeBtn}>
@@ -53,23 +46,24 @@ function Notes({ navigation }) {
         </View>
 
         <View style={styles.noteContainer}>
-          <Text style={styles.note}>Please add details about the event or the topics that will be covered, The copy aims to encourage users to register for the event.</Text>
+          <Text style={styles.note}>Please set a desired participant limit for your event. Our default event format is a one-to-one coffee chat.</Text>
         </View> 
 
-        <View style={styles.textInputContainer}>
+        <View style={styles.capacityContainer}>
           <TextInput 
-            multiline={true}
-            style={styles.textInput} 
-            placeholder="Please Enter"
-            placeholderTextColor="#6A6A6A"
-            maxLength={2500}
-            onChangeText={textInputHandler}
-            value={enteredText}
+            style={styles.number} 
+            maxLength={2}
+            placeholder="∞"
+            placeholderTextColor="#8F8F8F"
+            keyboardType='number-pad'
+            onChangeText={numberInputHandler}
+            value={enteredNumber}
           />
-        </View>
+          <Text style={styles.capacityText}>participants</Text>
+        </View> 
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={comfirmNotesHandler} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={comfirmCapacityHandler} style={({pressed}) => pressed && styles.pressed}>
             <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
               <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Done</Text>
             </View>
@@ -80,7 +74,7 @@ function Notes({ navigation }) {
   )
 }
 
-export default Notes;
+export default ActivityCapacityScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -173,22 +167,5 @@ const styles = StyleSheet.create({
   },
   enabledText: {
     color: 'white'
-  },
-  textInputContainer: {
-    marginTop: 36,
-    marginBottom: 12,
-    marginHorizontal: 12
-  },
-  textInput: {
-    borderColor: '#0000001A',
-    borderWidth: 1,
-    borderRadius: 6,
-    padding: 9,
-    color: '#191919',
-    fontSize: 15,
-    fontFamily: 'roboto',
-    lineHeight: 20,
-    height: 160,
-    textAlignVertical: 'top'
   }
 });
