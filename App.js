@@ -213,19 +213,19 @@ function Navigation() {
 
 function Root() {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
-  const { authenticate, setFirstName } = useContext(AuthContext);
+  const { authenticate, setUserInfo } = useContext(AuthContext);
 
   useEffect(() => {
     async function fetchLocalStorage() {
       const storedToken = await AsyncStorage.getItem('token');
-      const storedFirstName = await AsyncStorage.getItem('first-name');
+      const storedUserInfo = await AsyncStorage.getItem('user-info');
 
       if (storedToken) {
         authenticate(storedToken);
       };
 
-      if (storedFirstName) {
-        setFirstName(storedFirstName);
+      if (storedUserInfo) {
+        setUserInfo(storedUserInfo);
       };
 
       setIsTryingLogin(false);

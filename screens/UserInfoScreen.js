@@ -13,8 +13,8 @@ function UserInfoScreen({ navigation }) {
   const [avatarUrl, setAvatarUrl] = useState(null);
 
   // TO COMMENT OUT
-  const { tempToken, setFirstName } = useContext(AuthContext);
-  // const { setFirstName } = useContext(AuthContext);
+  const { tempToken, setUserInfo } = useContext(AuthContext);
+  // const { setUserInfo } = useContext(AuthContext);
   // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
@@ -26,8 +26,8 @@ function UserInfoScreen({ navigation }) {
           setEmail(userInfo.email);
           setName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
           setAvatarUrl(userInfo.userImage[3]);
-          setFirstName(userInfo.localizedfirstname);
-          AsyncStorage.setItem('first-name', userInfo.localizedfirstname);
+          setUserInfo(userInfo);
+          AsyncStorage.setItem('user-info', userInfo);
         } catch (error) {
           console.log(error.response.data);
         };

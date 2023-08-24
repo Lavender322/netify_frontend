@@ -20,6 +20,8 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
       gradeTags: gradeTags
     });
   };
+
+  // console.log("eventhost", eventHost);
  
   // TO COMMENT OUT
   const { token } = useContext(AuthContext);

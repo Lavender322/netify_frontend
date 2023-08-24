@@ -22,8 +22,8 @@ function HomeScreen() {
   const [updateEventList, setUpdateEventList] = useState(false);
 
   // TO COMMENT OUT
-  const { token, firstName } = useContext(AuthContext);
-  // const { firstName } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
+  // const { userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   const isFocused = useIsFocused();
@@ -106,7 +106,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Hi, {firstName}</Text>
+      <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
       <View style={styles.outerPanelContainer}>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
           <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
