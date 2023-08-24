@@ -1,7 +1,58 @@
+import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
-import ActivitiesCard from '../components/Activities/ActivitiesCard';
+import ActivitiesCards from '../components/Activities/ActivitiesCards.js';
+import ActivitiesRequestList from '../components/Activities/ActivitiesRequestList';
+import { fetchActivities, fetchTags } from '../utils/http';
+import { AuthContext } from '../store/context/auth-context';
 
 function ActivitiesReceivedScreen({ navigation }) {
+  const [isFetchingActivities, setIsFetchingActivities] = useState(true);
+  const [loadedActivities, setLoadedActivities] = useState([]);
+  const [sectorTags, setSectorTags] = useState([]);
+  const [gradeTags, setGradeTags] = useState([]);
+
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+
+  useEffect(() => {
+    async function getActivityList() {
+      setIsFetchingActivities(true);
+      try {
+        const activitiesList = await fetchActivities('received', token);
+        setLoadedActivities(activitiesList);
+        // console.log("activitiesList", activitiesList);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetchingActivities(false);
+    };
+    
+    getActivityList();
+  }, []);
+
+  useEffect(() => {
+    async function getTags() {
+      // setIsFetching(true);
+      try {
+        const tags = await fetchTags();
+        const fetchedSectorTags = tags.filter(
+          tag => tag.tagType === 'team'
+        );
+        const fetchedGradeTags = tags.filter(
+          tag => tag.tagType === 'grade'
+        );
+        setSectorTags(fetchedSectorTags);
+        setGradeTags(fetchedGradeTags);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetching(false);
+    };
+
+    getTags();
+  }, []);
+
   function directToSentHandler() {
     navigation.navigate('ActivitiesSent');
   };
@@ -21,35 +72,49 @@ function ActivitiesReceivedScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Activities</Text>
-      <ScrollView horizontal>
-        <Pressable>
-          <View style={[styles.categoryItemContainer, styles.categoryItemActiveContainer]}>
-            <Text style={[styles.categoryText, styles.categoryActiveText]}>Received</Text>
-          </View>
-        </Pressable>
-        <Pressable onPress={directToSentHandler}>
-          <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-            <Text style={[styles.categoryText, styles.categoryInactiveText]}>Sent</Text>
-          </View>
-        </Pressable>
-        <Pressable onPress={directToConfirmedHandler}>
-          <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-            <Text style={[styles.categoryText, styles.categoryInactiveText]}>Confirmed</Text>
-          </View>
-        </Pressable>
-        <Pressable onPress={directToPastHandler}>
-          <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-            <Text style={[styles.categoryText, styles.categoryInactiveText]}>Past</Text>
-          </View>
-        </Pressable>
-        <Pressable onPress={directToCancelledHandler}>
-          <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-            <Text style={[styles.categoryText, styles.categoryInactiveText]}>Cancelled</Text>
-          </View>
-        </Pressable>
-      </ScrollView>
+      <View style={styles.header}>
+        <ScrollView horizontal>
+          <Pressable>
+            <View style={[styles.categoryItemContainer, styles.categoryItemActiveContainer]}>
+              <Text style={[styles.categoryText, styles.categoryActiveText]}>Received</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={directToSentHandler}>
+            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
+              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Sent</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={directToConfirmedHandler}>
+            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
+              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Confirmed</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={directToPastHandler}>
+            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
+              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Past</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={directToCancelledHandler}>
+            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
+              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Cancelled</Text>
+            </View>
+          </Pressable>
+        </ScrollView>
+      </View>
       <View style={styles.mainContainer}>
-        <ActivitiesCard />
+        <ActivitiesCards 
+          activities={loadedActivities} 
+          isFetchingActivities={isFetchingActivities} 
+          sectorTags={sectorTags} 
+          gradeTags={gradeTags} 
+        />
+        {/* <Text style={styles.note}>Here is a list of people who are keen to meet you at your proposed time slot!</Text>
+        <ActivitiesRequestList 
+          activities={loadedActivities} 
+          isFetchingActivities={isFetchingActivities} 
+          sectorTags={sectorTags} 
+          gradeTags={gradeTags} 
+        /> */}
       </View>
     </View>
   )
@@ -60,7 +125,10 @@ export default ActivitiesReceivedScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 16
+    paddingTop: 16,
+  },
+  header: {
+    height: 48,
   },
   headerText: {
     fontSize: 24,
@@ -94,6 +162,13 @@ const styles = StyleSheet.create({
     color: '#3C8722'
   },
   mainContainer: {
-    flex: 1
+    flex: 1,
+  },
+  note: {
+    color: '#3B4852',
+    fontFamily: 'roboto',
+    fontSize: 15,
+    lineHeight: 20,
+    padding: 8
   }
 });

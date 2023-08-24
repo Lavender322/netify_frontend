@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 
 function DatePickerItem({ day, date, active, onPress }) {
   return (

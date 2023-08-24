@@ -2,26 +2,25 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
-function VisibilityFilterItem({ filter, isFilterChecked, isAll }) {
+function VisibilityFilterItem({ filter, isFilterChecked, isAll, isAllChecked }) {
   const [isChecked, setIsChecked] = useState(false);
-
-  // useEffect(() => {
-  //   isFilterChecked(true);
-
-  //   if (filter.parameter === 'ONE_TO_ONE') {
-  //     setGroupFilter('One to One');
-  //   } else if (filter.parameter === 'GROUP_EVENT') {
-  //     setGroupFilter('Group Event');
-  //   };
-  // }, []);
   
-  // useEffect(() => {
-  //   if (!isGroupFilter) {
-  //     isFilterChecked(isChecked, filter.tagId.toString());
-  //   } else {
-  //     isFilterChecked(isChecked, filter.parameter);
-  //   };
-  // }, [isChecked]);
+  useEffect(() => {
+    if (!isAll) {
+      isFilterChecked(isChecked, filter.tagId);
+    } else {
+      isFilterChecked(isChecked, filter);
+    };
+  }, [isChecked]);
+
+  useEffect(() => {
+    if (isAllChecked) {
+      setIsChecked(true);
+    };
+    //  else {
+    //   setIsChecked(false);
+    // };
+  }, [isAllChecked, isAll]);
 
   return (
     <View style={styles.filterItemContainer}>

@@ -41,9 +41,13 @@ function VisibilityScreen({ navigation }) {
     if (isEnabled) {
       setFlag(true);
     } else {
-      setFlag(false);
+      if (selectedGrade && selectedGrade.length && selectedIndustry && selectedIndustry.length) {
+        setFlag(true);
+      } else {
+        setFlag(false);
+      }
     };
-  }, [isEnabled]);
+  }, [isEnabled, selectedGrade, selectedIndustry]);
 
   function previousStepHandler() {
     navigation.goBack();
@@ -51,7 +55,8 @@ function VisibilityScreen({ navigation }) {
 
   function comfirmVisibilityHandler() {
     navigation.navigate('CreateEvent', {
-      visibility: 'All',
+      gradeVisibility: selectedGrade,
+      sectorVisibility: selectedIndustry,
     });
   };
 
@@ -126,7 +131,7 @@ function VisibilityScreen({ navigation }) {
                   style={styles.filters}
                   filters={gradeTags}
                   // selectFilters={selectGradeFilterHandler}
-                  // setSelectedFilter={setSelectedGrade}
+                  setSelectedFilter={setSelectedGrade}
                   // setUpdateEventList 
                 /> 
               </View>
@@ -146,7 +151,7 @@ function VisibilityScreen({ navigation }) {
                   style={styles.filters}
                   filters={sectorTags}
                   // selectFilters={selectGradeFilterHandler}
-                  // setSelectedFilter={setSelectedGrade}
+                  setSelectedFilter={setSelectedIndustry}
                   // setUpdateEventList 
                 /> 
               </View>

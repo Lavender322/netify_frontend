@@ -3,15 +3,22 @@ import { StyleSheet, View, Text, Pressable } from 'react-native';
 import VisibilityFilterItem from './VisibilityFilterItem';
 
 function VisibilityFilter({ style, filters, selectFilters, setSelectedFilter, setUpdateEventList }) {
+  const [isAllChecked, setIsAllChecked] = useState(false);
 
   function filterChangeHandler(isChecked, filterId) {
-    // if (isChecked) {
-    //   if (filterId) {
-    //     setSelectedFilter(prev => [...prev, filterId]);
-    //   }
-    // } else {
-    //   setSelectedFilter(prev => prev.filter((filter) => filter !== filterId));
-    // };
+    if (isChecked) {
+      if (filterId) {
+        if (filterId === 'All') {
+          setIsAllChecked(true);
+          setSelectedFilter(['All']);
+        } else {
+          setIsAllChecked(false);
+          setSelectedFilter(prev => [...prev, filterId]);
+        }
+      }
+    } else {
+      setSelectedFilter(prev => prev.filter((filter) => filter !== filterId));
+    };
   };
 
   return (
@@ -21,7 +28,8 @@ function VisibilityFilter({ style, filters, selectFilters, setSelectedFilter, se
           <VisibilityFilterItem 
             key={filter.id ? filter.id : 50+idx}
             filter={filter} 
-            // isFilterChecked={filterChangeHandler} 
+            isFilterChecked={filterChangeHandler} 
+            isAllChecked={isAllChecked}
           />
         ))}
       </View>
@@ -29,8 +37,9 @@ function VisibilityFilter({ style, filters, selectFilters, setSelectedFilter, se
         <VisibilityFilterItem 
           // key={filter.id ? filter.id : 50+idx}
           filter='All' 
-          // isFilterChecked={filterChangeHandler} 
+          isFilterChecked={filterChangeHandler} 
           isAll={true}
+          isAllChecked={isAllChecked}
         />
       </View>
 
@@ -47,7 +56,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     alignSelf: 'flex-start',
-    // boxShadow: '0 0 45 0 ',
     shadowColor: '#0000001A',
     shadowOffset: {width: 4, height: 4},
     shadowOpacity: 0.8,

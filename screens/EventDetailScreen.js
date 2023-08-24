@@ -32,7 +32,7 @@ function EventDetailScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
-        console.log("eventDetails", eventDetails);
+        // console.log("eventDetails", eventDetails);
       } catch (error) {
         console.log(error.response.data);
       };

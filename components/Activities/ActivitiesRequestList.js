@@ -2,32 +2,28 @@ import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
-import EventItem from './EventItem';
+import ActivitiesRequestItem from './ActivitiesRequestItem';
 
-function renderEventItem(itemData, sectorTags, gradeTags) {
+function renderActivityItem(itemData, sectorTags, gradeTags) {
   return (
-    <EventItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ActivitiesRequestItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
   );
 };
 
-function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
+function ActivitiesRequestList({ activities, isFetchingActivities, sectorTags, gradeTags }) {
   const navigation = useNavigation();
-
-  const eventsDisplayed = (events && events.length != 0) && events.filter(
-    (event) => event.myStateInTheEvent !== 'APPROVED' && event.eventStatus !== 'EVENT_FINISHED'
-  );
   
   function redirectHandler() {
     navigation.navigate('CreateEvent');
   };
 
-  if (isFetchingEvents) {
+  if (isFetchingActivities) {
     return (
       <LoadingOverlay />
     )
   };
 
-  if ((!eventsDisplayed || eventsDisplayed.length === 0) && !isFetchingEvents) {
+  if ((!activities || activities.length === 0) && !isFetchingActivities) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
@@ -42,14 +38,14 @@ function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
 
   return (
     <FlatList 
-      data={eventsDisplayed} 
-      renderItem={(item) => renderEventItem(item, sectorTags, gradeTags)} 
+      data={activities} 
+      renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
   )
 }
 
-export default EventsList;
+export default ActivitiesRequestList;
 
 const styles = StyleSheet.create({
   fallbackContainer: {

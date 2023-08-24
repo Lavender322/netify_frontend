@@ -1,28 +1,16 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { addMinutes } from '../../utils/date'; 
-
 
 function TimePicker({ setPreviewTime, startTime, setStartTime, endTime, setEndTime }) {
   useEffect(() => {
-    // var newEndTime = startTime;
-    // if (startTime > endTime) {
-    //   // console.log(newEndTime)
-    //   // addMinutes(endTime, 15)
-    //   // addMinutes(newEndTime, 16);
-    //   newEndTime.setMinutes(newEndTime.getMinutes() + 16);
-    //   setEndTime(newEndTime);
-    //   console.log(endTime);
-    //   // 
-    //   // setEndTime(newEndTime);
-    // };
+    if (startTime > endTime) {
+      setEndTime(startTime);
+    };
     var previewStartTime = startTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", hour12: false});
     var previewEndTime = endTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", hour12: false});
     setPreviewTime(previewStartTime + ' - ' + previewEndTime);
   }, [startTime, endTime]);
-
-  // '14:00 - 16:45'
 
   const onStartTimeChange = (event, selectedDate) => {
     const currentDate = selectedDate;

@@ -9,20 +9,24 @@ import { Ionicons } from '@expo/vector-icons';
 import TimePicker from './TimePicker';
 import { createEvent, fetchTags } from '../../utils/http';
 import LoadingOverlay from '../ui/LoadingOverlay';
-import { getEventStartEndTime } from '../../utils/date';
+import { getEventStartEndTime, roundUpTime } from '../../utils/date';
 
 function CreateEventForm() {
+  var initialTime = roundUpTime();
+  
   const [flag, setFlag] = useState(false);
   const [isOneToOne, setIsOneToOne] = useState(true);
-  const [showDateSelector, setShowDateSelector] = useState(false);
+  const [showDateSelector, setShowDateSelector] = useState(true);
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
   const [sectorTagIds, setSectorTagIds] = useState([]);
   const [gradeTagIds, setGradeTagIds] = useState([]);
+  const [allSectorTagIds, setAllSectorTagIds] = useState([]);
+  const [allGradeTagIds, setAllGradeTagIds] = useState([]);
   const [meetingTitle, setMeetingTitle] = useState('');
   const [previewTime, setPreviewTime] = useState('Please Select');
-  const [selectedStartTime, setSelectedStartTime] = useState(new Date());
-  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+  const [selectedStartTime, setSelectedStartTime] = useState(initialTime);
+  const [selectedEndTime, setSelectedEndTime] = useState(initialTime);
   const [selectedDate, setSelectedDate] = useState();
   const [previewDate, setPreviewDate] = useState('Please Select');
   const [selectedCapacity, setSelectedCapacity] = useState('∞');
@@ -74,6 +78,9 @@ function CreateEventForm() {
 
         setSectorTagIds(sectorTagIds);
         setGradeTagIds(gradeTagIds);
+
+        setAllSectorTagIds(sectorTagIds);
+        setAllGradeTagIds(gradeTagIds);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -88,9 +95,24 @@ function CreateEventForm() {
       const activityCapacity = route.params.activityCapacity ? route.params.activityCapacity : '∞';
       const notes = route.params.notes ? route.params.notes : '';
       const previewNotes = route.params.previewNotes ? route.params.previewNotes : 'Optional';
+      const gradeVisibility = route.params.gradeVisibility && route.params.gradeVisibility;
+      const sectorVisibility = route.params.sectorVisibility && route.params.sectorVisibility;
       setSelectedCapacity(activityCapacity);
       setPreviewNotes(previewNotes);
       setNotes(notes);
+      if (gradeVisibility && sectorVisibility) {
+        if (gradeVisibility === ['All']) {
+          setGradeTagIds(allGradeTagIds);
+        } else {
+          setGradeTagIds(gradeVisibility);
+        };
+        
+        if (sectorVisibility === ['All']) {
+          setSectorTagIds(allSectorTagIds);
+        } else {
+          setSectorTagIds(sectorVisibility);
+        };
+      };
     };
   }, [route, isFocused]);
 
@@ -128,9 +150,9 @@ function CreateEventForm() {
     setIsOneToOne(false);
   };
 
-  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept) {
+  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept) {
     if (flag) {
-      let [eventStartTime, eventEndTime] = getEventStartEndTime();
+      let [eventStartTime, eventEndTime] = getEventStartEndTime(selectedDate, selectedStartTime, selectedEndTime);
       let body = {
         eventName: meetingTitle,
         eventTeam: sectorTagIds,
@@ -140,10 +162,9 @@ function CreateEventForm() {
         eventStartTime: eventStartTime,
         eventEndTime: eventEndTime,
         eventDescription: notes,
-        eventLocation: isOneToOne ? '' : selectedLocation,
+        eventLocation: isOneToOne ? ' ' : selectedLocation,
         autoAccept: isOneToOne ? autoAccept : false
       };
-      // console.log(body);
 
       // setModalVisible(!modalVisible);
 
@@ -284,14 +305,14 @@ function CreateEventForm() {
                 />
                 <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
               </View>
-              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
+              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
                 <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                   <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
                 </View>
               </Pressable>
             </View>
           ) : (
-            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>

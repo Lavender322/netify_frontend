@@ -42,23 +42,29 @@ export function addMinutes(date, minutes) {
   return date;
 };
 
-function addHours(date, hours) {
-  date.setHours(date.getHours() + hours);
-  console.log(date);
-  return date;
-};
-
 function addDays(date, days) {
   date.setDate(date.getDate() + days);
 
   return date;
 };
 
-export function getEventStartEndTime() {
-  var today = new Date();
-  var startDate = new Date();
-  var endDate = new Date();
-  var startDate = startDate.setHours(today.getHours() + 2);
-  var endDate = endDate.setHours(today.getHours() + 3);
+export function getEventStartEndTime(date, startTime, endTime) {
+  var selectedStartTime = new Date(startTime);
+  var selectedEndTime = new Date(endTime);
+  var startDate = new Date(date);
+  var endDate = new Date(date);
+  startDate.setHours(selectedStartTime.getHours());
+  startDate.setMinutes(selectedStartTime.getMinutes());
+  startDate.setSeconds(0);
+  endDate.setHours(selectedEndTime.getHours());
+  endDate.setMinutes(selectedEndTime.getMinutes());
+  endDate.setSeconds(0);
   return [Moment(startDate).format('YYYY-MM-DD HH:mm:ss'), Moment(endDate).format('YYYY-MM-DD HH:mm:ss')];
+};
+
+export function roundUpTime() {
+  var time = 1000 * 60 * 15;
+  var date = new Date();
+  var rounded = new Date(date.getTime() + time - (date.getTime() % time));
+  return rounded;
 };

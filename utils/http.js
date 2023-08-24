@@ -135,3 +135,15 @@ export async function createEvent(body, token) {
 
   return response.data.data;
 };
+
+export async function fetchActivities(type, token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/event/related_event?type=${type}&start=0&end=10`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};
