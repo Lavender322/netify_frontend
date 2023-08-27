@@ -147,3 +147,15 @@ export async function fetchActivities(type, token) {
 
   return response.data.data;
 };
+
+export async function fetchActivity(eventId, token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/event/related_request?eventId=${eventId}&start=0&end=10`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};

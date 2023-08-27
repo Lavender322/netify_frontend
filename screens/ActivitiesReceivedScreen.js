@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
-import ActivitiesCards from '../components/Activities/ActivitiesCards.js';
-import ActivitiesRequestList from '../components/Activities/ActivitiesRequestList';
+import ActivitiesReceivedCards from '../components/Activities/ActivitiesReceivedCards.js';
+import ActivitiesReceivedList from '../components/Activities/ActivitiesReceivedList';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 
@@ -102,14 +102,14 @@ function ActivitiesReceivedScreen({ navigation }) {
         </ScrollView>
       </View>
       <View style={styles.mainContainer}>
-        <ActivitiesCards 
+        <ActivitiesReceivedCards 
           activities={loadedActivities} 
           isFetchingActivities={isFetchingActivities} 
           sectorTags={sectorTags} 
           gradeTags={gradeTags} 
         />
         {/* <Text style={styles.note}>Here is a list of people who are keen to meet you at your proposed time slot!</Text>
-        <ActivitiesRequestList 
+        <ActivitiesReceivedList 
           activities={loadedActivities} 
           isFetchingActivities={isFetchingActivities} 
           sectorTags={sectorTags} 

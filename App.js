@@ -28,6 +28,7 @@ import ActivitiesSentScreen from './screens/ActivitiesSentScreen';
 import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
 import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
 import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
+import CancelEventScreen from './screens/CancelEventScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -161,18 +162,10 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
-      {/* <Stack.Screen name="ActivitiesSent" component={ActivitiesSentScreen} options={{
-        animation: 'none'
+      <Stack.Screen name="CancelEvent" component={CancelEventScreen} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: '#FCFCFC'}
       }} />
-      <Stack.Screen name="ActivitiesConfirmed" component={ActivitiesConfirmedScreen} options={{
-        animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
-        animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
-        animation: 'none'
-      }} /> */}
     </Stack.Navigator>
   );
 }
@@ -225,7 +218,7 @@ function Root() {
       };
 
       if (storedUserInfo) {
-        setUserInfo(storedUserInfo);
+        setUserInfo(JSON.parse(storedUserInfo));
       };
 
       setIsTryingLogin(false);

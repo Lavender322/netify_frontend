@@ -17,14 +17,14 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
     navigation.navigate('EventDetail', {
       eventId: eventId,
       sectorTags: sectorTags,
-      gradeTags: gradeTags
+      gradeTags: gradeTags,
+      showRequest: eventHost.userId === userInfo.userId ? false : true,
+      previousScreen: 'Home'
     });
   };
-
-  // console.log("eventhost", eventHost);
  
   // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
@@ -74,19 +74,21 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
           </View>
         </View>
       
-        <TouchableWithoutFeedback>
-          <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
-            {eventStatus === "REQUESTED" ? (
-              <View style={[styles.statusContainer, styles.pendingContainer]}>
-                <Text style={[styles.text, styles.pendingText]}>Pending</Text>
-              </View>
-            ) : (
-              <View style={[styles.statusContainer, styles.requestContainer]}>
-                <Text style={[styles.text, styles.requestText]}>Request</Text>
-              </View>
-            )}
-          </Pressable>
-        </TouchableWithoutFeedback>
+        {eventHost.userId !== userInfo.userId && (
+          <TouchableWithoutFeedback>
+            <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
+              {eventStatus === "REQUESTED" ? (
+                <View style={[styles.statusContainer, styles.pendingContainer]}>
+                  <Text style={[styles.text, styles.pendingText]}>Pending</Text>
+                </View>
+              ) : (
+                <View style={[styles.statusContainer, styles.requestContainer]}>
+                  <Text style={[styles.text, styles.requestText]}>Request</Text>
+                </View>
+              )}
+            </Pressable>
+          </TouchableWithoutFeedback>
+        )}
       </Pressable>
     </View>
   )

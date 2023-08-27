@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../store/context/auth-context';
 // import LoadingOverlay from '../ui/LoadingOverlay';
 
-function ActivitiesRequestItem({ eventId, eventHost, sectorTags, gradeTags }) {
+function ActivitiesReceivedItem({ eventId, eventHost, sectorTags, gradeTags }) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,7 +82,7 @@ function ActivitiesRequestItem({ eventId, eventHost, sectorTags, gradeTags }) {
   )
 }
 
-export default ActivitiesRequestItem;
+export default ActivitiesReceivedItem;
 
 const styles = StyleSheet.create({
   container: {

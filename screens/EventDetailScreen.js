@@ -21,6 +21,9 @@ function EventDetailScreen({ navigation, route }) {
   const eventId = route.params?.eventId;
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
+  const previousScreen = route.params?.previousScreen;
+  const showRequest = route.params?.showRequest;
+  const eventParticipants = route.params?.eventParticipants;
 
   // TO COMMENT OUT
   const { token } = useContext(AuthContext);
@@ -69,6 +72,20 @@ function EventDetailScreen({ navigation, route }) {
     };
   };
 
+  function cancelEventHandler() {
+    navigation.navigate('CancelEvent', {
+      eventId: eventId,
+      sectorTags: sectorTags,
+      gradeTags: gradeTags,
+      eventParticipants: eventParticipants,
+      eventDetails: eventDetails
+    });
+  };
+
+  function directToMessageHandler() {
+
+  };
+
   if (isFetching || isSubmitting) {
     return <LoadingOverlay />;
   };
@@ -78,15 +95,33 @@ function EventDetailScreen({ navigation, route }) {
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <ScrollView style={styles.mainContainer}>
         <Text style={styles.headerText}>{eventDetails.eventName}</Text> 
-        <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
-        <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
-        <View style={[styles.detailInnerContainer, styles.roleContainer]}>
-          <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
-          <View style={styles.sectorContainer}>
-            <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
+        {/* two images for confirmed 121 */}
+        
+        {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
+          <View style={styles.avatarsContainer}>
+            <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
+            <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
           </View>
-        </View>
-        <View style={styles.detailInnerContainer}>
+        ) : (
+          <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
+        )}
+        {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' && eventParticipants.length ? (
+          <Text style={styles.name}>Your One to One session with 
+            <Text style={styles.match}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            <Text> is booked in</Text>
+          </Text>
+        ) : (
+          <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
+        )}
+        {!(previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE') && (
+          <View style={[styles.detailInnerContainer, styles.roleContainer]}>
+            <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
+            <View style={styles.sectorContainer}>
+              <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
+            </View>
+          </View>
+        )}
+        <View style={[styles.detailInnerContainer, styles.timeContainer]}>
           <Feather name="calendar" size={18} color="#3C8722" />
           <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
           <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
@@ -97,15 +132,33 @@ function EventDetailScreen({ navigation, route }) {
             <Text style={styles.location}>{eventDetails.eventLocation}</Text>
           </View>
         )}
-        <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
+        {eventDetails.eventDescription && (
+          <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
+        )}
+        {previousScreen === 'Confirmed' && (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        )}
       </ScrollView>
-      <View style={styles.submitFormContainer}>
-        <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
-          <View style={styles.submitBtnContainer}>
-            <Text style={styles.submitBtnText}>Request</Text>
-          </View>
-        </Pressable>
-      </View>
+      {previousScreen === 'Home' && showRequest && (
+        <View style={styles.submitFormContainer}>
+          <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
+            <View style={styles.submitBtnContainer}>
+              <Text style={styles.submitBtnText}>Request</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
+      {previousScreen === 'Confirmed' && (
+        <View style={styles.submitFormContainer}>
+          <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
+            <View style={styles.submitBtnContainer}>
+              <Text style={styles.submitBtnText}>Message</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
     </View>
   )
 }
@@ -127,20 +180,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerText: {
-    marginTop: 32,
+    marginTop: 24,
     fontSize: 28,
     fontFamily: 'roboto-bold'
   },
+  avatarsContainer: {
+    flexDirection: 'row'
+  },  
   avatar: {
     width: 120,
     height: 120,
     marginVertical: 36,
-    borderRadius: 66
+    borderRadius: 66,
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderColor: '#ffffff'
+  },
+  avatarRight: {
+    zIndex: 9,
+    marginLeft: -40
+  },
+  match: {
+    color: '#3C8722'
   },
   name: {
     fontFamily: 'roboto-bold',
     fontSize: 20,
-    color: '#000000E5'
+    lineHeight: 26,
+    color: '#000000E5',
   },
   detailInnerContainer: {
     flexDirection: 'row',
@@ -148,7 +215,9 @@ const styles = StyleSheet.create({
   },  
   roleContainer: {
     marginTop: 12,
-    marginBottom: 16
+  },
+  timeContainer: {
+    marginTop: 16
   },
   grade: {
     fontFamily: 'roboto-medium',
@@ -193,6 +262,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 16
   },
+  cancel: {
+    color: '#1A4821',
+    fontFamily: 'roboto',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+    marginTop: 36
+  }, 
   submitFormContainer: {
     paddingBottom: 80,
     paddingTop: 16,

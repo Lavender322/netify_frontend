@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
-import ActivitiesRequestItem from './ActivitiesRequestItem';
+import ActivitiesReceivedCard from './ActivitiesReceivedCard';
 
 function renderActivityItem(itemData, sectorTags, gradeTags) {
   return (
-    <ActivitiesRequestItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ActivitiesReceivedCard {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
   );
 };
 
-function ActivitiesRequestList({ activities, isFetchingActivities, sectorTags, gradeTags }) {
+function ActivitiesReceivedCards({ activities, isFetchingActivities, sectorTags, gradeTags }) {
   const navigation = useNavigation();
   
   function redirectHandler() {
@@ -45,7 +45,7 @@ function ActivitiesRequestList({ activities, isFetchingActivities, sectorTags, g
   )
 }
 
-export default ActivitiesRequestList;
+export default ActivitiesReceivedCards;
 
 const styles = StyleSheet.create({
   fallbackContainer: {

@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import LoadingOverlay from '../ui/LoadingOverlay';
-import ActivitiesCard from './ActivitiesCard';
+import ActivitiesReceivedItem from './ActivitiesReceivedItem';
 
 function renderActivityItem(itemData, sectorTags, gradeTags) {
   return (
-    <ActivitiesCard {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ActivitiesReceivedItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
   );
 };
 
-function ActivitiesCards({ activities, isFetchingActivities, sectorTags, gradeTags }) {
+function ActivitiesReceivedList({ activities, isFetchingActivities, sectorTags, gradeTags }) {
   const navigation = useNavigation();
   
   function redirectHandler() {
@@ -45,7 +43,7 @@ function ActivitiesCards({ activities, isFetchingActivities, sectorTags, gradeTa
   )
 }
 
-export default ActivitiesCards;
+export default ActivitiesReceivedList;
 
 const styles = StyleSheet.create({
   fallbackContainer: {

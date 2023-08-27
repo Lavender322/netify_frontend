@@ -27,7 +27,7 @@ function UserInfoScreen({ navigation }) {
           setName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
           setAvatarUrl(userInfo.userImage[3]);
           setUserInfo(userInfo);
-          AsyncStorage.setItem('user-info', userInfo);
+          AsyncStorage.setItem('user-info', JSON.stringify(userInfo));
         } catch (error) {
           console.log(error.response.data);
         };

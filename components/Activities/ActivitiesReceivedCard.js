@@ -3,7 +3,7 @@ import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
 
-function ActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
+function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
   
   
   const navigation = useNavigation();
@@ -16,7 +16,8 @@ function ActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTi
     navigation.navigate('EventDetail', {
       eventId: eventId,
       sectorTags: sectorTags,
-      gradeTags: gradeTags
+      gradeTags: gradeTags,
+      previousScreen: 'Received'
     });
   };
 
@@ -28,7 +29,7 @@ function ActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTi
           <View style={styles.detailInnerContainer}>
             <Feather name="calendar" size={18} color="#3C8722" />
             <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
-            <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text>
+            <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
           </View>
           
           <View style={styles.detailInnerContainer}>
@@ -52,7 +53,7 @@ function ActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTi
   )
 }
 
-export default ActivitiesCard;
+export default ActivitiesReceivedCard;
 
 const styles = StyleSheet.create({
   container: {
