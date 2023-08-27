@@ -4,32 +4,34 @@ import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
 
-function CancelEventScreen({ navigation, route }) {
-  const [eventParticipantGradeTag, setEventParticipantGradeTag] = useState();
-  const [eventParticipantSectorTag, setEventParticipantSectorTag] = useState();
+function WithdrawEventScreen({ navigation, route }) {
+  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [enteredText, setEnteredText] = useState('');
 
   const eventId = route.params?.eventId;
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
-  const eventParticipants = route.params?.eventParticipants;
+  const eventHost = route.params?.eventHost;
   const eventDetails = route.params?.eventDetails;
-
+  const eventStartTime = route.params?.eventStartTime;
+  const eventEndTime = route.params?.eventEndTime;
+  const eventLocation = route.params?.eventLocation;
 
   useEffect(() => {
-    if (eventParticipants && eventParticipants[0].user.userTag && gradeTags.length && sectorTags.length) {
-      const eventParticipantGradeTag = gradeTags.filter((gradeTag) => {
-        return eventParticipants[0].user.userTag.includes(gradeTag.tagId);
+    if (eventHost && eventHost.userTag && gradeTags.length && sectorTags.length) {
+      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+        return eventHost.userTag.includes(gradeTag.tagId);
       });
     
-      const eventParticipantSectorTag = sectorTags.filter((sectorTag) => {
-        return eventParticipants[0].user.userTag.includes(sectorTag.tagId);
+      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+        return eventHost.userTag.includes(sectorTag.tagId);
       });
   
-      setEventParticipantGradeTag(eventParticipantGradeTag[0] && eventParticipantGradeTag[0].tagName);
-      setEventParticipantSectorTag(eventParticipantSectorTag[0] && eventParticipantSectorTag[0].tagName);
+      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
+      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
     };
-  }, [eventParticipants, gradeTags, sectorTags]);
+  }, [eventHost, gradeTags, sectorTags]);
 
   function textInputHandler(enteredText) {
     setEnteredText(enteredText);
@@ -42,8 +44,6 @@ function CancelEventScreen({ navigation, route }) {
   function comfirmCancellationHandler() {
 
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -58,50 +58,35 @@ function CancelEventScreen({ navigation, route }) {
 
         <View style={styles.mainContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.title}>Cancel this session?</Text>
-            <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-            <Text style={styles.name}>{eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            <Text style={styles.title}>Withdraw this request?</Text>
+            <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+            <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
             <View style={[styles.detailInnerContainer, styles.roleContainer]}>
               <View style={styles.gradeContainer}>
-                <Text style={styles.grade}>{eventParticipantGradeTag ? eventParticipantGradeTag : '--'}</Text> 
+                <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
               </View>
               <View style={styles.sectorContainer}>
-                <Text style={styles.sector}>{eventParticipantSectorTag ? eventParticipantSectorTag : '--'}</Text>
+                <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
               </View>
             </View>
             <View style={[styles.detailInnerContainer, styles.timeContainer]}>
               <Feather name="calendar" size={18} color="#3C8722" />
-              <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
-              <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
+              <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+              <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
             </View>
-            {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
+            {eventLocation && eventLocation !== '' && (
               <View style={[styles.detailInnerContainer, styles.locationContainer]}>
                 <Feather name="map-pin" size={18} color="black" />
-                <Text style={styles.location}>{eventDetails.eventLocation}</Text>
+                <Text style={styles.location}>{eventLocation}</Text>
               </View>
             )}
-          </View>
-
-          <View style={styles.textInputOuterContainer}>
-            <Text style={styles.note}>To Kevin Liang:</Text>
-            <View style={styles.textInputContainer}>
-              <TextInput 
-                multiline={true}
-                style={styles.textInput} 
-                placeholder="Optional message"
-                placeholderTextColor="#6A6A6A"
-                maxLength={2500}
-                onChangeText={textInputHandler}
-                value={enteredText}
-              />
-            </View>
           </View>
         </View>
 
         <View style={styles.submitFormContainer}>
           <Pressable onPress={(comfirmCancellationHandler)} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitFormBtnContainer}>
-              <Text style={[styles.submitFormBtnText, styles.enabledText]}>Yes, cancel it</Text>
+              <Text style={[styles.submitFormBtnText, styles.enabledText]}>Yes, withdraw it</Text>
             </View>
           </Pressable>
         </View>
@@ -110,7 +95,7 @@ function CancelEventScreen({ navigation, route }) {
   )
 }
 
-export default CancelEventScreen;
+export default WithdrawEventScreen;
 
 const styles = StyleSheet.create({
   container: {

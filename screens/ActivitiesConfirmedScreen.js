@@ -71,7 +71,7 @@ function ActivitiesConfirmedScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Activities</Text>
-      <View style={styles.header}>
+      <View>
         <ScrollView horizontal>
           <Pressable onPress={directToReceivedHandler}>
             <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>

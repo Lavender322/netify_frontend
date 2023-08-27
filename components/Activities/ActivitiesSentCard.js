@@ -1,14 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Pressable, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
 import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 
-function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
+function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
-  const [eventParticipants, setEventParticipants] = useState([]);
   
   // TO COMMENT OUT
   const { token } = useContext(AuthContext);
@@ -21,38 +20,31 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags,
-      eventParticipants: eventParticipants,
-      previousScreen: 'Confirmed'
+      previousScreen: 'Sent'
     });
   };
 
-  useEffect(() => {
-    async function getActivity() {
-      setIsFetchingActivity(true);
-      try {
-        const activity = await fetchActivity(eventId, token);
-        setEventParticipants(activity.participants);
-        // console.log(activity.participants);
-      } catch (error) {
-        console.log(error.response.data);
-      };
-      setIsFetchingActivity(false);
-    };
-    
-    getActivity();
-  }, []);
+  function requestToWithdrawEventHandler() {
+    navigation.navigate('WithdrawEvent', {
+      eventId: eventId,
+      sectorTags: sectorTags,
+      gradeTags: gradeTags,
+      eventHost: eventHost,
+      eventStartTime: eventStartTime,
+      eventEndTime: eventEndTime,
+      eventLocation: eventLocation
+    });
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
-        {!isFetchingActivity && (
-          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-        )}
+        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'Your One to One session with ' : eventName}
-          {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
-            <Text style={styles.match}>{eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+        <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
+          {eventType === 'ONE_TO_ONE' && (
+            <Text style={styles.match}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           )}
         </Text>
         <View style={styles.detailInnerContainer}>
@@ -62,19 +54,29 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
         </View>
         
         <View style={styles.detailInnerContainer}>
-          <TouchableWithoutFeedback>
-            <Pressable onPress={directToEventDetails}>
-              <Text style={styles.details}>Details</Text>
-            </Pressable>
-          </TouchableWithoutFeedback>
+          <Pressable onPress={directToEventDetails}>
+            <Text style={styles.details}>Details</Text>
+          </Pressable>
           <Feather name="chevron-right" size={24} color="#6A6A6A" />
         </View>
       </View> 
+      <View style={styles.buttonsContainer}>
+        <Pressable onPress={() => {}} style={({pressed}) => pressed && styles.pressed}>
+          <View style={[styles.statusContainer, styles.pendingContainer]}>
+            <Text style={styles.text}>Pending</Text>
+          </View>
+        </Pressable>
+        <Pressable onPress={requestToWithdrawEventHandler}>
+          <View style={styles.withdrawContainer}>
+            <Text style={[styles.text, styles.underline]}>withdraw</Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   )
 }
 
-export default ActivitiesConfirmedCard;
+export default ActivitiesSentCard;
 
 const styles = StyleSheet.create({
   container: {
@@ -95,12 +97,12 @@ const styles = StyleSheet.create({
   avatar: {
     width: 60,
     height: 60,
-    borderRadius: 30
+    borderRadius: 30,
   },
   textContainer: {
     flex: 1,
     padding: 4,
-    marginLeft: 10,
+    marginHorizontal: 10,
   },
   title: {
     color: '#1A1A1A',
@@ -114,18 +116,22 @@ const styles = StyleSheet.create({
   detailInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4
+    marginTop: 4,
+    flexWrap: 'wrap'
   }, 
   period: {
     color: '#3C8722',
     fontFamily: 'roboto-medium',
     fontSize: 16,
+    lineHeight: 20.8,
     marginHorizontal: 8
   },
   date: {
     color: '#3C8722',
     fontFamily: 'roboto-medium',
-    fontSize: 16
+    fontSize: 16,
+    lineHeight: 20.8,
+    width: '100%'
   },
   details: {
     fontFamily: 'roboto',
@@ -135,5 +141,30 @@ const styles = StyleSheet.create({
     marginRight: 4,
     textDecorationLine: 'underline'
   },
+  statusContainer: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 23
+  },
+  pendingContainer: {
+    backgroundColor: '#6AA173'
+  },
+  text: {
+    fontSize: 16,
+    fontFamily: 'roboto',
+    color: '#1A4821'
+  },
+  withdrawContainer: {
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    marginTop: 10
+  },
+  buttonsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  underline: {
+    textDecorationLine: 'underline'
+  }
 });
 

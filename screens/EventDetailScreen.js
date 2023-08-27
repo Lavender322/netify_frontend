@@ -48,11 +48,11 @@ function EventDetailScreen({ navigation, route }) {
   useEffect(() => {
     if (eventDetails && eventDetails.eventHost.userTag && gradeTags.length && sectorTags.length) {
       const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-        return eventDetails.eventHost.userTag.includes(gradeTag.tagId.toString());
+        return eventDetails.eventHost.userTag.includes(gradeTag.tagId);
       });
     
       const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-        return eventDetails.eventHost.userTag.includes(sectorTag.tagId.toString());
+        return eventDetails.eventHost.userTag.includes(sectorTag.tagId);
       });
   
       setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);

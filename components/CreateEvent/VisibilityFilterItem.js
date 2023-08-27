@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
-function VisibilityFilterItem({ filter, isFilterChecked, isAll, isAllChecked }) {
+function VisibilityFilterItem({ filter, isFilterChecked, isAll, isAllChecked, isAllOptionsChecked }) {
   const [isChecked, setIsChecked] = useState(false);
   
   useEffect(() => {
@@ -16,11 +16,10 @@ function VisibilityFilterItem({ filter, isFilterChecked, isAll, isAllChecked }) 
   useEffect(() => {
     if (isAllChecked) {
       setIsChecked(true);
+    } else {
+      setIsChecked(false);
     };
-    //  else {
-    //   setIsChecked(false);
-    // };
-  }, [isAllChecked, isAll]);
+  }, [isAllChecked]);
 
   return (
     <View style={styles.filterItemContainer}>
@@ -36,7 +35,8 @@ const styles = StyleSheet.create({
   filterItemContainer: {
     flexDirection: 'row',
     padding: 8,
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 40,
   },
   text: {
     color: '#1A1A1A',

@@ -14,6 +14,12 @@ function VisibilityScreen({ navigation }) {
   const [gradeTags, setGradeTags] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const [numSelectedGrade, setNumSelectedGrade] = useState();
+  const [numSelectedIndustry, setNumSelectedIndustry] = useState();
+  const [gradeFilterApplied, setGradeFilterApplied] = useState(false);
+  const [industryFilterApplied, setIndustryFilterApplied] = useState(false);
+  const [showSelectedGrade, setShowSelectedGrade] = useState(false);
+  const [showSelectedIndustry, setShowSelectedIndustry] = useState(false);
 
   useEffect(() => {
     async function getTags() {
@@ -53,6 +59,9 @@ function VisibilityScreen({ navigation }) {
     navigation.goBack();
   };
 
+  console.log("selectedGrade", selectedGrade.length, selectedGrade);
+  console.log("selectedIndustry", selectedIndustry.length, selectedIndustry);
+
   function comfirmVisibilityHandler() {
     navigation.navigate('CreateEvent', {
       gradeVisibility: selectedGrade,
@@ -75,13 +84,23 @@ function VisibilityScreen({ navigation }) {
   };
 
   function selectGradeFilterHandler() {
+    setNumSelectedGrade(numFilters);
+    if (numFilters > 0) {
+      setGradeFilterApplied(true);
+    } else {
+      setGradeFilterApplied(false);
+    };
+    setShowSelectedGrade(false);
+  };
+
+  function selectIndustryFilterHandler() {
     setNumSelectedIndustry(numFilters);
     if (numFilters > 0) {
       setIndustryFilterApplied(true);
     } else {
       setIndustryFilterApplied(false);
     };
-    setShowIndustry(false);
+    setShowSelectedIndustry(false);
   };
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -130,7 +149,8 @@ function VisibilityScreen({ navigation }) {
                 <VisibilityFilter
                   style={styles.filters}
                   filters={gradeTags}
-                  // selectFilters={selectGradeFilterHandler}
+                  selectFilter={selectGradeFilterHandler}
+                  selectedFilter={selectedGrade}
                   setSelectedFilter={setSelectedGrade}
                   // setUpdateEventList 
                 /> 
@@ -150,7 +170,8 @@ function VisibilityScreen({ navigation }) {
                 <VisibilityFilter
                   style={styles.filters}
                   filters={sectorTags}
-                  // selectFilters={selectGradeFilterHandler}
+                  selectFilter={selectIndustryFilterHandler}
+                  selectedFilter={selectedIndustry}
                   setSelectedFilter={setSelectedIndustry}
                   // setUpdateEventList 
                 /> 
@@ -297,10 +318,11 @@ const styles = StyleSheet.create({
     display: 'none'
   },
   filters: {
-    zIndex: 100
+    position: 'relative',
+    zIndex: 100,
   },
   filtersContainer: {
-    position: 'absolute',
+    position: 'relative',
     width: '100%'
   },
   filtersOuterContainer: {

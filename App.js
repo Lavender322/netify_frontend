@@ -29,6 +29,7 @@ import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
 import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
 import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 import CancelEventScreen from './screens/CancelEventScreen';
+import WithdrawEventScreen from './screens/WithdrawEventScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -163,6 +164,10 @@ function AuthenticatedStack() {
         contentStyle: {backgroundColor: 'white'}
       }} />
       <Stack.Screen name="CancelEvent" component={CancelEventScreen} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: '#FCFCFC'}
+      }} />
+      <Stack.Screen name="WithdrawEvent" component={WithdrawEventScreen} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: '#FCFCFC'}
       }} />
