@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../store/context/auth-context';
 // import LoadingOverlay from '../ui/LoadingOverlay';
 
-function ActivitiesReceivedItem({ eventId, eventHost, sectorTags, gradeTags }) {
-  const [eventHostSectorTag, setEventHostSectorTag] = useState();
-  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+function ActivitiesReceivedItem({ eventId, user, sectorTags, gradeTags }) {
+  const [eventApplicantSectorTag, setEventApplicantSectorTag] = useState();
+  const [eventApplicantGradeTag, setEventApplicantGradeTag] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventStatus, setEventStatus] = useState();
   
@@ -26,19 +26,19 @@ function ActivitiesReceivedItem({ eventId, eventHost, sectorTags, gradeTags }) {
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
-    if (eventHost && eventHost.userTag) {
-      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-        return eventHost.userTag.includes(gradeTag.tagId);
+    if (user && user.userTag) {
+      const eventApplicantGradeTag = gradeTags.filter((gradeTag) => {
+        return user.userTag.includes(gradeTag.tagId);
       });
     
-      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-        return eventHost.userTag.includes(sectorTag.tagId);
+      const eventApplicantSectorTag = sectorTags.filter((sectorTag) => {
+        return user.userTag.includes(sectorTag.tagId);
       });
   
-      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
-      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
+      setEventApplicantGradeTag(eventApplicantGradeTag[0] && eventApplicantGradeTag[0].tagName);
+      setEventApplicantSectorTag(eventApplicantSectorTag[0] && eventApplicantSectorTag[0].tagName);
     };
-  }, [eventHost]);
+  }, [user]);
 
   async function requestToJoinEventHandler(token, eventId) {
     // setIsSubmitting(true);
@@ -56,19 +56,22 @@ function ActivitiesReceivedItem({ eventId, eventHost, sectorTags, gradeTags }) {
     <View style={styles.container}>
       <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
         <View style={styles.badgeOuterContainer}>
-          {eventHost.id === 6 && (
+          {/* {eventHost.id === 6 && (
             <View style={styles.badgeContainer}>
               <Text style={styles.badge}>New</Text>
             </View>
-          )}
+          )} */}
+
+          <View style={styles.inactiveBadgeContainer}>
+          </View>
         </View>
-        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        <Image source={{uri: user.userImage[3]}} style={styles.avatar} />
         <View style={styles.infoOuterContainer}>
-          <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+          <Text style={styles.name}>{user.localizedfirstname + ' ' + user.localizedlastname}</Text>
           <View style={styles.infoInnerContainer}>
-            <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text>
+            <Text style={styles.grade}>{eventApplicantGradeTag ? eventApplicantGradeTag : '--'}</Text>
             <View style={styles.sectorContainer}>
-              <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
+              <Text style={styles.sector}>{eventApplicantSectorTag ? eventApplicantSectorTag : '--'}</Text>
             </View>
           </View>
         </View>
@@ -100,6 +103,14 @@ const styles = StyleSheet.create({
   },
   badgeOuterContainer: {
     width: 28
+  },
+  inactiveBadgeContainer: {
+    backgroundColor: '#E9E9E9',
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   badgeContainer: {
     backgroundColor: '#EC2323',

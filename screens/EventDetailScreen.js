@@ -140,6 +140,11 @@ function EventDetailScreen({ navigation, route }) {
             <Text style={styles.cancel}>Cancel</Text>
           </Pressable>
         )}
+        {previousScreen === 'Sent' && (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Withdraw</Text>
+          </Pressable>
+        )}
       </ScrollView>
       {previousScreen === 'Home' && showRequest && (
         <View style={styles.submitFormContainer}>

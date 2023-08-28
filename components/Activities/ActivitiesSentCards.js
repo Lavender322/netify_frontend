@@ -4,13 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
 import ActivitiesSentCard from './ActivitiesSentCard';
 
-function renderActivityItem(itemData, sectorTags, gradeTags) {
+function renderActivityItem(itemData, sectorTags, gradeTags, isCancelled, isPast) {
   return (
-    <ActivitiesSentCard {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ActivitiesSentCard {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} isCancelled={isCancelled} isPast={isPast} />
   );
 };
 
-function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gradeTags }) {
+function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gradeTags, isCancelled, isPast }) {
   const navigation = useNavigation();
   
   function redirectHandler() {
@@ -39,7 +39,7 @@ function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gra
   return (
     <FlatList 
       data={activities} 
-      renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
+      renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags, isCancelled, isPast)} 
       keyExtractor={(item) => item.id}
     />
   )

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 
-function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags}) {
+function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags, isCancelled, isPast}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
   
   // TO COMMENT OUT
@@ -36,6 +36,10 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
     });
   };
 
+  function directToMessageHandler() {
+
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
@@ -47,7 +51,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
             <Text style={styles.match}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           )}
         </Text>
-        <View style={styles.detailInnerContainer}>
+        <View style={[styles.detailInnerContainer, !isCancelled && styles.wrap]}>
           <Feather name="calendar" size={18} color="#3C8722" />
           <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
           <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
@@ -60,18 +64,27 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
           <Feather name="chevron-right" size={24} color="#6A6A6A" />
         </View>
       </View> 
-      <View style={styles.buttonsContainer}>
-        <Pressable onPress={() => {}} style={({pressed}) => pressed && styles.pressed}>
-          <View style={[styles.statusContainer, styles.pendingContainer]}>
-            <Text style={styles.text}>Pending</Text>
+      {!isCancelled && !isPast && (
+        <View style={styles.buttonsContainer}>
+          <Pressable onPress={() => {}} style={({pressed}) => pressed && styles.pressed}>
+            <View style={[styles.statusContainer, styles.pendingContainer]}>
+              <Text style={[styles.text, styles.pendingText]}>Pending</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={requestToWithdrawEventHandler}>
+            <View style={styles.withdrawContainer}>
+              <Text style={[styles.text, styles.underline]}>withdraw</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
+      {isPast && (
+        <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
+          <View style={[styles.statusContainer, styles.requestContainer]}>
+            <Text style={[styles.text, styles.requestText]}>Message</Text>
           </View>
-        </Pressable>
-        <Pressable onPress={requestToWithdrawEventHandler}>
-          <View style={styles.withdrawContainer}>
-            <Text style={[styles.text, styles.underline]}>withdraw</Text>
-          </View>
-        </Pressable>
-      </View>
+      </Pressable>
+      )}
     </View>
   )
 }
@@ -116,9 +129,11 @@ const styles = StyleSheet.create({
   detailInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
-    flexWrap: 'wrap'
+    marginTop: 4
   }, 
+  wrap: {
+    flexWrap: 'wrap'
+  },
   period: {
     color: '#3C8722',
     fontFamily: 'roboto-medium',
@@ -146,12 +161,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 23
   },
+  requestContainer: {
+    backgroundColor: '#1A4821'
+  },
   pendingContainer: {
     backgroundColor: '#6AA173'
   },
   text: {
     fontSize: 16,
-    fontFamily: 'roboto',
+    fontFamily: 'roboto'
+  },
+  requestText: {
+    color: '#A6E291'
+  },
+  pendingText: {
     color: '#1A4821'
   },
   withdrawContainer: {

@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
 import ActivitiesReceivedCards from '../components/Activities/ActivitiesReceivedCards.js';
-import ActivitiesReceivedList from '../components/Activities/ActivitiesReceivedList';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 
@@ -108,13 +107,6 @@ function ActivitiesReceivedScreen({ navigation }) {
           sectorTags={sectorTags} 
           gradeTags={gradeTags} 
         />
-        {/* <Text style={styles.note}>Here is a list of people who are keen to meet you at your proposed time slot!</Text>
-        <ActivitiesReceivedList 
-          activities={loadedActivities} 
-          isFetchingActivities={isFetchingActivities} 
-          sectorTags={sectorTags} 
-          gradeTags={gradeTags} 
-        /> */}
       </View>
     </View>
   )
@@ -163,12 +155,5 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-  },
-  note: {
-    color: '#3B4852',
-    fontFamily: 'roboto',
-    fontSize: 15,
-    lineHeight: 20,
-    padding: 8
   }
 });

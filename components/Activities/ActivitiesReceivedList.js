@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import ActivitiesReceivedItem from './ActivitiesReceivedItem';
+import { useNavigation } from '@react-navigation/native';
+import LoadingOverlay from '../ui/LoadingOverlay';
 
 function renderActivityItem(itemData, sectorTags, gradeTags) {
   return (
@@ -8,20 +10,20 @@ function renderActivityItem(itemData, sectorTags, gradeTags) {
   );
 };
 
-function ActivitiesReceivedList({ activities, isFetchingActivities, sectorTags, gradeTags }) {
+function ActivitiesReceivedList({ applications, isFetchingApplications, sectorTags, gradeTags }) {
   const navigation = useNavigation();
   
   function redirectHandler() {
     navigation.navigate('CreateEvent');
   };
 
-  if (isFetchingActivities) {
+  if (isFetchingApplications) {
     return (
       <LoadingOverlay />
     )
   };
 
-  if ((!activities || activities.length === 0) && !isFetchingActivities) {
+  if ((!applications || applications.length === 0) && !isFetchingApplications) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
@@ -36,7 +38,7 @@ function ActivitiesReceivedList({ activities, isFetchingActivities, sectorTags, 
 
   return (
     <FlatList 
-      data={activities} 
+      data={applications} 
       renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />

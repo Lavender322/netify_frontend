@@ -7,9 +7,9 @@ function VisibilityFilter({ style, filters, selectFilter, selectedFilter, setSel
   const [isAllOptionsChecked, setIsAllOptionsChecked] = useState(false);
 
   useEffect(() => {
-    console.log("111", selectedFilter.length, filters.length)
+    // console.log("111", selectedFilter.length, filters.length)
     if (selectedFilter.length && filters.length && selectedFilter.length === filters.length) {
-      console.log("222");
+      // console.log("222");
       // setIsAllOptionsChecked(true);
       setIsAllChecked(true);
     } else {
@@ -18,7 +18,7 @@ function VisibilityFilter({ style, filters, selectFilter, selectedFilter, setSel
     }
   }, [selectedFilter]);
 
-  console.log("setIsAllOptionsChecked", isAllOptionsChecked)
+  // console.log("setIsAllOptionsChecked", isAllOptionsChecked)
 
   function filterChangeHandler(isChecked, filterId) {
     if (filterId) {

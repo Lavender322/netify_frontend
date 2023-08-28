@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Pressable, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
