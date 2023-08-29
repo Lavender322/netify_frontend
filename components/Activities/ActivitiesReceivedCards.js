@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
@@ -29,7 +28,7 @@ function ActivitiesReceivedCards({ activities, isFetchingActivities, sectorTags,
         <Text>
           <Text style={styles.fallback}>There are no upcoming events around you. </Text>
           <Pressable onPress={redirectHandler}>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
+            <Text style={styles.fallbackHighlight}>Host one!</Text>
           </Pressable>
         </Text>
       </View>
@@ -64,6 +63,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#3C8722',
     textDecorationLine: 'underline',
-    lineHeight: 20
+    lineHeight: 20,
   }
 });

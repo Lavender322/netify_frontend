@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#3C8722',
     textDecorationLine: 'underline',
-    lineHeight: 20
+    lineHeight: 20,
+    marginTop: 4
   }
 });

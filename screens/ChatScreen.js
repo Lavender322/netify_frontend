@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
+import ChatList from '../components/Chat/ChatList';
 
 function ChatScreen() {
   return (
@@ -7,28 +8,13 @@ function ChatScreen() {
       <Text style={styles.headerText}>Chat</Text>
       <View style={styles.searchBar}>
         <Ionicons name="search-sharp" size={24} color="#ADB5BD" />
-        {/* <View style={styles.textInputContainer}> */}
-          <TextInput 
-            style={styles.searchInput}
-            placeholder='Search'
-            placeholderTextColor='#ADB5BD'
-          />
-        {/* </View> */}
+        <TextInput 
+          style={styles.searchInput}
+          placeholder='Search'
+          placeholderTextColor='#ADB5BD'
+        />
       </View>
-      {/* <View style={styles.outerPanelContainer}>
-        <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
-          <Text style={styles.panelText}>Confirmed Meeting</Text> 
-        </View>
-        <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Text style={styles.panelNumber}>{pendingRequests}</Text> 
-          <Text style={styles.panelText}>Pending Request</Text> 
-        </View>
-        <View style={styles.innerPanelContainer}>
-          <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
-          <Text style={styles.panelText}>Invitations Received</Text> 
-        </View>
-      </View> */}
+      <ChatList />
     </View>
   )
 }

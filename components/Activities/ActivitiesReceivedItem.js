@@ -1,30 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import { joinEvent } from '../../utils/http';
-import { AuthContext } from '../../store/context/auth-context';
-// import LoadingOverlay from '../ui/LoadingOverlay';
 
-function ActivitiesReceivedItem({ eventId, user, sectorTags, gradeTags }) {
+function ActivitiesReceivedItem({ user, eventId, sectorTags, gradeTags }) {
   const [eventApplicantSectorTag, setEventApplicantSectorTag] = useState();
   const [eventApplicantGradeTag, setEventApplicantGradeTag] = useState();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [eventStatus, setEventStatus] = useState();
   
   const navigation = useNavigation();
-
-  function eventDetailHandler() {
-    // navigation.navigate('EventDetail', {
-    //   eventId: eventId,
-    //   sectorTags: sectorTags,
-    //   gradeTags: gradeTags
-    // });
-  };
  
-  // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
-  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
-
   useEffect(() => {
     if (user && user.userTag) {
       const eventApplicantGradeTag = gradeTags.filter((gradeTag) => {
@@ -40,21 +23,16 @@ function ActivitiesReceivedItem({ eventId, user, sectorTags, gradeTags }) {
     };
   }, [user]);
 
-  async function requestToJoinEventHandler(token, eventId) {
-    // setIsSubmitting(true);
-    // try {
-    //   await joinEvent(token, eventId);
-    //   setEventStatus('REQUESTED');
-    // } catch (error) {
-    //   console.log("error", error);
-    //   // setError('Could not save data - please try again later!');
-    // };
-    // setIsSubmitting(false);
+  function requestToApproveEventHandler() {
+    navigation.navigate('AcceptEvent', {
+      eventId: eventId,
+      user: user
+    });
   };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
+      <View style={styles.leftContainer}>
         <View style={styles.badgeOuterContainer}>
           {/* {eventHost.id === 6 && (
             <View style={styles.badgeContainer}>
@@ -75,8 +53,8 @@ function ActivitiesReceivedItem({ eventId, user, sectorTags, gradeTags }) {
             </View>
           </View>
         </View>
-      </Pressable>
-      <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
+      </View>
+      <Pressable onPress={requestToApproveEventHandler} style={({pressed}) => pressed && styles.pressed}>
       <View style={[styles.statusContainer, styles.requestContainer]}>
             <Text style={[styles.text, styles.requestText]}>Accept</Text>
           </View>

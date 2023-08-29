@@ -83,6 +83,8 @@ export async function fetchEventList(gradeFilters, industryFilters, groupFilters
     experienceTypeList: gradeFilters,
     sectorTypeList: industryFilters,
     meetingTypeList: groupFilters,
+    start: 0,
+    end: 100
   };
   
   const response = await axios({
@@ -158,4 +160,35 @@ export async function fetchActivity(eventId, token) {
   });
 
   return response.data.data;
+};
+
+export function approveEvent(eventId, userId, token) {  
+  console.log("eventId", eventId, userId);
+  return axios({
+    method: 'GET',
+    url: BACKEND_URL + `/event/approve?eventId=${eventId}&userId=${userId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
+export function withdrawEvent(eventId, token) {  
+  return axios({
+    method: 'POST',
+    url: BACKEND_URL + `/event/withdraw/${eventId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
+export function cancelEvent(eventId, token) {  
+  return axios({
+    method: 'POST',
+    url: BACKEND_URL + `/event/cancel/${eventId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 };

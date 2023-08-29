@@ -4,7 +4,7 @@ import ActivitiesSentCards from '../components/Activities/ActivitiesSentCards';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 
-function ActivitiesSentScreen({ navigation }) {
+function ActivitiesSentScreen({ navigation, isFocused }) {
   const [isFetchingActivities, setIsFetchingActivities] = useState(true);
   const [loadedActivities, setLoadedActivities] = useState([]);
   const [sectorTags, setSectorTags] = useState([]);
@@ -27,7 +27,7 @@ function ActivitiesSentScreen({ navigation }) {
     };
     
     getActivityList();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     async function getTags() {

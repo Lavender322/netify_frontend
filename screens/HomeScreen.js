@@ -73,6 +73,7 @@ function HomeScreen() {
       try {
         const eventList = await fetchEventList(selectedGrade, selectedIndustry, selectedGroup, token);
         setLoadedEvents(eventList);
+        // console.log("eventList", eventList)
       } catch (error) {
         console.log(error.response.data);
       };

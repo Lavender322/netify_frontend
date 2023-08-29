@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 import ActivitiesReceivedList from './ActivitiesReceivedList';
@@ -16,6 +16,7 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
   const { token } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';  
   
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,7 +25,6 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
       try {
         const activity = await fetchActivity(eventId, token);
         setLoadedApplications(activity.participants);
-        console.log("meow", activity.participants);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -32,7 +32,7 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
     };
     
     getActivity();
-  }, []);
+  }, [isFocused]);
 
   function cardToggleHandler() {
     setIsExpanded(!isExpanded);
@@ -84,6 +84,7 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
           <ActivitiesReceivedList 
             applications={loadedApplications} 
             isFetchingApplications={isFetchingApplications} 
+            eventId={eventId}
             sectorTags={sectorTags} 
             gradeTags={gradeTags} 
           /> 

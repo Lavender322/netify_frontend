@@ -11,9 +11,9 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
   const [eventParticipants, setEventParticipants] = useState([]);
   
   // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
-    
+  
   const navigation = useNavigation();
 
   function directToEventDetails() {
@@ -39,20 +39,23 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       setIsFetchingActivity(false);
     };
     
-    getActivity();
+    if (userInfo.userId === eventHost.userId) {
+      getActivity();
+    };
   }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
-        {!isFetchingActivity && (
-          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+        {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+          <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventHost.userImage[3]}} style={styles.avatar} />
         )}
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'Your One to One session with ' : eventName}
           {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
-            <Text style={styles.match}>{eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+            eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           )}
         </Text>
         <View style={styles.detailInnerContainer}>

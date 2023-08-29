@@ -4,13 +4,13 @@ import ActivitiesReceivedItem from './ActivitiesReceivedItem';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
 
-function renderActivityItem(itemData, sectorTags, gradeTags) {
+function renderActivityItem(itemData, eventId, sectorTags, gradeTags) {
   return (
-    <ActivitiesReceivedItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ActivitiesReceivedItem {...itemData.item} eventId={eventId} sectorTags={sectorTags} gradeTags={gradeTags} />
   );
 };
 
-function ActivitiesReceivedList({ applications, isFetchingApplications, sectorTags, gradeTags }) {
+function ActivitiesReceivedList({ applications, isFetchingApplications, eventId, sectorTags, gradeTags }) {
   const navigation = useNavigation();
   
   function redirectHandler() {
@@ -39,7 +39,7 @@ function ActivitiesReceivedList({ applications, isFetchingApplications, sectorTa
   return (
     <FlatList 
       data={applications} 
-      renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
+      renderItem={(item) => renderActivityItem(item, eventId, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
   )

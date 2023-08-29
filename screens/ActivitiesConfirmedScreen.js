@@ -4,7 +4,7 @@ import ActivitiesConfirmedCards from '../components/Activities/ActivitiesConfirm
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 
-function ActivitiesConfirmedScreen({ navigation }) {
+function ActivitiesConfirmedScreen({ navigation, isFocused }) {
   const [isFetchingActivities, setIsFetchingActivities] = useState(true);
   const [loadedActivities, setLoadedActivities] = useState([]);
   const [sectorTags, setSectorTags] = useState([]);
@@ -28,7 +28,7 @@ function ActivitiesConfirmedScreen({ navigation }) {
     };
     
     getActivityList();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     async function getTags() {

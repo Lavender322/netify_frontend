@@ -1,4 +1,3 @@
-import { useState, useEffect, useContext } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
@@ -14,7 +13,7 @@ function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
   const navigation = useNavigation();
 
   const eventsDisplayed = (events && events.length != 0) && events.filter(
-    (event) => event.myStateInTheEvent !== 'APPROVED' && event.eventStatus !== 'EVENT_FINISHED'
+    (event) => event.eventStatus === 'EVENT_CREATED'
   );
   
   function redirectHandler() {

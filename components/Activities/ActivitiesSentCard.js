@@ -8,12 +8,32 @@ import { AuthContext } from '../../store/context/auth-context';
 
 function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags, isCancelled, isPast}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
-  
+  const [eventParticipants, setEventParticipants] = useState([]);
+
   // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
     
   const navigation = useNavigation();
+
+  useEffect(() => {
+    async function getActivity() {
+      setIsFetchingActivity(true);
+      try {
+        const activity = await fetchActivity(eventId, token);
+        setEventParticipants(activity.participants);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetchingActivity(false);
+    };
+    
+    if ((isCancelled || isPast) && userInfo.userId === eventHost.userId) {
+      getActivity();
+    } else {
+      setIsFetchingActivity(false);
+    };
+  }, []);
 
   function directToEventDetails() {
     navigation.navigate('EventDetail', {
@@ -43,12 +63,14 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
-        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        {!isFetchingActivity && (
+          <Image source={{uri: (!isCancelled && !isPast) && eventHost.userImage[3]}} style={styles.avatar} />
+        )}
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
-          {eventType === 'ONE_TO_ONE' && (
-            <Text style={styles.match}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+          {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+            <Text style={styles.match}>{(!isCancelled && !isPast) && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
           )}
         </Text>
         <View style={[styles.detailInnerContainer, !isCancelled && styles.wrap]}>

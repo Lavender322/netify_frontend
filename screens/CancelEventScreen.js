@@ -3,12 +3,21 @@ import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Ima
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
+import { cancelEvent } from '../utils/http';
+import { AuthContext } from '../store/context/auth-context';
 
 function CancelEventScreen({ navigation, route }) {
   const [eventParticipantGradeTag, setEventParticipantGradeTag] = useState();
   const [eventParticipantSectorTag, setEventParticipantSectorTag] = useState();
+  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [enteredText, setEnteredText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';  
+  
   const eventId = route.params?.eventId;
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
@@ -28,8 +37,19 @@ function CancelEventScreen({ navigation, route }) {
   
       setEventParticipantGradeTag(eventParticipantGradeTag[0] && eventParticipantGradeTag[0].tagName);
       setEventParticipantSectorTag(eventParticipantSectorTag[0] && eventParticipantSectorTag[0].tagName);
+    } else if (eventDetails && eventDetails.eventHost.userTag && gradeTags.length && sectorTags.length) {
+      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+        return eventDetails.eventHost.userTag.includes(gradeTag.tagId);
+      });
+    
+      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+        return eventDetails.eventHost.userTag.includes(sectorTag.tagId);
+      });
+  
+      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
+      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
     };
-  }, [eventParticipants, gradeTags, sectorTags]);
+  }, [eventParticipants, eventDetails, gradeTags, sectorTags]);
 
   function textInputHandler(enteredText) {
     setEnteredText(enteredText);
@@ -39,11 +59,17 @@ function CancelEventScreen({ navigation, route }) {
     navigation.goBack();
   };
 
-  function comfirmCancellationHandler() {
-
+  async function comfirmCancellationHandler(eventId, token) {
+    setIsSubmitting(true);
+    try {
+      await cancelEvent(eventId, token);
+      navigation.navigate('ActivitiesConfirmed');
+    } catch (error) {
+      console.log("error", error.respone.data);
+      setIsSubmitting(false);
+      // setError('Could not save data - please try again later!');
+    };
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -59,14 +85,28 @@ function CancelEventScreen({ navigation, route }) {
         <View style={styles.mainContainer}>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>Cancel this session?</Text>
-            <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-            <Text style={styles.name}>{eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            <Image 
+              source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} 
+              style={styles.avatar} 
+            />
+            <Text style={styles.name}>
+              {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+              eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}
+            </Text>
             <View style={[styles.detailInnerContainer, styles.roleContainer]}>
               <View style={styles.gradeContainer}>
-                <Text style={styles.grade}>{eventParticipantGradeTag ? eventParticipantGradeTag : '--'}</Text> 
+                {eventParticipants && eventParticipants[0] ? (
+                  <Text style={styles.grade}>{eventParticipantGradeTag ? eventParticipantGradeTag : '--'}</Text> 
+                ) : (
+                  <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
+                )}
               </View>
               <View style={styles.sectorContainer}>
-                <Text style={styles.sector}>{eventParticipantSectorTag ? eventParticipantSectorTag : '--'}</Text>
+                {eventParticipants && eventParticipants[0] ? (
+                  <Text style={styles.sector}>{eventParticipantSectorTag ? eventParticipantSectorTag : '--'}</Text>
+                ) : (
+                  <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text> 
+                )}
               </View>
             </View>
             <View style={[styles.detailInnerContainer, styles.timeContainer]}>
@@ -83,7 +123,8 @@ function CancelEventScreen({ navigation, route }) {
           </View>
 
           <View style={styles.textInputOuterContainer}>
-            <Text style={styles.note}>To Kevin Liang:</Text>
+            <Text style={styles.note}>To {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+              eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}:</Text>
             <View style={styles.textInputContainer}>
               <TextInput 
                 multiline={true}
@@ -99,7 +140,7 @@ function CancelEventScreen({ navigation, route }) {
         </View>
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={(comfirmCancellationHandler)} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={(comfirmCancellationHandler.bind(this, eventId, token))} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitFormBtnContainer}>
               <Text style={[styles.submitFormBtnText, styles.enabledText]}>Yes, cancel it</Text>
             </View>

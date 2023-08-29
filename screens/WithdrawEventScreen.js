@@ -1,19 +1,24 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Pressable, KeyboardAvoidingView, Text, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
+import { withdrawEvent } from '../utils/http';
+import { AuthContext } from '../store/context/auth-context';
 
 function WithdrawEventScreen({ navigation, route }) {
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
-  const [enteredText, setEnteredText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const eventId = route.params?.eventId;
+  // TO COMMENT OUT
+  const { token } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';  
+
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
+  const eventId = route.params?.eventId;
   const eventHost = route.params?.eventHost;
-  const eventDetails = route.params?.eventDetails;
   const eventStartTime = route.params?.eventStartTime;
   const eventEndTime = route.params?.eventEndTime;
   const eventLocation = route.params?.eventLocation;
@@ -33,16 +38,20 @@ function WithdrawEventScreen({ navigation, route }) {
     };
   }, [eventHost, gradeTags, sectorTags]);
 
-  function textInputHandler(enteredText) {
-    setEnteredText(enteredText);
-  };
-
   function previousStepHandler() {
     navigation.goBack();
   };
 
-  function comfirmCancellationHandler() {
-
+  async function comfirmWithdrawalHandler(eventId, token) {
+    setIsSubmitting(true);
+    try {
+      await withdrawEvent(eventId, token);
+      navigation.navigate('ActivitiesSent');
+    } catch (error) {
+      console.log("error", error.respone.data);
+      setIsSubmitting(false);
+      // setError('Could not save data - please try again later!');
+    };
   };
 
   return (
@@ -84,7 +93,7 @@ function WithdrawEventScreen({ navigation, route }) {
         </View>
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={(comfirmCancellationHandler)} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={(comfirmWithdrawalHandler.bind(this, eventId, token))} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitFormBtnContainer}>
               <Text style={[styles.submitFormBtnText, styles.enabledText]}>Yes, withdraw it</Text>
             </View>

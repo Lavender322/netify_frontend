@@ -1,14 +1,14 @@
 import { FlatList, Text, StyleSheet, View } from 'react-native';
 import ChatItem from './ChatItem';
-import LoadingOverlay from './ui/LoadingOverlay';
+import LoadingOverlay from '../ui/LoadingOverlay';
 
-function renderChatItem(itemData, sectorTags, gradeTags) {
+function renderChatItem(itemData) {
   return (
-    <ChatItem {...itemData.item} sectorTags={sectorTags} gradeTags={gradeTags} />
+    <ChatItem {...itemData.item} />
   );
 };
 
-function ChatList({ chats, isFetchingChats, sectorTags, gradeTags }) {
+function ChatList({ chats, isFetchingChats }) {
   if (isFetchingChats) {
     return (
       <LoadingOverlay />
@@ -19,8 +19,8 @@ function ChatList({ chats, isFetchingChats, sectorTags, gradeTags }) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
-          <Text style={styles.fallback}>There are no upcoming events around you. </Text>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
+          <Text style={styles.fallback}>You don’t have any existing chat.</Text>
+          {/* <Text style={styles.fallbackHighlight}>Host one!</Text> */}
         </Text>
       </View>
     )
@@ -29,7 +29,7 @@ function ChatList({ chats, isFetchingChats, sectorTags, gradeTags }) {
   return (
     <FlatList 
       data={chats} 
-      renderItem={(item) => renderChatItem(item, sectorTags, gradeTags)} 
+      renderItem={(item) => renderChatItem(item)} 
       keyExtractor={(item) => item.id}
     />
   )

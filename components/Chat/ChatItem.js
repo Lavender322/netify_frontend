@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getFormattedDate } from '../utils/date';
-import { joinEvent } from '../utils/http';
-import { AuthContext } from '../store/context/auth-context';
-import LoadingOverlay from './ui/LoadingOverlay';
+import { getFormattedDate } from '../../utils/date';
+import { joinEvent } from '../../utils/http';
+import { AuthContext } from '../../store/context/auth-context';
+import LoadingOverlay from '../ui/LoadingOverlay';
 
 function ChatItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();

@@ -30,6 +30,7 @@ import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
 import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 import CancelEventScreen from './screens/CancelEventScreen';
 import WithdrawEventScreen from './screens/WithdrawEventScreen';
+import AcceptEventScreen from './screens/AcceptEventScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -113,8 +114,8 @@ export function UserOverview() {
         name='Profile' 
         component={ProfileScreen} 
         options={{
-          tabBarIcon: ({color, size}) => <Feather name='user' color={color} size={size} />,
-          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Profile</Text>
+          tabBarIcon: ({color, size}) => <Feather name='globe' color={color} size={size} />,
+          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>My</Text>
         }}
       />
     </BottomTabs.Navigator> 
@@ -171,6 +172,7 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: '#FCFCFC'}
       }} />
+      <Stack.Screen name="AcceptEvent" component={AcceptEventScreen} />
     </Stack.Navigator>
   );
 }

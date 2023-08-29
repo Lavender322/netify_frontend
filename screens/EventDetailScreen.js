@@ -12,7 +12,7 @@ function EventDetailScreen({ navigation, route }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
-  const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  const [eventHostGradeTag, setEventHostGradeTag] = useState(); 
 
   function previousStepHandler() {
     navigation.goBack();
@@ -26,7 +26,7 @@ function EventDetailScreen({ navigation, route }) {
   const eventParticipants = route.params?.eventParticipants;
 
   // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
@@ -82,6 +82,18 @@ function EventDetailScreen({ navigation, route }) {
     });
   };
 
+  function withdrawEventHandler() {
+    navigation.navigate('WithdrawEvent', {
+      sectorTags: sectorTags,
+      gradeTags: gradeTags,
+      eventId: eventId,
+      eventHost: eventDetails.eventHost,
+      eventStartTime: eventDetails.eventStartTime,
+      eventEndTime: eventDetails.eventEndTime,
+      eventLocation: eventDetails.eventLocation
+    });
+  };
+
   function directToMessageHandler() {
 
   };
@@ -94,20 +106,19 @@ function EventDetailScreen({ navigation, route }) {
     <View style={styles.container}>
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <ScrollView style={styles.mainContainer}>
-        <Text style={styles.headerText}>{eventDetails.eventName}</Text> 
-        {/* two images for confirmed 121 */}
-        
+        <Text style={styles.headerText}>{previousScreen === 'Sent' ? 'Meeting ' + eventDetails.eventHost.localizedfirstname : eventDetails.eventName}</Text> 
         {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <View style={styles.avatarsContainer}>
-            <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
-            <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
+            <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
+            <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
           </View>
         ) : (
           <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
         )}
         {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' && eventParticipants.length ? (
           <Text style={styles.name}>Your One to One session with 
-            <Text style={styles.match}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+            ' ' + eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
             <Text> is booked in</Text>
           </Text>
         ) : (
@@ -141,7 +152,7 @@ function EventDetailScreen({ navigation, route }) {
           </Pressable>
         )}
         {previousScreen === 'Sent' && (
-          <Pressable onPress={cancelEventHandler}>
+          <Pressable onPress={withdrawEventHandler}>
             <Text style={styles.cancel}>Withdraw</Text>
           </Pressable>
         )}
