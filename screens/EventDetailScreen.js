@@ -166,7 +166,7 @@ function EventDetailScreen({ navigation, route }) {
           </Pressable>
         </View>
       )}
-      {previousScreen === 'Confirmed' && (
+      {previousScreen === 'Confirmed' || previousScreen === 'Past' || previousScreen === 'Cancelled' && (
         <View style={styles.submitFormContainer}>
           <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitBtnContainer}>

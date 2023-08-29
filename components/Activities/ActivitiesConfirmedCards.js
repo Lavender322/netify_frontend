@@ -26,7 +26,7 @@ function ActivitiesConfirmedCards({ activities, isFetchingActivities, sectorTags
     return (
       <View style={styles.fallbackContainer}>
         <Text>
-          <Text style={styles.fallback}>There are no upcoming events around you. </Text>
+          <Text style={styles.fallback}>You don't have any upcoming events. </Text>
           <Pressable onPress={redirectHandler}>
           <Text style={styles.fallbackHighlight}>Host one!</Text>
           </Pressable>

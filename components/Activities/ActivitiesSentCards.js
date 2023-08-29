@@ -26,7 +26,11 @@ function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gra
     return (
       <View style={styles.fallbackContainer}>
         <Text>
-          <Text style={styles.fallback}>There are no upcoming events around you. </Text>
+          {(!isPast && !isCancelled) ? (
+            <Text style={styles.fallback}>You don't have any upcoming events. </Text>
+          ) : (
+            <Text style={styles.fallback}>You don't have any events. </Text>
+          )}
           <Pressable onPress={redirectHandler}>
           <Text style={styles.fallbackHighlight}>Host one!</Text>
           </Pressable>

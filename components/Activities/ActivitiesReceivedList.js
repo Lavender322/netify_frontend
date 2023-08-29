@@ -27,10 +27,7 @@ function ActivitiesReceivedList({ applications, isFetchingApplications, eventId,
     return (
       <View style={styles.fallbackContainer}>
         <Text>
-          <Text style={styles.fallback}>There are no upcoming events around you. </Text>
-          <Pressable onPress={redirectHandler}>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
-          </Pressable>
+          <Text style={styles.fallback}>No one's requested your event yet.</Text>
         </Text>
       </View>
     )

@@ -22,6 +22,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
+        // console.log("activity.participants", activity.participants);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -40,7 +41,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags,
-      previousScreen: 'Sent'
+      previousScreen: isCancelled ? 'Cancelled' : isPast ? 'Past' : 'Sent'
     });
   };
 
@@ -63,16 +64,49 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
-        {!isFetchingActivity && (
-          <Image source={{uri: (!isCancelled && !isPast) && eventHost.userImage[3]}} style={styles.avatar} />
+        {!isFetchingActivity && !isCancelled && !isPast && (
+          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        )}
+        {!isFetchingActivity && (isCancelled || isPast) && userInfo.userId === eventHost.userId && !eventParticipants && (
+          <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
+        )}
+        {!isFetchingActivity && (isCancelled || isPast) && eventParticipants && eventParticipants[0] && (
+          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+        )}
+        {!isFetchingActivity && (isCancelled || isPast) && userInfo.userId !== eventHost.userId &&(
+          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
         )}
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
-          {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
-            <Text style={styles.match}>{(!isCancelled && !isPast) && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-          )}
-        </Text>
+        {!isCancelled && !isPast && (
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
+            {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+              <Text style={styles.match}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+            )}
+          </Text>
+        )}
+        {(isCancelled || isPast) && userInfo.userId === eventHost.userId && !eventParticipants && (
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session' : eventName}</Text>
+        )}
+        {(isCancelled || isPast) && userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One with ' : eventName}
+            {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+              <Text style={styles.match}>
+                {eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            )}
+          </Text>
+        )}
+        {(isCancelled || isPast) && userInfo.userId !== eventHost.userId && (
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One with ' : eventName}
+            {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+              <Text style={styles.match}>
+                {eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+            )}
+          </Text>
+        )}
+       
+        
+        
         <View style={[styles.detailInnerContainer, !isCancelled && styles.wrap]}>
           <Feather name="calendar" size={18} color="#3C8722" />
           <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
@@ -100,7 +134,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
           </Pressable>
         </View>
       )}
-      {isPast && (
+      {isPast && !(userInfo.userId === eventHost.userId && !eventParticipants) && (
         <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.statusContainer, styles.requestContainer]}>
             <Text style={[styles.text, styles.requestText]}>Message</Text>
