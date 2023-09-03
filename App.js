@@ -31,6 +31,8 @@ import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 import CancelEventScreen from './screens/CancelEventScreen';
 import WithdrawEventScreen from './screens/WithdrawEventScreen';
 import AcceptEventScreen from './screens/AcceptEventScreen';
+import ChatDetailScreen from './screens/ChatDetailScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -129,7 +131,7 @@ function AuthStack() {
         headerShown: false
       }}
     >
-      <Stack.Screen name="Landing" component={LandingScreen} />
+      {/* <Stack.Screen name="Landing" component={LandingScreen} /> */}
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
     </Stack.Navigator>
@@ -173,6 +175,8 @@ function AuthenticatedStack() {
         contentStyle: {backgroundColor: '#FCFCFC'}
       }} />
       <Stack.Screen name="AcceptEvent" component={AcceptEventScreen} />
+      <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }

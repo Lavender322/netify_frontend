@@ -21,7 +21,7 @@ function EventDetailScreen({ navigation, route }) {
   const eventId = route.params?.eventId;
   const sectorTags = route.params?.sectorTags;
   const gradeTags = route.params?.gradeTags;
-  const previousScreen = route.params?.previousScreen;
+  const previousScreen = route.params && route.params.previousScreen;
   const showRequest = route.params?.showRequest;
   const eventParticipants = route.params?.eventParticipants;
 
@@ -95,7 +95,10 @@ function EventDetailScreen({ navigation, route }) {
   };
 
   function directToMessageHandler() {
-
+    navigation.navigate('ChatDetail', {
+      eventHost: eventDetails.eventHost,
+      eventParticipants: eventParticipants,
+    });
   };
 
   if (isFetching || isSubmitting) {
@@ -106,25 +109,48 @@ function EventDetailScreen({ navigation, route }) {
     <View style={styles.container}>
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <ScrollView style={styles.mainContainer}>
-        <Text style={styles.headerText}>{previousScreen === 'Sent' ? 'Meeting ' + eventDetails.eventHost.localizedfirstname : eventDetails.eventName}</Text> 
-        {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
+        {/* Title */}
+        <Text style={styles.headerText}>{previousScreen && previousScreen === 'Sent' ? 'Meeting ' + eventDetails.eventHost.localizedfirstname : eventDetails.eventName}</Text> 
+        {/* Avatar(s) */}
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <View style={styles.avatarsContainer}>
             <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
             <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
           </View>
         ) : (
-          <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
+          <>
+          {previousScreen && (previousScreen === 'Past' || previousScreen === 'Cancelled') && eventDetails.eventType === 'ONE_TO_ONE' && !(userInfo.userId === eventDetails.eventHost.userId && !eventParticipants) ? (
+            <View style={styles.avatarsContainer}>
+              <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
+              <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
+            </View>
+          ) : (
+            <Image source={{uri: eventDetails.eventHost.userImage[3]}} style={styles.avatar} />
+          )}
+          </>
         )}
-        {previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' && eventParticipants.length ? (
+        {/* Name */}
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' && eventParticipants.length ? (
           <Text style={styles.name}>Your One to One session with 
             <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
             ' ' + eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
             <Text> is booked in</Text>
           </Text>
         ) : (
-          <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
+          <>
+          {previousScreen && (previousScreen === 'Past' || previousScreen === 'Cancelled') && eventDetails.eventType === 'ONE_TO_ONE' && !(userInfo.userId === eventDetails.eventHost.userId && !eventParticipants) ? (
+            <Text style={styles.name}>Your One to One session with 
+              <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+              ' ' + eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
+            </Text>
+          ) : (
+            <Text style={styles.name}>{eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>
+          )}
+          </>
         )}
-        {!(previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE') && (
+        {/* Grade + Sector */}
+        {!(previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE') &&
+        !(previousScreen && (previousScreen === 'Past' || previousScreen === 'Cancelled') && eventDetails.eventType === 'ONE_TO_ONE' && !(userInfo.userId === eventDetails.eventHost.userId && !eventParticipants)) && (
           <View style={[styles.detailInnerContainer, styles.roleContainer]}>
             <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
             <View style={styles.sectorContainer}>
@@ -132,32 +158,36 @@ function EventDetailScreen({ navigation, route }) {
             </View>
           </View>
         )}
+        {/* Date + Time */}
         <View style={[styles.detailInnerContainer, styles.timeContainer]}>
           <Feather name="calendar" size={18} color="#3C8722" />
           <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
           <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
         </View>
+        {/* Location */}
         {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
           <View style={[styles.detailInnerContainer, styles.locationContainer]}>
             <Feather name="map-pin" size={18} color="black" />
             <Text style={styles.location}>{eventDetails.eventLocation}</Text>
           </View>
         )}
+        {/* Description */}
         {eventDetails.eventDescription && (
           <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
         )}
-        {previousScreen === 'Confirmed' && (
+        {/* Functions */}
+        {previousScreen && previousScreen === 'Confirmed' && (
           <Pressable onPress={cancelEventHandler}>
             <Text style={styles.cancel}>Cancel</Text>
           </Pressable>
         )}
-        {previousScreen === 'Sent' && (
+        {previousScreen && previousScreen === 'Sent' && (
           <Pressable onPress={withdrawEventHandler}>
             <Text style={styles.cancel}>Withdraw</Text>
           </Pressable>
         )}
       </ScrollView>
-      {previousScreen === 'Home' && showRequest && (
+      {previousScreen && previousScreen === 'Home' && showRequest && (
         <View style={styles.submitFormContainer}>
           <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitBtnContainer}>
@@ -166,7 +196,16 @@ function EventDetailScreen({ navigation, route }) {
           </Pressable>
         </View>
       )}
-      {previousScreen === 'Confirmed' || previousScreen === 'Past' || previousScreen === 'Cancelled' && (
+      {previousScreen && previousScreen === 'Confirmed' && (
+        <View style={styles.submitFormContainer}>
+          <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
+            <View style={styles.submitBtnContainer}>
+              <Text style={styles.submitBtnText}>Message</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
+      {previousScreen && (previousScreen === 'Past' || previousScreen === 'Cancelled') && eventDetails.eventType === 'ONE_TO_ONE' && !(userInfo.userId === eventDetails.eventHost.userId && !eventParticipants) && (
         <View style={styles.submitFormContainer}>
           <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitBtnContainer}>

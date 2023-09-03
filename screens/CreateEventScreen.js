@@ -1,9 +1,7 @@
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 import CreateEventForm from '../components/CreateEvent/CreateEventForm';
 
 function CreateEventScreen({ navigation }) {
-
-
   function previousStepHandler() {
     navigation.goBack();
   };
@@ -40,7 +38,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingVertical: 9,
     paddingHorizontal: 18
-    
   },
   title: {
     fontFamily: 'roboto-bold',

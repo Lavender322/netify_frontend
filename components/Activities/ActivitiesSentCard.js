@@ -41,7 +41,8 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags,
-      previousScreen: isCancelled ? 'Cancelled' : isPast ? 'Past' : 'Sent'
+      previousScreen: isCancelled ? 'Cancelled' : isPast ? 'Past' : 'Sent',
+      eventParticipants: eventParticipants
     });
   };
 
@@ -58,7 +59,10 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
   };
 
   function directToMessageHandler() {
-
+    navigation.navigate('ChatDetail', {
+      eventHost: eventHost,
+      eventParticipants: eventParticipants
+    });
   };
 
   return (
@@ -89,7 +93,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
           <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session' : eventName}</Text>
         )}
         {(isCancelled || isPast) && userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
-          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One with ' : eventName}
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
             {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
               <Text style={styles.match}>
                 {eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
@@ -97,16 +101,13 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
           </Text>
         )}
         {(isCancelled || isPast) && userInfo.userId !== eventHost.userId && (
-          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One with ' : eventName}
+          <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'One to One session with ' : eventName}
             {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
               <Text style={styles.match}>
                 {eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
             )}
           </Text>
         )}
-       
-        
-        
         <View style={[styles.detailInnerContainer, !isCancelled && styles.wrap]}>
           <Feather name="calendar" size={18} color="#3C8722" />
           <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
