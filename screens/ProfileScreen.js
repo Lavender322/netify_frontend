@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
 import IconButton from '../components/ui/IconButton';
 import { fetchTags } from '../utils/http';
+import { Feather } from '@expo/vector-icons';
 
 function ProfileScreen({ navigation }) {
   const [sectorTags, setSectorTags] = useState([]);
@@ -54,6 +55,10 @@ function ProfileScreen({ navigation }) {
     navigation.navigate('Settings');
   };
 
+  function directToCreateEventHandler() {
+    navigation.navigate('CreateEvent');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -70,13 +75,26 @@ function ProfileScreen({ navigation }) {
           </View>
         </View>
         <View style={styles.activities}>
+          <View style={styles.activitiesHeader}>
+            <Text style={styles.activitiesTitle}>My activities</Text>
+            <Pressable>
+              <View style={styles.viewContainer}>
+                <Text style={styles.viewText}>View all</Text>
+                <Feather name="chevron-right" size={24} color="#6A6A6A" />
+              </View>
+            </Pressable>
+          </View>
 
+          <View style={styles.submitFormContainer}>
+            <Pressable onPress={directToCreateEventHandler} style={({pressed}) => pressed && styles.pressed}>
+              <View style={styles.submitFormBtnContainer}>
+                <Text style={[styles.submitFormBtnText, styles.enabledText]}>Create event</Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
       </View>
     </View>
-    // <Pressable  onPress={logoutHandler}>
-    //   <Text>logout</Text>
-    // </Pressable>
   )
 }
 
@@ -85,14 +103,14 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 16,
-    paddingHorizontal: 7
+    paddingTop: 16
   },
   headerContainer: {
     flexDirection: 'row',
     marginTop: 58,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingHorizontal: 7
   },
   headerText: {
     fontFamily: 'roboto-bold',
@@ -147,6 +165,52 @@ const styles = StyleSheet.create({
   },
   activities: {
     backgroundColor: '#ffffff',
-    
-  }
+    width: '100%',
+  },
+  activitiesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingLeft: 12
+  }, 
+  activitiesTitle: {
+    fontFamily: 'roboto-bold',
+    fontSize: 16,
+    lineHeight: 20.8,
+    color: '#1A1A1A'
+  },
+  viewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  viewText: {
+    fontFamily: 'roboto',
+    fontSize: 15,
+    lineHeight: 18.2,
+    color: '#6A6A6A',
+    marginRight: 8
+  },
+  submitFormContainer: {
+    marginBottom: 24,
+    paddingTop: 8,
+    paddingHorizontal: 12,
+  },
+  submitFormBtnContainer: {
+    backgroundColor: '#1A4821',
+    borderRadius: 8,
+    paddingVertical: 13,
+  },
+  submitFormBtnText: {
+    color: '#6A6A6A',
+    fontSize: 16,
+    fontFamily: 'roboto-medium',
+    textAlign: 'center'
+  },
+  enabledText: {
+    color: 'white'
+  },
+  pressed: {
+    opacity: 0.75
+  },
 });
