@@ -19,22 +19,6 @@
     "production": {}
   },
   "submit": {
-    "prod": {
-      "android": {
-      },
-      "ios": {
-        "appleId":"info@net-ify.com",
-        "ascAppId":"6464543107",
-        "appleTeamId":"V8CK5LDD6N",
-        "sku":"netify",
-        "language":"en-UK",
-        "companyName":"Netify",
-        "appName":"Netify",
-        "ascApiKeyPath":"",
-        "ascApiKeyIssuerId":"",
-        "ascApiKeyId":"",
-        "bundleIdentifier":"",
-        "metadataPath":""
-      }
-    },
+    "production": {}
+  }
 }
