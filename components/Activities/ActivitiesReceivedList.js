@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet, View, Pressable } from 'react-native';
 import ActivitiesReceivedItem from './ActivitiesReceivedItem';
-import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../ui/LoadingOverlay';
 
 function renderActivityItem(itemData, eventId, sectorTags, gradeTags) {
@@ -11,12 +10,7 @@ function renderActivityItem(itemData, eventId, sectorTags, gradeTags) {
 };
 
 function ActivitiesReceivedList({ applications, isFetchingApplications, eventId, sectorTags, gradeTags }) {
-  const navigation = useNavigation();
-  
-  function redirectHandler() {
-    navigation.navigate('CreateEvent');
-  };
-
+  console.log("123", applications);
   if (isFetchingApplications) {
     return (
       <LoadingOverlay />
@@ -37,9 +31,9 @@ function ActivitiesReceivedList({ applications, isFetchingApplications, eventId,
     <FlatList 
       data={applications} 
       renderItem={(item) => renderActivityItem(item, eventId, sectorTags, gradeTags)} 
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.user.id}
     />
-  )
+  );
 }
 
 export default ActivitiesReceivedList;

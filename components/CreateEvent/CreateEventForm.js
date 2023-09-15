@@ -158,7 +158,7 @@ function CreateEventForm() {
         eventTeam: sectorTagIds,
         eventGrade: gradeTagIds,
         eventType: isOneToOne ? 'ONE_TO_ONE' : 'GROUP_EVENT',
-        allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 2 : Number(selectedCapacity),
+        allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 10000 : Number(selectedCapacity),
         eventStartTime: eventStartTime,
         eventEndTime: eventEndTime,
         eventDescription: notes,

@@ -29,7 +29,7 @@ function AcceptEventScreen({ navigation, route }) {
         await approveEvent(eventId, user.userId, token);
         // console.log("eventDetails", eventId, eventDetails);
       } catch (error) {
-        console.log(error.response.data);
+        console.log('approveEventError', error.response.data);
       };
       setIsFetching(false);
     };
@@ -43,6 +43,7 @@ function AcceptEventScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
+        console.log("eventDetails", eventDetails);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -51,18 +52,6 @@ function AcceptEventScreen({ navigation, route }) {
 
     getEventDetails();
   }, [eventId]);
-
-  async function requestToJoinEventHandler(token, eventId) {
-    setIsSubmitting(true);
-    try {
-      await joinEvent(token, eventId);
-      navigation.goBack();
-    } catch (error) {
-      // setError('Could not save data - please try again later!');
-      console.log("error", error);
-      setIsSubmitting(false);
-    };
-  };
 
   if (isFetching) {
     return <LoadingOverlay />;
@@ -73,13 +62,13 @@ function AcceptEventScreen({ navigation, route }) {
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <View style={styles.mainContainer}>
         <Text style={styles.headerText}>Your Event is booked in!</Text> 
-        {eventDetails.eventType === 'ONE_TO_ONE' && (
+        {eventDetails && eventDetails.eventType === 'ONE_TO_ONE' && (
           <View style={styles.avatarsContainer}>
             <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
             <Image source={{uri: user.userImage[3]}} style={[styles.avatar, styles.avatarRight]} />
           </View>
         )}
-        {eventDetails.eventType === 'ONE_TO_ONE' && (
+        {eventDetails && eventDetails.eventType === 'ONE_TO_ONE' && (
           <Text style={styles.name}>Meet
             <Text style={styles.match}>{' ' + user.localizedfirstname + ' ' + user.localizedlastname}</Text>
             <Text> at</Text>
@@ -87,13 +76,13 @@ function AcceptEventScreen({ navigation, route }) {
         )}
         <View style={[styles.detailInnerContainer, styles.timeContainer]}>
           <Feather name="calendar" size={18} color="#3C8722" />
-          <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
-          <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
+          <Text style={styles.period}>{eventDetails && eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
+          <Text style={styles.date}>{eventDetails && getFormattedDate(eventDetails.eventStartTime, true)}</Text>
         </View>
-        {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
+        {eventDetails && eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
           <View style={[styles.detailInnerContainer, styles.locationContainer]}>
             <Feather name="map-pin" size={18} color="black" />
-            <Text style={styles.location}>{eventDetails.eventLocation}</Text>
+            <Text style={styles.location}>{eventDetails && eventDetails.eventLocation}</Text>
           </View>
         )}
         <Text style={styles.note}>You can always reach out to your invitee and share a bit about yourself and your interests during the session.</Text>

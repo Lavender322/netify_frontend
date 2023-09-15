@@ -59,6 +59,10 @@ function ProfileScreen({ navigation }) {
     navigation.navigate('CreateEvent');
   };
 
+  function directToMyActivitiesHandler() {
+    navigation.navigate('MyActivities');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -77,7 +81,7 @@ function ProfileScreen({ navigation }) {
         <View style={styles.activities}>
           <View style={styles.activitiesHeader}>
             <Text style={styles.activitiesTitle}>My activities</Text>
-            <Pressable>
+            <Pressable onPress={directToMyActivitiesHandler}>
               <View style={styles.viewContainer}>
                 <Text style={styles.viewText}>View all</Text>
                 <Feather name="chevron-right" size={24} color="#6A6A6A" />

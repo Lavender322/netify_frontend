@@ -6,13 +6,29 @@ import { joinEvent } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 import LoadingOverlay from '../ui/LoadingOverlay';
 
-function ChatItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags, onPress}) {
+function ChatItem({ chatRoomMember, chatRoomName, lastMessage, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
+  const [userChattedTo, setUserChattedTo] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [eventStatus, setEventStatus] = useState(myStateInTheEvent);
   
   const navigation = useNavigation();
+
+  // TO COMMENT OUT
+  const { token, userInfo } = useContext(AuthContext);
+  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+  
+  useEffect(() => {
+    if (chatRoomName.startsWith('One to one')) {
+      const user = chatRoomMember.filter(
+        member => member.userId !== userInfo.userId
+      );
+      // console.log("user", user[0]);
+      setUserChattedTo(user);
+    } else {
+      setUserChattedTo(chatRoomMember);
+    };
+  }, [chatRoomMember]);
 
   function eventDetailHandler() {
     navigation.navigate('EventDetail', {
@@ -21,25 +37,23 @@ function ChatItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, event
       gradeTags: gradeTags
     });
   };
- 
-  // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
-  // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
-  useEffect(() => {
-    if (eventHost && eventHost.userTag) {
-      const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-        return eventHost.userTag.includes(gradeTag.tagId.toString());
-      });
+  // console.log("eventHost123", chatRoomMember);
+ 
+  // useEffect(() => {
+  //   if (eventHost && eventHost.userTag) {
+  //     const eventHostGradeTag = gradeTags.filter((gradeTag) => {
+  //       return eventHost.userTag.includes(gradeTag.tagId.toString());
+  //     });
     
-      const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-        return eventHost.userTag.includes(sectorTag.tagId.toString());
-      });
+  //     const eventHostSectorTag = sectorTags.filter((sectorTag) => {
+  //       return eventHost.userTag.includes(sectorTag.tagId.toString());
+  //     });
   
-      setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
-      setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
-    };
-  }, [eventHost]);
+  //     setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
+  //     setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
+  //   };
+  // }, [eventHost]);
 
   async function requestToJoinEventHandler(token, eventId) {
     setIsSubmitting(true);
@@ -56,31 +70,39 @@ function ChatItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, event
   return (
     <View style={styles.container}>
       <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
-        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
-        <View style={styles.infoOuterContainer}>
-          <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-          <View style={styles.infoInnerContainer}>
-            <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text>
-            <View style={styles.sectorContainer}>
-              <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
-            </View>
-          </View>
-          <View style={styles.infoInnerContainer}>
-            <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
-            <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text>
-          </View>
-        </View>
-      </Pressable>
-      <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
-        {eventStatus === "REQUESTED" ? (
-          <View style={[styles.statusContainer, styles.pendingContainer]}>
-            <Text style={[styles.text, styles.pendingText]}>Pending</Text>
-          </View>
-        ) : (
-          <View style={[styles.statusContainer, styles.requestContainer]}>
-            <Text style={[styles.text, styles.requestText]}>Request</Text>
+        {chatRoomName.startsWith('One to one') && userChattedTo && (
+          <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
+        )}
+        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length === 2 && (
+          <View style={styles.twoImages}>
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
           </View>
         )}
+        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length === 3 && (
+          <View style={styles.threeImages}>
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+          </View>
+        )}
+        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length >= 4 && (
+          <View style={styles.fourImages}>
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
+          </View>
+        )}
+        <View style={styles.infoOuterContainer}>
+          <Text style={styles.name}>{userChattedTo && userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
+          <Text style={styles.msg}>Thanks for checking the locati...</Text>
+          <Text style={styles.time}>15 mins ago</Text>
+          <View style={styles.infoInnerContainer}>
+            {/* <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+            <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text> */}
+          </View>
+        </View>
       </Pressable>
     </View>
   )
@@ -102,76 +124,54 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  twoImages: {
+    width: 64,
+    height: 64,
+    marginRight: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  threeImages: {
+    width: 64,
+    height: 64,
+    marginRight: 6,
+  },
+  fourImages: {
+    width: 64,
+    height: 64,
+    marginRight: 6,
+  },
   avatar: {
     width: 60,
     height: 60,
     marginRight: 10,
     borderRadius: 30
   },
+  smallAvatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15
+  },
   infoOuterContainer: {
+    flexDirection: 'column',
     padding: 4,
     marginRight: 30,
-    justifyContent: 'space-between',
   },  
   name: {
     fontFamily: 'roboto-bold',
     fontSize: 16,
     color: '#1A1A1A',
   },
-  infoInnerContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginVertical: 1
-  },
-  grade: {
+  msg: {
     color: '#3B4852',
-    marginRight: 10,
-    fontFamily: 'roboto-medium',
-    fontSize: 12
+    fontFamily: 'roboto',
+    lineHeight: 20,
   },
-  sectorContainer: {
-    backgroundColor: '#E9E9E9',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 2
-  },
-  sector: {
+  time: {
     color: '#3B4852',
     fontFamily: 'roboto-medium',
-    fontSize: 12
-  },
-  period: {
-    color: '#3C8722',
-    fontSize: 16,
-    fontFamily: 'roboto-medium',
-    marginRight: 5
-  },
-  date: {
-    color: '#3B4852',
-    fontFamily: 'roboto-medium'
-  },
-  statusContainer: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 23
-  },
-  requestContainer: {
-    backgroundColor: '#1A4821'
-  },
-  pendingContainer: {
-    backgroundColor: '#6AA173'
-  },
-  text: {
-    fontSize: 16,
-    fontFamily: 'roboto'
-  },
-  requestText: {
-    color: '#A6E291'
-  },
-  pendingText: {
-    color: '#1A4821'
-  },
-  pressed: {
-    opacity: 0.75
+    fontSize: 11,
+    lineHeight: 14
   }
 });

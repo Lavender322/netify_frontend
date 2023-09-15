@@ -33,6 +33,7 @@ import WithdrawEventScreen from './screens/WithdrawEventScreen';
 import AcceptEventScreen from './screens/AcceptEventScreen';
 import ChatDetailScreen from './screens/ChatDetailScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import MyActivitiesScreen from './screens/MyActivitiesScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -131,7 +132,7 @@ function AuthStack() {
         headerShown: false
       }}
     >
-      {/* <Stack.Screen name="Landing" component={LandingScreen} /> */}
+      <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
     </Stack.Navigator>
@@ -177,6 +178,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="AcceptEvent" component={AcceptEventScreen} />
       <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="MyActivities" component={MyActivitiesScreen} />
     </Stack.Navigator>
   );
 }
@@ -268,6 +270,7 @@ export default function App() {
     'inter-semibold': require('./assets/fonts/Inter-SemiBold.ttf'),
     'mulish-semibold': require('./assets/fonts/Mulish-SemiBold.ttf'),
     'product-sans-bold': require('./assets/fonts/Product-Sans-Bold.ttf'),
+    'lato': require('./assets/fonts/Lato-Regular.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {

@@ -15,11 +15,13 @@ function ChatList({ chats, isFetchingChats }) {
     )
   };
 
+  console.log("chats", chats);
+
   if ((!chats || chats.length === 0) && !isFetchingChats) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
-          <Text style={styles.fallback}>You don’t have any existing chat.</Text>
+          <Text style={styles.fallback}>You don't have any existing chat.</Text>
           {/* <Text style={styles.fallbackHighlight}>Host one!</Text> */}
         </Text>
       </View>
@@ -30,7 +32,7 @@ function ChatList({ chats, isFetchingChats }) {
     <FlatList 
       data={chats} 
       renderItem={(item) => renderChatItem(item)} 
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.chatRoomId}
     />
   )
 }

@@ -1,40 +1,145 @@
-import { StyleSheet, View, Text, TextInput, Image, ScrollView } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import UpcomingEventCard from '../components/Chat/UpcomingEventCard';
+import { AuthContext } from '../store/context/auth-context';
+import { createNewChat, fetchMessages, sendMessage, fetchChatRoomInfo } from '../utils/http';
+import MessageList from '../components/Chat/MessageList';
 
 function ChatDetailScreen({ navigation, route }) {
   const eventHost = route.params && route.params.eventHost;
   const eventParticipants = route.params && route.params.eventParticipants;
 
+  const [chatRoomId, setChatRoomId] = useState();
+  const [chatRoomInfo, setChatRoomInfo] = useState();
+  const [chatMessages, setChatMessages] = useState();
+  const [enteredText, setEnteredText] = useState('');
+
+  const { token, userInfo } = useContext(AuthContext);
+
+  useEffect(() => {
+    var userTwoId;
+    if (userInfo.userId === eventHost.userId) {
+      userTwoId = eventParticipants[0].user.userId;
+    } else {
+      userTwoId = eventHost.userId;
+    };
+
+    async function initiateNewChat() {
+      // setIsFetching(true);
+      try {
+        const id = await createNewChat([userInfo.userId, userTwoId], token);
+        setChatRoomId(id);
+        console.log(chatRoomId);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetching(false);
+    };
+
+    initiateNewChat();
+  }, []);
+
+  useEffect(() => {
+    if (chatRoomId) {
+      async function getChatRoomInfo() {
+        // setIsFetching(true);
+        try {
+          const info = await fetchChatRoomInfo(chatRoomId, token);
+          setChatRoomInfo(info);
+          console.log("info", info);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+        // setIsFetching(false);
+      };
+  
+      getChatRoomInfo();
+    };
+  }, [chatRoomId]);
+
+  useEffect(() => {
+    if (chatRoomId) {
+      async function getMessages() {
+        // setIsFetching(true);
+        try {
+          const messages = await fetchMessages(chatRoomId, token);
+          setChatMessages(messages);
+          console.log("messages", messages);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+        // setIsFetching(false);
+      };
+  
+      getMessages();
+    };
+  }, [chatRoomId]);
+
   function previousStepHandler() {
     navigation.goBack();
+  };
+
+  function textInputHandler(enteredText) {
+    setEnteredText(enteredText);
+  };
+
+  async function sendMessageHandler() {
+    if (chatRoomId && enteredText.length) {
+      let body = {
+        messageType: "text",
+        messageContent: enteredText,
+        chatRoomId: chatRoomId
+      };
+      try {
+        await sendMessage(body, token);
+      } catch (error) {
+        console.log(error.response.data);
+      }; 
+    };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
-        <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
-        <Text style={styles.name}>{eventParticipants && eventParticipants[0] ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
-        ' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-      </View>
+        {eventParticipants && eventParticipants[0] && (
+          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+        )}
+        {userInfo.userId !== eventHost.userId && (
+          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        )}
 
+        {userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
+          <Text style={styles.name}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+        )}
+        {userInfo.userId !== eventHost.userId && (
+          <Text style={styles.name}>{' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+        )}
+      </View>
       <View style={styles.mainContainer}>
         <ScrollView>
-          <UpcomingEventCard />
-          <View style={styles.timeContainer}>
-            <Text style={styles.time}>22 June 2023 BST</Text>
-          </View>
+          {chatRoomInfo && chatRoomInfo.closestEventId && (
+            <UpcomingEventCard 
+              participantsName={userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname} 
+              hostName={userInfo.userId !== eventHost.userId && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
+            />
+          )}
+          <MessageList />
         </ScrollView>
       </View>
 
       <View style={styles.searchBar}>
         <TextInput 
           style={styles.searchInput}
-          placeholder='Search'
+          placeholder=''
           placeholderTextColor='#ADB5BD'
+          onChangeText={textInputHandler}
+          value={enteredText}
         />
-        <Image style={styles.logo} source={require("../assets/send-icon.png")} />
+        <Pressable onPress={sendMessageHandler}>
+          <Image style={styles.logo} source={require("../assets/send-icon.png")} />
+        </Pressable>
       </View>
     </View>
   )
@@ -82,19 +187,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    marginHorizontal: 16,
     marginTop: 16,
-    borderRadius: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    backgroundColor: 'yellow'
+    paddingTop: 11,
+    paddingHorizontal: 13,
+    paddingBottom: 36,
+    borderTopColor: '#EDEDED',
+    borderTopWidth: 1
   },
   searchInput: {
     fontFamily: 'mulish-semibold',
     fontSize: 15,
-    marginLeft: 8,
     color: '#191919',
-    backgroundColor: 'blue'
+    borderColor: '#0000001A',
+    borderWidth: 1,
+    width: '90%',
+    borderRadius: 6,
+    padding: 8,
+    marginRight: 12
   }
-
 });

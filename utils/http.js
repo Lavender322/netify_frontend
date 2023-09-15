@@ -163,13 +163,16 @@ export async function fetchActivity(eventId, token) {
 };
 
 export function approveEvent(eventId, userId, token) {  
-  console.log("eventId", eventId, userId);
+  let body = {eventId, userId};
   return axios({
-    method: 'GET',
-    url: BACKEND_URL + `/event/approve?eventId=${eventId}&userId=${userId}`,
+    method: 'POST',
+    url: BACKEND_URL + `/event/approve`,
     headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-    }
+    },
+    data: JSON.stringify(body)
   });
 };
 
@@ -178,7 +181,9 @@ export function withdrawEvent(eventId, token) {
     method: 'POST',
     url: BACKEND_URL + `/event/withdraw/${eventId}`,
     headers: {
-      Authorization: `Bearer ${token}`
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     }
   });
 };
@@ -188,7 +193,88 @@ export function cancelEvent(eventId, token) {
     method: 'POST',
     url: BACKEND_URL + `/event/cancel/${eventId}`,
     headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
   });
+};
+
+export async function fetchChats(token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/chat/getOverAll`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};
+
+export async function createNewChat(chatTo, token) {  
+  let body = {chatTo};
+  const response = await axios({
+    method: 'POST',
+    url: BACKEND_URL + `/chat/startChatRoom`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
+
+  return response.data.data;
+};
+
+export async function fetchMessages(chatRoomId, token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/chat/getMessage?chatRoomId=${chatRoomId}&start=0&end=100`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};
+
+export async function fetchMyActivities(token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/event/get_all_my_events?start=0&end=100`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};
+
+export async function sendMessage(body, token) {  
+  const response = await axios({
+    method: 'POST',
+    url: BACKEND_URL + `/chat/send`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
+
+  return response.data.data;
+};
+
+export async function fetchChatRoomInfo(chatRoomId, token) {  
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/chat/getChatRoom?chatRoomId=${chatRoomId}`,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
 };

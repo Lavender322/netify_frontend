@@ -24,7 +24,12 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
       setIsFetchingApplications(true);
       try {
         const activity = await fetchActivity(eventId, token);
-        setLoadedApplications(activity.participants);
+        const applicants = activity.participants.filter((applicant) => {
+          return applicant.participantState === 'REQUESTED'
+        });
+        if (applicants.length) {
+          setLoadedApplications(applicants);
+        }
       } catch (error) {
         console.log(error.response.data);
       };

@@ -15,7 +15,15 @@ function UserInfoScreen({ navigation }) {
   // TO COMMENT OUT
   const { tempToken, setUserInfo } = useContext(AuthContext);
   // const { setUserInfo } = useContext(AuthContext);
+  // Mike
   // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+  // Yining
+  // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwM2I1ODQ5Yy02OGI2LTRkM2EtYjAyYi04YmZhN2RiZjQzMTAiLCJpYXQiOjE2OTQ3Nzg1MzgsImV4cCI6ODY1Njk0Nzc4NTM4fQ.McrptZP_Q3XuSq-p2FGcnK2NGRofm2TqBLJHfIqZYpy8CPYXSe0NkLDyNDei3Y1Q-dXEqo2BYUTRtHhBytAZfA';
+  // Hai
+  // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlZDU2ZTBiNi1jY2RhLTRjOGEtYjdjYi05OTY0MjY4NmI0NTgiLCJpYXQiOjE2OTQ3NzUwNDQsImV4cCI6ODY1Njk0Nzc1MDQ0fQ.RI4s3h6uWl39O0ffRpMEWvxBbUfSbpRAdtABcHMCs3dOXpv64_3Hzeu96TeWZD5B1I_0YC4zRM6V5BGXecDnIA';
+  // George
+  // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2NjhkYjJlYy1mZmU2LTQ1NDgtYjZjYi1mYzEzNzIwZDgxMGMiLCJpYXQiOjE2OTQ3NzUwODIsImV4cCI6ODY1Njk0Nzc1MDgyfQ.44xtrvzeVvRNrh0Y5PLYBeGm_dEGso2VwM70tY7Oa1rDAWTtP-LitCUah7RDJ7mkAwtGYBt_Ov1e-JG7Ql1EoQ';
+
   
   useEffect(() => {
     if (tempToken) {
