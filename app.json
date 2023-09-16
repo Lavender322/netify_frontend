@@ -19,7 +19,7 @@
     "ios": {
       "buildNumber": "1.0.0",
       "supportsTablet": true,
-      "bundleIdentifier": "com.lavender322.netify-frontend"
+      "bundleIdentifier": "com.net-ify.ios"
     },
     "android": {
       "versionCode": 1,
