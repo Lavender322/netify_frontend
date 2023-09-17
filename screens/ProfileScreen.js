@@ -5,12 +5,14 @@ import { AuthContext } from '../store/context/auth-context';
 import IconButton from '../components/ui/IconButton';
 import { fetchTags } from '../utils/http';
 import { Feather } from '@expo/vector-icons';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function ProfileScreen({ navigation }) {
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
   const [userGradeTag, setUserGradeTag] = useState();
   const [userSectorTag, setUserSectorTag] = useState();
+  const [isFetchingTags, setIsFetchingTags] = useState(true);
 
   const { userInfo } = useContext(AuthContext);
 
@@ -38,6 +40,7 @@ function ProfileScreen({ navigation }) {
 
   useEffect(() => {
     if (userInfo && userInfo.userTag && gradeTags.length && sectorTags.length) {
+      setIsFetchingTags(true);
       const userGradeTag = gradeTags.filter((gradeTag) => {
         return userInfo.userTag.includes(gradeTag.tagId);
       });
@@ -46,8 +49,9 @@ function ProfileScreen({ navigation }) {
         return userInfo.userTag.includes(sectorTag.tagId);
       });
   
-      setUserGradeTag(userGradeTag[0] && userGradeTag[0].tagName);
-      setUserSectorTag(userSectorTag[0] && userSectorTag[0].tagName);
+      setUserGradeTag(userGradeTag[0] ? userGradeTag[0].tagName : 'null');
+      setUserSectorTag(userSectorTag[0] ? userSectorTag[0].tagName : 'null');
+      setIsFetchingTags(false);
     };
   }, [userInfo, gradeTags, sectorTags]);
 
@@ -63,6 +67,12 @@ function ProfileScreen({ navigation }) {
     navigation.navigate('MyActivities');
   };
 
+  if (isFetchingTags) {
+    return (
+      <LoadingOverlay />
+    )
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -73,9 +83,19 @@ function ProfileScreen({ navigation }) {
         <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
         <Text style={styles.name}>{userInfo.localizedfirstname + ' ' + userInfo.localizedlastname}</Text>
         <View style={styles.roleContainer}>
-          <Text style={styles.grade}>{userGradeTag ? userGradeTag : '--'}</Text> 
+          {userGradeTag && userGradeTag !== 'null' && (
+            <Text style={styles.grade}>{userGradeTag}</Text> 
+          )}
+          {userGradeTag && userGradeTag === 'null' && (
+            <Text style={styles.grade}>--</Text> 
+          )}
           <View style={styles.sectorContainer}>
-            <Text style={styles.sector}>{userSectorTag ? userSectorTag : '--'}</Text>
+            {userSectorTag && userSectorTag !== 'null' && (
+              <Text style={styles.sector}>{userSectorTag}</Text> 
+            )}
+            {userSectorTag && userSectorTag === 'null' && (
+              <Text style={styles.sector}>--</Text> 
+            )}
           </View>
         </View>
         <View style={styles.activities}>
