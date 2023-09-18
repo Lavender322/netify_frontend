@@ -9,6 +9,7 @@ import MessageList from '../components/Chat/MessageList';
 function ChatDetailScreen({ navigation, route }) {
   const eventHost = route.params && route.params.eventHost;
   const eventParticipants = route.params && route.params.eventParticipants;
+  const eventId = route.params && route.params.eventId;
 
   const [chatRoomId, setChatRoomId] = useState();
   const [chatRoomInfo, setChatRoomInfo] = useState();
@@ -18,21 +19,13 @@ function ChatDetailScreen({ navigation, route }) {
   const { token, userInfo } = useContext(AuthContext);
 
   useEffect(() => {
-    var userTwoId;
-    if (userInfo.userId === eventHost.userId) {
-      userTwoId = eventParticipants[0].user.userId;
-    } else {
-      userTwoId = eventHost.userId;
-    };
-
     async function initiateNewChat() {
       // setIsFetching(true);
       try {
-        const id = await createNewChat([userInfo.userId, userTwoId], token);
+        const id = await createNewChat(eventId, token);
         setChatRoomId(id);
-        console.log(chatRoomId);
       } catch (error) {
-        console.log(error.response.data);
+        console.log("createNewChat", error.response.data);
       };
       // setIsFetching(false);
     };
@@ -49,7 +42,7 @@ function ChatDetailScreen({ navigation, route }) {
           setChatRoomInfo(info);
           console.log("info", info);
         } catch (error) {
-          console.log(error.response.data);
+          console.log('fetchChatRoomInfo', error.response.data);
         };
         // setIsFetching(false);
       };

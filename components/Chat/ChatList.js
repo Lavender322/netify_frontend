@@ -15,7 +15,7 @@ function ChatList({ chats, isFetchingChats }) {
     )
   };
 
-  console.log("chats", chats);
+  // console.log("chats", chats[1]);
 
   if ((!chats || chats.length === 0) && !isFetchingChats) {
     return (

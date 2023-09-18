@@ -61,7 +61,8 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
   function directToMessageHandler() {
     navigation.navigate('ChatDetail', {
       eventHost: eventHost,
-      eventParticipants: eventParticipants
+      eventParticipants: eventParticipants,
+      eventId: eventId,
     });
   };
 

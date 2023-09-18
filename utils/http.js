@@ -212,11 +212,27 @@ export async function fetchChats(token) {
   return response.data.data;
 };
 
-export async function createNewChat(chatTo, token) {  
-  let body = {chatTo};
+// export async function createNewChat(chatTo, token) {  
+//   let body = {chatTo};
+//   const response = await axios({
+//     method: 'POST',
+//     url: BACKEND_URL + `/chat/startChatRoom`,
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`
+//     },
+//     data: JSON.stringify(body)
+//   });
+
+//   return response.data.data;
+// };
+
+export async function createNewChat(eventId, token) {  
+  let body = {eventId};
   const response = await axios({
     method: 'POST',
-    url: BACKEND_URL + `/chat/startChatRoom`,
+    url: BACKEND_URL + `/chat/startChatRoomWithEventId`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

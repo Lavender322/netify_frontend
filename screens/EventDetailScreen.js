@@ -100,6 +100,7 @@ function EventDetailScreen({ navigation, route }) {
     navigation.navigate('ChatDetail', {
       eventHost: eventDetails.eventHost,
       eventParticipants: eventParticipants,
+      eventId: eventId
     });
   };
 

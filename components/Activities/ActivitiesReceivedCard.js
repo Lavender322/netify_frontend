@@ -85,9 +85,9 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
 
       {isExpanded && (
         <View>
-          {loadedApplications && loadedApplications.length && !isFetchingApplications && (
+          {loadedApplications && loadedApplications.length && !isFetchingApplications ? (
             <Text style={styles.note}>Here is a list of people who are keen to meet you at your proposed time slot!</Text>
-          )}
+          ) : null}
           <ActivitiesReceivedList 
             applications={loadedApplications} 
             isFetchingApplications={isFetchingApplications} 

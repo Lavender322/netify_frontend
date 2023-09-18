@@ -10,7 +10,6 @@ function renderActivityItem(itemData, eventId, sectorTags, gradeTags) {
 };
 
 function ActivitiesReceivedList({ applications, isFetchingApplications, eventId, sectorTags, gradeTags }) {
-  console.log("123", applications);
   if (isFetchingApplications) {
     return (
       <LoadingOverlay />
@@ -20,9 +19,7 @@ function ActivitiesReceivedList({ applications, isFetchingApplications, eventId,
   if ((!applications || applications.length === 0) && !isFetchingApplications) {
     return (
       <View style={styles.fallbackContainer}>
-        <Text>
-          <Text style={styles.fallback}>No one's requested your event yet.</Text>
-        </Text>
+        <Text style={styles.fallback}>No one's requested your event yet.</Text>
       </View>
     )
   };
@@ -41,7 +38,7 @@ export default ActivitiesReceivedList;
 const styles = StyleSheet.create({
   fallbackContainer: {
     marginHorizontal: 40,
-    marginTop: 35
+    marginVertical: 35
   },
   fallback: {
     color: '#3B4852',

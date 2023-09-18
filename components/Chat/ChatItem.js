@@ -2,15 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFormattedDate } from '../../utils/date';
-import { joinEvent } from '../../utils/http';
+import { fetchEvent } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 import LoadingOverlay from '../ui/LoadingOverlay';
+import GroupProfilePictures from '../GroupProfilePictures';
 
-function ChatItem({ chatRoomMember, chatRoomName, lastMessage, onPress}) {
+function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [userChattedTo, setUserChattedTo] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [eventDetails, setEventDetails] = useState();
   
   const navigation = useNavigation();
 
@@ -29,6 +31,24 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, onPress}) {
       setUserChattedTo(chatRoomMember);
     };
   }, [chatRoomMember]);
+
+  useEffect(() => {
+    if (!chatRoomName.startsWith('One to one') && closestEventId) {
+      async function getEventDetails() {
+        // setIsFetching(true);
+        try {
+          const eventDetails = await fetchEvent(token, closestEventId);
+          setEventDetails(eventDetails);
+          console.log("eventDetails", eventDetails);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+        // setIsFetching(false);
+      };
+  
+      getEventDetails();
+    };
+  }, [closestEventId, chatRoomName]);
 
   function eventDetailHandler() {
     navigation.navigate('EventDetail', {
@@ -55,17 +75,7 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, onPress}) {
   //   };
   // }, [eventHost]);
 
-  async function requestToJoinEventHandler(token, eventId) {
-    setIsSubmitting(true);
-    try {
-      await joinEvent(token, eventId);
-      setEventStatus('REQUESTED');
-    } catch (error) {
-      console.log("error", error);
-      // setError('Could not save data - please try again later!');
-    };
-    setIsSubmitting(false);
-  };
+  // console.log("chatRoomMember", lastMessage);
 
   return (
     <View style={styles.container}>
@@ -73,35 +83,17 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, onPress}) {
         {chatRoomName.startsWith('One to one') && userChattedTo && (
           <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
         )}
-        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length === 2 && (
-          <View style={styles.twoImages}>
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-          </View>
-        )}
-        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length === 3 && (
-          <View style={styles.threeImages}>
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-          </View>
-        )}
-        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length >= 4 && (
-          <View style={styles.fourImages}>
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.smallAvatar} />
-          </View>
+        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length && (
+          <GroupProfilePictures host={userChattedTo[0]} participants={userChattedTo.slice(1)} isSeparate={false} />
         )}
         <View style={styles.infoOuterContainer}>
-          <Text style={styles.name}>{userChattedTo && userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
-          <Text style={styles.msg}>Thanks for checking the locati...</Text>
-          <Text style={styles.time}>15 mins ago</Text>
-          <View style={styles.infoInnerContainer}>
-            {/* <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
-            <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text> */}
-          </View>
+          {chatRoomName.startsWith('One to one') ? (
+            <Text style={styles.name}>{userChattedTo && userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
+          ) : (
+            <Text style={styles.name}>{eventDetails && eventDetails.eventName}</Text>
+          )}
+          <Text style={styles.msg}>{lastMessage && lastMessage.content}</Text>
+          <Text style={styles.time}>{lastMessage && lastMessage.messageTime}</Text>
         </View>
       </Pressable>
     </View>

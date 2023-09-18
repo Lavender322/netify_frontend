@@ -3,12 +3,14 @@ import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback, Image } fr
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
-import { fetchActivity } from '../../utils/http';
+import { fetchActivity, fetchEvent } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
+import GroupProfilePictures from '../GroupProfilePictures';
 
 function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
   const [eventParticipants, setEventParticipants] = useState([]);
+  const [eventDetails, setEventDetails] = useState();
   
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
@@ -32,7 +34,7 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
-        // console.log(activity.participants);
+        // console.log('participants', activity.participants);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -49,6 +51,9 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       <View style={styles.avatarContainer}>
         {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
           <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventHost.userImage[3]}} style={styles.avatar} />
+        )}
+        {!isFetchingActivity && eventType === 'GROUP_EVENT' && (
+          <GroupProfilePictures host={eventHost} participants={eventParticipants} isSeparate={true} />
         )}
       </View>
       <View style={styles.textContainer}>
