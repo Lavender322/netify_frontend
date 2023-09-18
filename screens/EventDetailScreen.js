@@ -6,6 +6,7 @@ import { fetchEvent, joinEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { getFormattedDate } from '../utils/date';
+import StackedGroupProfilePictures from '../components/StackedGroupProfilePictures';
 
 function EventDetailScreen({ navigation, route }) {
   const [isFetching, setIsFetching] = useState(true);
@@ -25,7 +26,7 @@ function EventDetailScreen({ navigation, route }) {
   const showRequest = route.params?.showRequest;
   const eventParticipants = route.params?.eventParticipants;
 
-  console.log('eventParticipants', eventParticipants);
+  // console.log('eventParticipants', eventParticipants);
 
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
@@ -37,7 +38,7 @@ function EventDetailScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
-        // console.log("eventDetails", eventDetails);
+        console.log("eventDetails", eventDetails);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -178,6 +179,16 @@ function EventDetailScreen({ navigation, route }) {
         {eventDetails.eventDescription && (
           <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
         )}
+        {/* Profile pictures of participants */}
+        {eventDetails.eventType !== 'ONE_TO_ONE' && eventParticipants && (
+          <StackedGroupProfilePictures
+            host={eventDetails.eventHost}
+            participants={eventParticipants} 
+            isSeparate={true} 
+            alreadyParticipatedNumber={eventDetails.alreadyParticipatedNumber} 
+            allowedParticipantsNumber={eventDetails.allowedParticipantsNumber} 
+          />
+        )}
         {/* Functions */}
         {previousScreen && previousScreen === 'Confirmed' && (
           <Pressable onPress={cancelEventHandler}>
@@ -243,7 +254,8 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold'
   },
   avatarsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },  
   avatar: {
     width: 120,
@@ -254,9 +266,20 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#ffffff'
   },
+  miniAvatar: {
+    width: 30,
+    height: 30,
+    marginTop: 16,
+    borderRadius: 42,
+    overflow: 'hidden',
+  },
   avatarRight: {
     zIndex: 9,
     marginLeft: -40
+  },
+  miniAvatarRight: {
+    zIndex: 9,
+    marginLeft: -7
   },
   match: {
     color: '#3C8722'
@@ -353,5 +376,14 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.75
+  },
+  numParticipants: {
+    fontFamily: 'roboto',
+    fontSize: 15,
+    lineHeight: 18,
+    color: '#4F4F4F',
+    marginLeft: 8,
+    marginTop: -6,
+    backgroundColor: 'pink'
   }
 });

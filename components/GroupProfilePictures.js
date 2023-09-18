@@ -1,12 +1,6 @@
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 
 function GroupProfilePictures({ host, participants, isSeparate }) {
-  
-  // console.log('participants length', participants.length);
-  // console.log('participants length', participants.length);
-  // console.log('participants length', participants.length);
-
-
   if ((participants.length + 1) === 2) {
     return (
       <View style={styles.twoImages}>

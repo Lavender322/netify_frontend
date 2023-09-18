@@ -41,7 +41,7 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       setIsFetchingActivity(false);
     };
     
-    if (userInfo.userId === eventHost.userId) {
+    if (userInfo.userId === eventHost.userId || eventType !== 'ONE_TO_ONE') {
       getActivity();
     };
   }, []);
