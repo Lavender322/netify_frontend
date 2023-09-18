@@ -5,6 +5,7 @@ import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
 import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
+import GroupProfilePictures from '../GroupProfilePictures';
 
 function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags, isCancelled, isPast}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
@@ -22,14 +23,13 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
-        // console.log("activity.participants", activity.participants);
       } catch (error) {
         console.log(error.response.data);
       };
       setIsFetchingActivity(false);
     };
     
-    if ((isCancelled || isPast) && userInfo.userId === eventHost.userId) {
+    if ((isCancelled || isPast) && (userInfo.userId === eventHost.userId || eventType !== 'ONE_TO_ONE')) {
       getActivity();
     } else {
       setIsFetchingActivity(false);
@@ -69,17 +69,35 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
-        {!isFetchingActivity && !isCancelled && !isPast && (
-          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+          <>
+            {!isCancelled && !isPast && (
+              <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+            )}
+            {(isCancelled || isPast) && userInfo.userId === eventHost.userId && !eventParticipants && (
+              <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
+            )}
+            {(isCancelled || isPast) && eventParticipants && eventParticipants[0] && (
+              <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+            )}
+            {(isCancelled || isPast) && userInfo.userId !== eventHost.userId &&(
+              <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+            )}
+          </>
         )}
-        {!isFetchingActivity && (isCancelled || isPast) && userInfo.userId === eventHost.userId && !eventParticipants && (
-          <Image source={{uri: userInfo.userImage[3]}} style={styles.avatar} />
-        )}
-        {!isFetchingActivity && (isCancelled || isPast) && eventParticipants && eventParticipants[0] && (
-          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-        )}
-        {!isFetchingActivity && (isCancelled || isPast) && userInfo.userId !== eventHost.userId &&(
-          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+        {!isFetchingActivity && eventType !== 'ONE_TO_ONE' && (
+          <GroupProfilePictures host={eventHost} participants={eventParticipants} isSeparate={true} />
+          // <>
+          //   {/* {!isCancelled && !isPast && (
+          //     <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+          //   )} */}
+          //   {(isCancelled || isPast) && eventParticipants && eventParticipants[0] && (
+          //     <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+          //   )}
+          //   {(isCancelled || isPast) && userInfo.userId !== eventHost.userId &&(
+          //     <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+          //   )}
+          // </>
         )}
       </View>
       <View style={styles.textContainer}>

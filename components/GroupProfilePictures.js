@@ -1,6 +1,12 @@
 import { StyleSheet, View, Image } from 'react-native';
 
 function GroupProfilePictures({ host, participants, isSeparate }) {
+  if (!participants) {
+    return (
+      <Image source={{uri: host.userImage[3]}} style={styles.avatar} />
+    )
+  };
+
   if ((participants.length + 1) === 2) {
     return (
       <View style={styles.twoImages}>
@@ -90,5 +96,10 @@ const styles = StyleSheet.create({
   },
   verticalGap: {
     marginBottom: 4
-  }
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30
+  },
 });

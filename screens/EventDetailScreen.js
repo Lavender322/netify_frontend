@@ -180,7 +180,7 @@ function EventDetailScreen({ navigation, route }) {
           <Text style={styles.detail}>{eventDetails.eventDescription}</Text>      
         )}
         {/* Profile pictures of participants */}
-        {eventDetails.eventType !== 'ONE_TO_ONE' && eventParticipants && (
+        {eventDetails.eventType !== 'ONE_TO_ONE' && (
           <StackedGroupProfilePictures
             host={eventDetails.eventHost}
             participants={eventParticipants} 

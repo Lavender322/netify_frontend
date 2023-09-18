@@ -5,7 +5,7 @@ function StackedGroupProfilePictures({ host, participants, isSeparate, alreadyPa
   return (
     <View style={styles.avatarsContainer}>
       <Image source={{uri: host.userImage[3]}} style={styles.miniAvatar} />
-      {(participants.length + 1) === 2 && (
+      {participants && (participants.length + 1) === 2 && (
         <>
           {isSeparate ? (
             <Image source={{uri: participants[0].user.userImage[3]}} style={[styles.miniAvatar, styles.miniAvatarRight]} />
@@ -15,7 +15,7 @@ function StackedGroupProfilePictures({ host, participants, isSeparate, alreadyPa
         </>
       )}
 
-      {(participants.length + 1) === 3 && (
+      {participants && (participants.length + 1) === 3 && (
         <>
           {isSeparate ? (
             <>
@@ -30,7 +30,7 @@ function StackedGroupProfilePictures({ host, participants, isSeparate, alreadyPa
           )}
         </>
       )}
-      {(participants.length + 1) >= 4 && (
+      {participants && (participants.length + 1) >= 4 && (
         <>
           {isSeparate ? (
             <>
