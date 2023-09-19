@@ -19,6 +19,7 @@ function ChatScreen() {
       setIsFetchingChats(true);
       try {
         const chats = await fetchChats(token);
+        console.log("chats", chats);
         setLoadedChats(chats);
       } catch (error) {
         console.log(error.response.data);

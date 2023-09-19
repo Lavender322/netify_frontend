@@ -19,7 +19,10 @@ function ActivitiesSentScreen({ navigation, isFocused }) {
       setIsFetchingActivities(true);
       try {
         const activitiesList = await fetchActivities('sent', token);
-        setLoadedActivities(activitiesList);
+        const displayedActivitiesList = activitiesList.filter(activity =>
+          activity.eventType === "ONE_TO_ONE"
+        );
+        setLoadedActivities(displayedActivitiesList);
       } catch (error) {
         console.log(error.response.data);
       };

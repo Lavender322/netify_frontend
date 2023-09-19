@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 
-function MyActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags }) {
+function MyActivitiesCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventStatus, sectorTags, gradeTags }) {
   const [eventParticipants, setEventParticipants] = useState([]);
 
   const { token, userInfo } = useContext(AuthContext);
@@ -19,7 +19,6 @@ function MyActivitiesCard({ eventId, eventHost, eventType, eventName, eventStart
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
-        // console.log(activity.participants);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -37,7 +36,7 @@ function MyActivitiesCard({ eventId, eventHost, eventType, eventName, eventStart
       sectorTags: sectorTags,
       gradeTags: gradeTags,
       eventParticipants: eventParticipants,
-      previousScreen: 'Confirmed'
+      previousScreen: eventStatus === 'EVENT_CANCELLED' ? 'Cancelled' : eventStatus === 'EVENT_FINISHED' ? 'Past' : 'Confirmed'
     });
   };
   

@@ -26,8 +26,6 @@ function EventDetailScreen({ navigation, route }) {
   const showRequest = route.params?.showRequest;
   const eventParticipants = route.params?.eventParticipants;
 
-  // console.log('eventParticipants', eventParticipants);
-
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
@@ -38,7 +36,7 @@ function EventDetailScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
-        console.log("eventDetails", eventDetails);
+        // console.log("eventDetails", eventDetails);
       } catch (error) {
         console.log(error.response.data);
       };

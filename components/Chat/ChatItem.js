@@ -14,7 +14,7 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
 
-  console.log("closestEventId", closestEventId);
+  // console.log("closestEventId", closestEventId);
   
   const navigation = useNavigation();
 
@@ -39,9 +39,9 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
       async function getEventDetails() {
         // setIsFetching(true);
         try {
-          const eventDetails = await fetchEvent(token, closestEventId);
+          const eventDetails = await fetchEvent(token, closestEventId[0]);
           setEventDetails(eventDetails);
-          console.log("eventDetails", eventDetails);
+          // console.log("eventDetails1", eventDetails);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -52,11 +52,12 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
     };
   }, [closestEventId, chatRoomName]);
 
-  function eventDetailHandler() {
-    navigation.navigate('EventDetail', {
-      eventId: eventId,
-      sectorTags: sectorTags,
-      gradeTags: gradeTags
+  function directToChatDetailHandler() {
+    navigation.navigate('ChatDetail', {
+      // closestEventId: closestEventId,
+      eventHost: eventDetails.eventHost,
+      // eventParticipants: eventParticipants,
+      eventId: eventId
     });
   };
 
@@ -81,7 +82,7 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
+      <Pressable onPress={directToChatDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
         {chatRoomName.startsWith('One to one') && userChattedTo && (
           <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
         )}

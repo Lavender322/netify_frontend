@@ -1,14 +1,16 @@
 import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
 import IconButton from '../components/ui/IconButton';
-import UpcomingEventCard from '../components/Chat/UpcomingEventCard';
+import UpcomingEventCards from '../components/Chat/UpcomingEventCards';
 import { AuthContext } from '../store/context/auth-context';
 import { createNewChat, fetchMessages, sendMessage, fetchChatRoomInfo } from '../utils/http';
 import MessageList from '../components/Chat/MessageList';
 
 function ChatDetailScreen({ navigation, route }) {
-  const eventHost = route.params && route.params.eventHost;
+  const eventDetails = route.params && route.params.eventDetails;
   const eventParticipants = route.params && route.params.eventParticipants;
+  const eventHost = route.params && route.params.eventHost;
+  const closestEventId = route.params && route.params.closestEventId;
   const eventId = route.params && route.params.eventId;
 
   const [chatRoomId, setChatRoomId] = useState();
@@ -33,41 +35,43 @@ function ChatDetailScreen({ navigation, route }) {
     initiateNewChat();
   }, []);
 
-  useEffect(() => {
-    if (chatRoomId) {
-      async function getChatRoomInfo() {
-        // setIsFetching(true);
-        try {
-          const info = await fetchChatRoomInfo(chatRoomId, token);
-          setChatRoomInfo(info);
-          console.log("info", info);
-        } catch (error) {
-          console.log('fetchChatRoomInfo', error.response.data);
-        };
-        // setIsFetching(false);
-      };
-  
-      getChatRoomInfo();
-    };
-  }, [chatRoomId]);
+  console.log("eventDetails2", eventDetails);
 
-  useEffect(() => {
-    if (chatRoomId) {
-      async function getMessages() {
-        // setIsFetching(true);
-        try {
-          const messages = await fetchMessages(chatRoomId, token);
-          setChatMessages(messages);
-          console.log("messages", messages);
-        } catch (error) {
-          console.log(error.response.data);
-        };
-        // setIsFetching(false);
-      };
+  // useEffect(() => {
+  //   if (chatRoomId) {
+  //     async function getChatRoomInfo() {
+  //       // setIsFetching(true);
+  //       try {
+  //         const info = await fetchChatRoomInfo(chatRoomId, token);
+  //         setChatRoomInfo(info);
+  //         console.log("info", info);
+  //       } catch (error) {
+  //         console.log('fetchChatRoomInfo', error.response.data);
+  //       };
+  //       // setIsFetching(false);
+  //     };
   
-      getMessages();
-    };
-  }, [chatRoomId]);
+  //     getChatRoomInfo();
+  //   };
+  // }, [chatRoomId]);
+
+  // useEffect(() => {
+  //   if (chatRoomId) {
+  //     async function getMessages() {
+  //       // setIsFetching(true);
+  //       try {
+  //         const messages = await fetchMessages(chatRoomId, token);
+  //         setChatMessages(messages);
+  //         console.log("messages", messages);
+  //       } catch (error) {
+  //         console.log(error.response.data);
+  //       };
+  //       // setIsFetching(false);
+  //     };
+  
+  //     getMessages();
+  //   };
+  // }, [chatRoomId]);
 
   function previousStepHandler() {
     navigation.goBack();
@@ -96,6 +100,7 @@ function ChatDetailScreen({ navigation, route }) {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
+        {}
         {eventParticipants && eventParticipants[0] && (
           <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
         )}
@@ -113,10 +118,11 @@ function ChatDetailScreen({ navigation, route }) {
       <View style={styles.mainContainer}>
         <ScrollView>
           {chatRoomInfo && chatRoomInfo.closestEventId && (
-            <UpcomingEventCard 
-              participantsName={userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname} 
-              hostName={userInfo.userId !== eventHost.userId && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
-            />
+            <UpcomingEventCards />
+            // <UpcomingEventCards 
+            //   participantsName={userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname} 
+            //   hostName={userInfo.userId !== eventHost.userId && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
+            // />
           )}
           <MessageList />
         </ScrollView>

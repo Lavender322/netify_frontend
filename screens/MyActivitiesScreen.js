@@ -19,6 +19,7 @@ function MyActivitiesScreen({ navigation }) {
       try {
         const activities = await fetchMyActivities(token);
         setMyActivities(activities);
+        // console.log('activities', activities);
       } catch (error) {
         console.log(error.response.data);
       };
