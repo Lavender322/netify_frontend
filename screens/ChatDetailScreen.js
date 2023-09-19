@@ -4,7 +4,7 @@ import IconButton from '../components/ui/IconButton';
 import UpcomingEventCards from '../components/Chat/UpcomingEventCards';
 import { AuthContext } from '../store/context/auth-context';
 import { createNewChat, fetchMessages, sendMessage, fetchChatRoomInfo } from '../utils/http';
-import MessageList from '../components/Chat/MessageList';
+// import MessageList from '../components/Chat/MessageList';
 
 function ChatDetailScreen({ navigation, route }) {
   const eventDetails = route.params && route.params.eventDetails;
@@ -12,11 +12,17 @@ function ChatDetailScreen({ navigation, route }) {
   const eventHost = route.params && route.params.eventHost;
   const closestEventId = route.params && route.params.closestEventId;
   const eventId = route.params && route.params.eventId;
+  const eventType = route.params && route.params.eventType;
+  const eventName = route.params && route.params.eventName;
+  const alreadyParticipatedNumber = route.params && route.params.alreadyParticipatedNumber;
+
+  console.log('lalala', eventType, alreadyParticipatedNumber);
 
   const [chatRoomId, setChatRoomId] = useState();
   const [chatRoomInfo, setChatRoomInfo] = useState();
   const [chatMessages, setChatMessages] = useState();
   const [enteredText, setEnteredText] = useState('');
+  const [isFetching, setIsFetching] = useState(true);
 
   const { token, userInfo } = useContext(AuthContext);
 
@@ -27,7 +33,7 @@ function ChatDetailScreen({ navigation, route }) {
         const id = await createNewChat(eventId, token);
         setChatRoomId(id);
       } catch (error) {
-        console.log("createNewChat", error.response.data);
+        console.log("createNewChat", eventId, error.response.data);
       };
       // setIsFetching(false);
     };
@@ -35,43 +41,43 @@ function ChatDetailScreen({ navigation, route }) {
     initiateNewChat();
   }, []);
 
-  console.log("eventDetails2", eventDetails);
+  // console.log("eventDetails2", eventDetails);
 
-  // useEffect(() => {
-  //   if (chatRoomId) {
-  //     async function getChatRoomInfo() {
-  //       // setIsFetching(true);
-  //       try {
-  //         const info = await fetchChatRoomInfo(chatRoomId, token);
-  //         setChatRoomInfo(info);
-  //         console.log("info", info);
-  //       } catch (error) {
-  //         console.log('fetchChatRoomInfo', error.response.data);
-  //       };
-  //       // setIsFetching(false);
-  //     };
+  useEffect(() => {
+    if (chatRoomId) {
+      async function getChatRoomInfo() {
+        // setIsFetching(true);
+        try {
+          const info = await fetchChatRoomInfo(chatRoomId, token);
+          setChatRoomInfo(info);
+          console.log("info", info);
+        } catch (error) {
+          console.log('fetchChatRoomInfo', error.response.data);
+        };
+        // setIsFetching(false);
+      };
   
-  //     getChatRoomInfo();
-  //   };
-  // }, [chatRoomId]);
+      getChatRoomInfo();
+    };
+  }, [chatRoomId]);
 
-  // useEffect(() => {
-  //   if (chatRoomId) {
-  //     async function getMessages() {
-  //       // setIsFetching(true);
-  //       try {
-  //         const messages = await fetchMessages(chatRoomId, token);
-  //         setChatMessages(messages);
-  //         console.log("messages", messages);
-  //       } catch (error) {
-  //         console.log(error.response.data);
-  //       };
-  //       // setIsFetching(false);
-  //     };
+  useEffect(() => {
+    if (chatRoomId) {
+      async function getMessages() {
+        setIsFetching(true);
+        try {
+          const messages = await fetchMessages(chatRoomId, token);
+          setChatMessages(messages);
+          // console.log("messages", messages);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+        setIsFetching(false);
+      };
   
-  //     getMessages();
-  //   };
-  // }, [chatRoomId]);
+      getMessages();
+    };
+  }, [chatRoomId]);
 
   function previousStepHandler() {
     navigation.goBack();
@@ -100,32 +106,33 @@ function ChatDetailScreen({ navigation, route }) {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
-        {}
-        {eventParticipants && eventParticipants[0] && (
-          <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-        )}
-        {userInfo.userId !== eventHost.userId && (
-          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
-        )}
-
-        {userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
-          <Text style={styles.name}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
-        )}
-        {userInfo.userId !== eventHost.userId && (
-          <Text style={styles.name}>{' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+        {eventType === 'GROUP_EVENT' ? (
+          <>
+          <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName && eventName}</Text>
+          <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber && '(' + alreadyParticipatedNumber + ')'}</Text>
+          </>
+        ) : (
+          <>
+            {eventParticipants && eventParticipants[0] && (
+              <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+            )}
+            {userInfo.userId !== eventHost.userId && (
+              <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+            )}
+    
+            {userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
+              <Text style={styles.name}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+            )}
+            {userInfo.userId !== eventHost.userId && (
+              <Text style={styles.name}>{' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+            )}
+          </>
         )}
       </View>
       <View style={styles.mainContainer}>
-        <ScrollView>
-          {chatRoomInfo && chatRoomInfo.closestEventId && (
-            <UpcomingEventCards />
-            // <UpcomingEventCards 
-            //   participantsName={userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname} 
-            //   hostName={userInfo.userId !== eventHost.userId && eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
-            // />
-          )}
-          <MessageList />
-        </ScrollView>
+        {chatRoomInfo && chatRoomInfo.closestEventId && !isFetching && (
+          <UpcomingEventCards closestEventId={chatRoomInfo.closestEventId} chatMessages={chatMessages} />
+        )}
       </View>
 
       <View style={styles.searchBar}>
@@ -157,6 +164,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 23,
     height: 92
+  },
+  leftGap: {
+    marginLeft: 8
   },
   goBackButton: {
     marginLeft: 16,
@@ -203,5 +213,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 8,
     marginRight: 12
+  },
+  chatName: {
+    maxWidth: 190
   }
 });

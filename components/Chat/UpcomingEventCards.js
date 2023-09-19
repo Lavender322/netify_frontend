@@ -1,5 +1,9 @@
-import { FlatList, Text, StyleSheet, View } from 'react-native';
+import { useEffect, useState, useContext } from 'react';
+import { FlatList, Text, StyleSheet, View, SafeAreaView } from 'react-native';
+import { fetchEvent } from '../../utils/http';
 import UpcomingEventCard from './UpcomingEventCard';
+import { AuthContext } from '../../store/context/auth-context';
+import MessageList from './MessageList';
 
 function renderEventCard(itemData) {
   return (
@@ -7,25 +11,39 @@ function renderEventCard(itemData) {
   );
 };
 
-function UpcomingEventCards({ events, isFetchingEvents }) {
-  console.log('events', events);
-  // if ((!events || events.length === 0) && !isFetchingEvents) {
-  //   return (
-  //     <View style={styles.fallbackContainer}>
-  //       <Text>
-  //         <Text style={styles.fallback}>You don't have any existing chat.</Text>
-  //       </Text>
-  //     </View>
-  //   )
-  // };
+function UpcomingEventCards({ closestEventId, chatMessages }) {
+  const [isFetching, setIsFetching] = useState(true);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
 
-  if (events && events.length && !isFetchingEvents) {
+  const { token } = useContext(AuthContext);
+
+  useEffect(() => {
+    setIsFetching(true);
+    closestEventId.map(eventId => {
+      async function getEventDetails() {
+        try {
+          const eventDetails = await fetchEvent(token, eventId);
+          setUpcomingEvents(currentUpcomingEvents => [...currentUpcomingEvents, eventDetails]);
+        } catch (error) {
+          console.log(error.response.data);
+        };
+      };
+  
+      getEventDetails();
+    });
+    setIsFetching(false);
+  }, []);
+  
+  if (upcomingEvents && upcomingEvents.length && !isFetching) {
     return (
-      <FlatList 
-        data={events} 
-        renderItem={(item) => renderEventCard(item)} 
-        // keyExtractor={(item) => item.chatRoomId}
-      />
+      <SafeAreaView style={{flex: 1}}>
+        <FlatList 
+          data={upcomingEvents} 
+          renderItem={(item) => renderEventCard(item)} 
+          keyExtractor={(item) => item.id}
+          ListFooterComponent={<MessageList chatMessages={chatMessages} />}
+        />
+      </SafeAreaView>
     )
   };
 };

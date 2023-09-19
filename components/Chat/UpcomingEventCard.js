@@ -3,11 +3,15 @@ import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-nati
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
-import { fetchTags } from '../../utils/http';
+import { fetchTags, fetchActivity } from '../../utils/http';
+import { AuthContext } from '../../store/context/auth-context';
 
-function UpcomingEventCard({ participantsName, hostName }) {
+function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, eventHost, participantsName, hostName }) {
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
+  const [eventParticipants, setEventParticipants] = useState([]);
+
+  const { token, userInfo } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -33,6 +37,24 @@ function UpcomingEventCard({ participantsName, hostName }) {
     getTags();
   }, []);
 
+  useEffect(() => {
+    async function getActivity() {
+      // setIsFetchingActivity(true);
+      try {
+        const activity = await fetchActivity(eventId, token);
+        setEventParticipants(activity.participants);
+        // console.log('participants', activity.participants);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetchingActivity(false);
+    };
+    
+    if (userInfo.userId === eventHost.userId || eventType !== 'ONE_TO_ONE') {
+      getActivity();
+    };
+  }, []);
+
   function directToEventDetails() {
     navigation.navigate('EventDetail', {
       eventId: eventId,
@@ -45,18 +67,20 @@ function UpcomingEventCard({ participantsName, hostName }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your upcoming session with 
-        <Text style={styles.match}>
-          {hostName ? ' ' + hostName : ' ' + participantsName}
+      {eventType === 'GROUP_EVENT' ? (
+        <Text style={styles.title}>Your upcoming group session</Text>
+      ) : (
+        <Text style={styles.title}>Your upcoming session with 
+          <Text style={styles.match}>
+            {hostName ? ' ' + hostName : ' ' + participantsName}
+          </Text>
         </Text>
-      </Text>
+      )}
 
       <View style={styles.detailInnerContainer}>
           <Feather name="calendar" size={18} color="#3C8722" />
-          {/* <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text> */}
-          <Text style={styles.period}>11:00 - 11:30</Text>
-          {/* <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text> */}
-          <Text style={styles.date}>Thu, Jul 13</Text>
+          <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+          <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
         </View>
 
       <View style={styles.detailInnerContainer}>

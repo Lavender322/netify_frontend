@@ -1,20 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getFormattedDate } from '../../utils/date';
+import { getFormattedDate, getFormattedChatTime } from '../../utils/date';
 import { fetchEvent } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 import LoadingOverlay from '../ui/LoadingOverlay';
 import GroupProfilePictures from '../GroupProfilePictures';
 
-function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, currentUserUnReadMessage, totalMessage, onPress}) {
+function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, closestEventId, currentUserUnReadMessage, totalMessage, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [userChattedTo, setUserChattedTo] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
-
-  // console.log("closestEventId", currentUserUnReadMessage);
   
   const navigation = useNavigation();
 
@@ -35,13 +33,13 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, c
   }, [chatRoomMember]);
 
   useEffect(() => {
-    if (!chatRoomName.startsWith('One to one') && closestEventId) {
+    if (!chatRoomName.startsWith('One to one')) {
       async function getEventDetails() {
         // setIsFetching(true);
         try {
-          const eventDetails = await fetchEvent(token, closestEventId[0]);
+          const eventDetails = await fetchEvent(token, chatRoomId);
           setEventDetails(eventDetails);
-          // console.log("eventDetails1", eventDetails);
+          console.log("eventDetails1", chatRoomId, eventDetails);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -101,7 +99,7 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, c
             <Text style={styles.name}>{eventDetails && eventDetails.eventName}</Text>
           )}
           <Text style={styles.msg}>{lastMessage && lastMessage.content}</Text>
-          <Text style={styles.time}>{lastMessage && lastMessage.messageTime}</Text>
+          <Text style={styles.time}>{lastMessage && getFormattedChatTime(lastMessage.messageTime)}</Text>
         </View>
       </Pressable>
     </View>

@@ -1,13 +1,16 @@
 import { FlatList, Text, StyleSheet, View } from 'react-native';
 import MessageItem from "./MessageItem";
 
-function MessageList({ messages }) {
-  return (
-    <View style={styles.timeContainer}>
-      <Text style={styles.time}>22 June 2023 BST</Text>
-    </View>
-  )
-}
+function MessageList({ chatMessages }) {
+  console.log('chatMessages', chatMessages);
+  if (chatMessages && chatMessages.length) {
+    return (
+      <View style={styles.timeContainer}>
+        <Text style={styles.time}>22 June 2023 BST</Text>
+      </View>
+    )
+  }
+};
 
 export default MessageList;
 

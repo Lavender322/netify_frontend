@@ -22,6 +22,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       setIsFetchingActivity(true);
       try {
         const activity = await fetchActivity(eventId, token);
+        // console.log("activity", activity);
         setEventParticipants(activity.participants);
       } catch (error) {
         console.log(error.response.data);
@@ -63,6 +64,8 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       eventHost: eventHost,
       eventParticipants: eventParticipants,
       eventId: eventId,
+      eventType: eventType,
+      eventName: eventName
     });
   };
 

@@ -99,7 +99,10 @@ function EventDetailScreen({ navigation, route }) {
     navigation.navigate('ChatDetail', {
       eventHost: eventDetails.eventHost,
       eventParticipants: eventParticipants,
-      eventId: eventId
+      eventId: eventId,
+      eventType: eventDetails.eventType,
+      eventName: eventDetails.eventName,
+      alreadyParticipatedNumber: eventDetails.alreadyParticipatedNumber
     });
   };
 

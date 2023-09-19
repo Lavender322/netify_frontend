@@ -68,3 +68,19 @@ export function roundUpTime() {
   var rounded = new Date(date.getTime() + time - (date.getTime() % time));
   return rounded;
 };
+
+export function getFormattedChatTime(date) {
+  var currentDate = new Date();
+  var eventDate = Moment(date).format('D MMM');
+  if (eventDate === Moment(currentDate).format('D MMM')) {
+    return 'Today ' + Moment(date).format('HH:mm');
+  };
+
+  currentDate.setDate(currentDate.getDate() - 1);
+  var previousDate = Moment(currentDate).format('D MMM');
+  if (eventDate === previousDate) {
+    return 'Yesterday ' + Moment(date).format('HH:mm');
+  };
+  
+  return Moment(date).format('D MMM HH:mm');
+};
