@@ -4,12 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import ChatList from '../components/Chat/ChatList';
 import { fetchChats } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
+import { useIsFocused } from '@react-navigation/native';
 
 function ChatScreen() {
   const [isFetchingChats, setIsFetchingChats] = useState(true);
   const [loadedChats, setLoadedChats] = useState();
 
   const { token } = useContext(AuthContext);
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     async function getChats() {
@@ -24,7 +27,7 @@ function ChatScreen() {
     };
     
     getChats();
-  }, []);
+  }, [isFocused]);
 
 
   return (

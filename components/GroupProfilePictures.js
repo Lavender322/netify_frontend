@@ -23,7 +23,7 @@ function GroupProfilePictures({ host, participants, isSeparate }) {
   if ((participants.length + 1) === 3) {
     return (
       <View style={styles.threeImages}>
-        <Image source={{uri: host.userImage[3]}} style={[styles.smallAvatar, styles.verticalGap]} />
+        <Image source={{uri: host.userImage[3]}} style={[styles.smallAvatar, styles.verticalGap, styles.topAvatar]} />
         {isSeparate ? (
           <>
             <Image source={{uri: participants[0].user.userImage[3]}} style={styles.smallAvatar} />
@@ -78,7 +78,8 @@ const styles = StyleSheet.create({
     marginRight: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
   },
   fourImages: {
     width: 64,
@@ -102,4 +103,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30
   },
+  topAvatar: {
+    marginHorizontal: 17
+  }
 });

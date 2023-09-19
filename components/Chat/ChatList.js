@@ -15,14 +15,11 @@ function ChatList({ chats, isFetchingChats }) {
     )
   };
 
-  // console.log("chats", chats[1]);
-
   if ((!chats || chats.length === 0) && !isFetchingChats) {
     return (
       <View style={styles.fallbackContainer}>
         <Text>
           <Text style={styles.fallback}>You don't have any existing chat.</Text>
-          {/* <Text style={styles.fallbackHighlight}>Host one!</Text> */}
         </Text>
       </View>
     )

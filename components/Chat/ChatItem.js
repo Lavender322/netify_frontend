@@ -13,6 +13,8 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
   const [userChattedTo, setUserChattedTo] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
+
+  console.log("closestEventId", closestEventId);
   
   const navigation = useNavigation();
 

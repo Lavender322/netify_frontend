@@ -19,8 +19,11 @@ function ActivitiesReceivedScreen({ navigation }) {
       setIsFetchingActivities(true);
       try {
         const activitiesList = await fetchActivities('received', token);
-        setLoadedActivities(activitiesList);
-        // console.log("activitiesList", activitiesList);
+        const displayedActivitiesList = activitiesList.filter(activity => 
+          activity.eventType !== 'GROUP_EVENT'
+        );
+        setLoadedActivities(displayedActivitiesList);
+        // console.log("activitiesList", displayedActivitiesList);
       } catch (error) {
         console.log(error.response.data);
       };
