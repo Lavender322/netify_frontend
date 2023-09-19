@@ -7,14 +7,14 @@ import { AuthContext } from '../../store/context/auth-context';
 import LoadingOverlay from '../ui/LoadingOverlay';
 import GroupProfilePictures from '../GroupProfilePictures';
 
-function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, onPress}) {
+function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, currentUserUnReadMessage, totalMessage, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [userChattedTo, setUserChattedTo] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
 
-  // console.log("closestEventId", closestEventId);
+  // console.log("closestEventId", currentUserUnReadMessage);
   
   const navigation = useNavigation();
 
@@ -84,10 +84,15 @@ function ChatItem({ chatRoomMember, chatRoomName, lastMessage, closestEventId, o
     <View style={styles.container}>
       <Pressable onPress={directToChatDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
         {chatRoomName.startsWith('One to one') && userChattedTo && (
-          <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
+          <View style={styles.avatarContainer}>
+            <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
+            {currentUserUnReadMessage !== 0 && (
+              <View style={styles.greenDot}></View>
+            )}
+          </View>
         )}
         {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length && (
-          <GroupProfilePictures host={userChattedTo[0]} participants={userChattedTo.slice(1)} isSeparate={false} />
+          <GroupProfilePictures host={userChattedTo[0]} participants={userChattedTo.slice(1)} isSeparate={false} currentUserUnReadMessage={currentUserUnReadMessage} />
         )}
         <View style={styles.infoOuterContainer}>
           {chatRoomName.startsWith('One to one') ? (
@@ -168,5 +173,18 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-medium',
     fontSize: 11,
     lineHeight: 14
+  },
+  avatarContainer: {
+    position: 'relative'
+  },
+  greenDot: {
+    position: 'absolute',
+    right: 0,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#2CC069',
+    borderWidth: 2,
+    borderColor: '#FFFFFF'
   }
 });
