@@ -4,7 +4,7 @@ import IconButton from '../components/ui/IconButton';
 import UpcomingEventCards from '../components/Chat/UpcomingEventCards';
 import { AuthContext } from '../store/context/auth-context';
 import { createNewChat, fetchMessages, sendMessage, fetchChatRoomInfo } from '../utils/http';
-// import MessageList from '../components/Chat/MessageList';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 function ChatDetailScreen({ navigation, route }) {
   const eventDetails = route.params && route.params.eventDetails;
@@ -16,45 +16,43 @@ function ChatDetailScreen({ navigation, route }) {
   const eventName = route.params && route.params.eventName;
   const alreadyParticipatedNumber = route.params && route.params.alreadyParticipatedNumber;
 
-  console.log('lalala', eventType, alreadyParticipatedNumber);
-
   const [chatRoomId, setChatRoomId] = useState();
   const [chatRoomInfo, setChatRoomInfo] = useState();
   const [chatMessages, setChatMessages] = useState();
   const [enteredText, setEnteredText] = useState('');
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetchingMessages, setIsFetchingMessages] = useState(true);
+  const [isInitiating, setIsInitiating] = useState(true);
+  const [isFetchingInfo, setIsFetchingInfo] = useState(true);
 
   const { token, userInfo } = useContext(AuthContext);
 
   useEffect(() => {
     async function initiateNewChat() {
-      // setIsFetching(true);
+      setIsInitiating(true);
       try {
         const id = await createNewChat(eventId, token);
         setChatRoomId(id);
       } catch (error) {
         console.log("createNewChat", eventId, error.response.data);
       };
-      // setIsFetching(false);
+      setIsInitiating(false);
     };
 
     initiateNewChat();
   }, []);
 
-  // console.log("eventDetails2", eventDetails);
-
   useEffect(() => {
     if (chatRoomId) {
       async function getChatRoomInfo() {
-        // setIsFetching(true);
+        setIsFetchingInfo(true);
         try {
           const info = await fetchChatRoomInfo(chatRoomId, token);
           setChatRoomInfo(info);
-          console.log("info", info);
+          // console.log("info", info);
         } catch (error) {
           console.log('fetchChatRoomInfo', error.response.data);
         };
-        // setIsFetching(false);
+        setIsFetchingInfo(false);
       };
   
       getChatRoomInfo();
@@ -64,7 +62,7 @@ function ChatDetailScreen({ navigation, route }) {
   useEffect(() => {
     if (chatRoomId) {
       async function getMessages() {
-        setIsFetching(true);
+        setIsFetchingMessages(true);
         try {
           const messages = await fetchMessages(chatRoomId, token);
           setChatMessages(messages);
@@ -72,7 +70,7 @@ function ChatDetailScreen({ navigation, route }) {
         } catch (error) {
           console.log(error.response.data);
         };
-        setIsFetching(false);
+        setIsFetchingMessages(false);
       };
   
       getMessages();
@@ -97,7 +95,7 @@ function ChatDetailScreen({ navigation, route }) {
       try {
         await sendMessage(body, token);
       } catch (error) {
-        console.log(error.response.data);
+        console.log('sendMessage', error.response.data);
       }; 
     };
   };
@@ -129,24 +127,33 @@ function ChatDetailScreen({ navigation, route }) {
           </>
         )}
       </View>
-      <View style={styles.mainContainer}>
-        {chatRoomInfo && chatRoomInfo.closestEventId && !isFetching && (
-          <UpcomingEventCards closestEventId={chatRoomInfo.closestEventId} chatMessages={chatMessages} />
-        )}
-      </View>
+      {!(!isFetchingInfo && !isInitiating && !isFetchingMessages) ? (
+        <LoadingOverlay />
+      ) : (
+        <>
+          <View style={styles.mainContainer}>
+            {chatRoomInfo && (
+              <UpcomingEventCards 
+                closestEventId={chatRoomInfo.closestEventId} 
+                chatMessages={chatMessages} 
+              />
+            )}
+          </View>
 
-      <View style={styles.searchBar}>
-        <TextInput 
-          style={styles.searchInput}
-          placeholder=''
-          placeholderTextColor='#ADB5BD'
-          onChangeText={textInputHandler}
-          value={enteredText}
-        />
-        <Pressable onPress={sendMessageHandler}>
-          <Image style={styles.logo} source={require("../assets/send-icon.png")} />
-        </Pressable>
-      </View>
+          <View style={styles.searchBar}>
+            <TextInput 
+              style={styles.searchInput}
+              placeholder=''
+              placeholderTextColor='#ADB5BD'
+              onChangeText={textInputHandler}
+              value={enteredText}
+            />
+            <Pressable onPress={sendMessageHandler}>
+              <Image style={styles.logo} source={require("../assets/send-icon.png")} />
+            </Pressable>
+          </View>
+        </>
+      )}
     </View>
   )
 }

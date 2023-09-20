@@ -39,7 +39,7 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
         try {
           const eventDetails = await fetchEvent(token, chatRoomId);
           setEventDetails(eventDetails);
-          console.log("eventDetails1", chatRoomId, eventDetails);
+          // console.log("eventDetails1", chatRoomId, eventDetails);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -53,9 +53,9 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
   function directToChatDetailHandler() {
     navigation.navigate('ChatDetail', {
       // closestEventId: closestEventId,
-      eventHost: eventDetails.eventHost,
+      eventHost: chatRoomName.startsWith('One to one') ? userChattedTo[0] : eventDetails.eventHost,
       // eventParticipants: eventParticipants,
-      eventId: eventId
+      eventId: chatRoomId
     });
   };
 

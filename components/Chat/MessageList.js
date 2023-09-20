@@ -1,32 +1,50 @@
-import { FlatList, Text, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
 import MessageItem from "./MessageItem";
+import LoadingOverlay from '../ui/LoadingOverlay';
+import { checkWhetherSameDate, getFormattedMessageDate } from '../../utils/date';
 
-function MessageList({ chatMessages }) {
-  console.log('chatMessages', chatMessages);
-  if (chatMessages && chatMessages.length) {
+function renderMessageItem(itemData, isSameMessageTime) {
+  return (
+    <MessageItem {...itemData} isSameMessageTime={isSameMessageTime} />
+  );
+};
+
+function MessageList({ chatMessages, isFetchingMessages }) {
+  if (isFetchingMessages) {
     return (
-      <View style={styles.timeContainer}>
-        <Text style={styles.time}>22 June 2023 BST</Text>
-      </View>
+      <LoadingOverlay />
     )
-  }
+  };
+
+  const [chatMessageTime, setChatMessageTime] = useState([]);
+  const [isSameMessageTime, setIsSameMessageTime] = useState([]);
+  const [isFormatting, setIsFormatting] = useState(true);
+
+  useEffect(() => {
+    setIsFormatting(true);
+    chatMessages.map(message => {
+      setChatMessageTime(prev => [...prev, getFormattedMessageDate(message.messageTime)])
+    });
+    setIsFormatting(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isFormatting && chatMessageTime.length) {
+      setIsSameMessageTime(checkWhetherSameDate(chatMessageTime));  
+    };
+  }, [isFormatting]);
+ 
+  // console.log('chatMessages', chatMessages);
+  if (chatMessages && chatMessages.length && isSameMessageTime) {
+    return (
+      <FlatList 
+        data={chatMessages} 
+        renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
+        keyExtractor={(item) => item.id}
+      />
+    )
+  };
 };
 
 export default MessageList;
-
-const styles = StyleSheet.create({
-  timeContainer: {
-    alignItems: 'center',
-    borderRadius: 19,
-    
-  },
-  time: {
-    backgroundColor: '#E0F2DA',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    fontFamily: 'roboto-medium',
-    fontSize: 11,
-    lineHeight: 14,
-    color: '#3B4852'
-  },
-});

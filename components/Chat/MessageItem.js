@@ -1,10 +1,32 @@
+import { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
+import { AuthContext } from '../../store/context/auth-context';
+import { getFormattedMessageTime, getFormattedMessageDate } from '../../utils/date';
 
-function MessageItem({ isCurrentUser, message, time }) {
+function MessageItem({ id, senderId, content, messageTime, isSameMessageTime }) {
+  const [isCurrentUser, setIsCurrentUser] = useState();
+
+  const { userInfo } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (userInfo.userId === senderId) {
+      setIsCurrentUser(true);
+    } else {
+      setIsCurrentUser(false);
+    };
+  }, []);
+
   return (
-    <View style={isCurrentUser ? styles.userTwoMsgContainer : styles.userOneMsgContainer}>
-      <Text style={styles.msgText}>{message}</Text>
-      <Text style={isCurrentUser ? styles.timeTwoText : styles.timeOneText}>{time}</Text>
+    <View>
+      {isSameMessageTime ? (
+        <View style={styles.timeContainer}>
+          <Text style={styles.time}>{getFormattedMessageDate(messageTime)}</Text>
+        </View>
+      ) : null}
+      <View style={isCurrentUser ? styles.userTwoMsgContainer : styles.userOneMsgContainer}>
+        <Text style={styles.msgText}>{content}</Text>
+        <Text style={isCurrentUser ? styles.timeTwoText : styles.timeOneText}>{getFormattedMessageTime(messageTime)}</Text>
+      </View>
     </View>
   )
 };
@@ -19,7 +41,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 16,
     padding: 10,
-    marginVertical: 24,
+    marginBottom: 24,
     marginLeft: 35,
     marginRight: 65
   },
@@ -43,7 +65,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 0,
     padding: 10,
-    marginVertical: 24,
+    marginBottom: 24,
     marginLeft: 65,
     marginRight: 35
   },
@@ -54,6 +76,20 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginTop: 4,
     textAlign: 'right'
+  },
+  timeContainer: {
+    borderRadius: 19,
+    marginBottom: 24,
+    backgroundColor: '#E0F2DA',
+    alignSelf: 'center'
+  },
+  time: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    fontFamily: 'roboto-medium',
+    fontSize: 11,
+    lineHeight: 14,
+    color: '#3B4852'
   },
 });
 

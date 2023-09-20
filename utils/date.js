@@ -84,3 +84,27 @@ export function getFormattedChatTime(date) {
   
   return Moment(date).format('D MMM HH:mm');
 };
+
+export function getFormattedMessageTime(date) { 
+  return Moment(date).format('HH:mm');
+};
+
+export function getFormattedMessageDate(date) { 
+  return Moment(date).format('D MMM YYYY') + ' BST';
+};
+
+export function checkWhetherSameDate(dates) {
+  var result = [];
+  for (let i = 0; i < dates.length; i++) {
+    if (i === 0) {
+      result.push(true);
+    } else {
+      if (dates[i] === dates[i-1]) {
+        result.push(false);
+      } else {
+        result.push(true);
+      };
+    };
+  };
+  return result;
+};
