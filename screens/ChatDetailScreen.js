@@ -66,7 +66,7 @@ function ChatDetailScreen({ navigation, route }) {
         try {
           const messages = await fetchMessages(chatRoomId, token);
           setChatMessages(messages);
-          // console.log("messages", messages);
+          console.log("messages", messages);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -93,6 +93,13 @@ function ChatDetailScreen({ navigation, route }) {
         chatRoomId: chatRoomId
       };
       try {
+        setEnteredText('');
+        var newMessage = {
+          content: enteredText,
+          senderId: userInfo.userId,
+          messageTime: new Date()
+        };
+        setChatMessages(prev => [...prev, newMessage]);
         await sendMessage(body, token);
       } catch (error) {
         console.log('sendMessage', error.response.data);

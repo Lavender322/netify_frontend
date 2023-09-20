@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { fetchTags, fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 
-function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, eventHost, participantsName, hostName }) {
+function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, eventHost }) {
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
   const [eventParticipants, setEventParticipants] = useState([]);
@@ -14,6 +14,7 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
   const { token, userInfo } = useContext(AuthContext);
 
   const navigation = useNavigation();
+  // console.log('hostName', hostName, participantsName);
 
   useEffect(() => {
     async function getTags() {
@@ -43,7 +44,7 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
-        // console.log('participants', activity.participants);
+        // console.log('participants', activity);
       } catch (error) {
         console.log(error.response.data);
       };
@@ -72,7 +73,7 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
       ) : (
         <Text style={styles.title}>Your upcoming session with 
           <Text style={styles.match}>
-            {hostName ? ' ' + hostName : ' ' + participantsName}
+            {eventParticipants && eventParticipants.length ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname : ' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
           </Text>
         </Text>
       )}

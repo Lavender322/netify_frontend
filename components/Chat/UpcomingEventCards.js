@@ -17,12 +17,15 @@ function UpcomingEventCards({ closestEventId, chatMessages }) {
 
   const { token } = useContext(AuthContext);
 
+  // console.log("closestEventId", closestEventId.length, closestEventId);
+
   useEffect(() => {
     setIsFetching(true);
     closestEventId.map(eventId => {
       async function getEventDetails() {
         try {
           const eventDetails = await fetchEvent(token, eventId);
+          // console.log("eventDetails123", eventDetails);
           setUpcomingEvents(currentUpcomingEvents => [...currentUpcomingEvents, eventDetails]);
         } catch (error) {
           console.log(error.response.data);
