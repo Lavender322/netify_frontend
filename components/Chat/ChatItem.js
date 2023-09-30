@@ -55,6 +55,7 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
       // closestEventId: closestEventId,
       eventHost: chatRoomName.startsWith('One to one') ? userChattedTo[0] : eventDetails.eventHost,
       // eventParticipants: eventParticipants,
+      eventDetails: eventDetails,
       eventId: chatRoomId
     });
   };

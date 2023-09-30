@@ -113,8 +113,8 @@ function ChatDetailScreen({ navigation, route }) {
         <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
         {eventType === 'GROUP_EVENT' ? (
           <>
-          <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName && eventName}</Text>
-          <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber && '(' + alreadyParticipatedNumber + ')'}</Text>
+            <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName ? eventName : eventDetails.eventName}</Text>
+            <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber && '(' + alreadyParticipatedNumber + ')'}</Text>
           </>
         ) : (
           <>

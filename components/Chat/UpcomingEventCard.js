@@ -72,9 +72,15 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
         <Text style={styles.title}>Your upcoming group session</Text>
       ) : (
         <Text style={styles.title}>Your upcoming session with 
-          <Text style={styles.match}>
-            {eventParticipants && eventParticipants.length ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname : ' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
-          </Text>
+          {userInfo.userId === eventHost.userId ? (
+            <Text style={styles.match}>
+              {eventParticipants && eventParticipants.length && ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}
+            </Text>
+          ) : (
+            <Text style={styles.match}>
+              {' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}
+            </Text>
+          )}
         </Text>
       )}
 
