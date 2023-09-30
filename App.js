@@ -73,7 +73,7 @@ export function UserOverview() {
       headerShown: false,
       tabBarInactiveTintColor: '#3B4852',
       tabBarActiveTintColor: '#3C8722',
-      tabBarStyle: {paddingTop: 5, paddingBottom: 25},
+      tabBarStyle: {height: 81, paddingTop: 5, paddingBottom: 25},
       tabBarLabelStyle: {fontFamily: 'roboto-medium', fontSize: 11},
     }}>
       <BottomTabs.Screen 
