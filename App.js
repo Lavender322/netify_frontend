@@ -97,12 +97,14 @@ export function UserOverview() {
         component={CreateEventScreen} 
         options={({ navigation }) => ({
           tabBarButton: () => (
+            <View style={styles.createEventBtnContainer}>
               <IconButton icon="plus" size={36} color="white" style={styles.createEventBtn} onPress={() => navigation.navigate('CreateEvent')} />
+            </View>
           ),
           tabPress: (e) => {
             e.preventDefault();
             navigation.navigate('CreateEvent');
-        }
+          }
         })}
       />
       <BottomTabs.Screen 
@@ -303,6 +305,10 @@ export default function App() {
 };
 
 const styles = StyleSheet.create({
+  createEventBtnContainer: {
+    width: '20%',
+    alignItems: 'center'
+  },
   createEventBtn: {
     backgroundColor: '#1A4821',
     height: 58,
