@@ -36,8 +36,6 @@ function MyActivitiesCards({ isFetchingActivities, activities, sectorTags, grade
     )
   };
 
-  console.log("activities", activities);
-
   return (
     <FlatList 
       data={activities} 

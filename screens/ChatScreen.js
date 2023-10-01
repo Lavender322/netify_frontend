@@ -15,7 +15,7 @@ function ChatScreen() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    async function getChats() {
+    async function getChats() { 
       setIsFetchingChats(true);
       try {
         const chats = await fetchChats(token);
@@ -37,14 +37,6 @@ function ChatScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Chat</Text>
-      {/* <View style={styles.searchBar}>
-        <Ionicons name="search-sharp" size={24} color="#ADB5BD" />
-        <TextInput 
-          style={styles.searchInput}
-          placeholder='Search'
-          placeholderTextColor='#ADB5BD'
-        />
-      </View> */}
       <ChatList 
         chats={loadedChats}
         isFetchingChats={isFetchingChats} />

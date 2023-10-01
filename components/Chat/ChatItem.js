@@ -7,12 +7,13 @@ import { AuthContext } from '../../store/context/auth-context';
 import LoadingOverlay from '../ui/LoadingOverlay';
 import GroupProfilePictures from '../GroupProfilePictures';
 
-function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, closestEventId, currentUserUnReadMessage, totalMessage, onPress}) {
+function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, lastMessage, closestEventId, currentUserUnReadMessage, totalMessage, onPress}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
-  const [userChattedTo, setUserChattedTo] = useState();
+  const [userChattedTo, setUserChattedTo] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventDetails, setEventDetails] = useState();
+  const [isFetching, setIsFetching] = useState(true);
   
   const navigation = useNavigation();
 
@@ -21,21 +22,23 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
   
   useEffect(() => {
+    setIsFetching(true);
     if (chatRoomName.startsWith('One to one')) {
       const user = chatRoomMember.filter(
         member => member.userId !== userInfo.userId
       );
-      // console.log("user", user[0]);
+      // console.log("chatRoomName", chatRoomName, chatRoomMember, userInfo.userId);
       setUserChattedTo(user);
     } else {
       setUserChattedTo(chatRoomMember);
     };
+    setIsFetching(false);
   }, [chatRoomMember]);
 
   useEffect(() => {
     if (!chatRoomName.startsWith('One to one')) {
       async function getEventDetails() {
-        // setIsFetching(true);
+        setIsFetching(true);
         try {
           const eventDetails = await fetchEvent(token, chatRoomId);
           setEventDetails(eventDetails);
@@ -43,7 +46,7 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
         } catch (error) {
           console.log(error.response.data);
         };
-        // setIsFetching(false);
+        setIsFetching(false);
       };
   
       getEventDetails();
@@ -79,28 +82,37 @@ function ChatItem({ chatRoomId, chatRoomMember, chatRoomName, lastMessage, close
 
   // console.log("chatRoomMember", lastMessage);
 
+  if (!isFetching && !userChattedTo.length) {
+    return <View></View>
+  };
+
   return (
     <View style={styles.container}>
       <Pressable onPress={directToChatDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
-        {chatRoomName.startsWith('One to one') && userChattedTo && (
+        {chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
           <View style={styles.avatarContainer}>
             <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
             {currentUserUnReadMessage !== 0 && (
               <View style={styles.greenDot}></View>
             )}
           </View>
-        )}
-        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length && (
+        ) : null}
+        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
           <GroupProfilePictures host={userChattedTo[0]} participants={userChattedTo.slice(1)} isSeparate={false} currentUserUnReadMessage={currentUserUnReadMessage} />
-        )}
+        ) : null}
         <View style={styles.infoOuterContainer}>
-          {chatRoomName.startsWith('One to one') ? (
-            <Text style={styles.name}>{userChattedTo && userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
-          ) : (
-            <Text style={styles.name}>{eventDetails && eventDetails.eventName}</Text>
-          )}
-          <Text style={styles.msg}>{lastMessage && lastMessage.content}</Text>
-          <Text style={styles.time}>{lastMessage && getFormattedChatTime(lastMessage.messageTime)}</Text>
+          {chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
+            <Text style={styles.name}>{userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
+          ) : null}
+          {!chatRoomName.startsWith('One to one') && eventDetails ? (
+            <Text style={styles.name}>{eventDetails.eventName}</Text>
+          ) : null}
+          {lastMessage ? (
+            <Text style={styles.msg}>{lastMessage.content}</Text>
+          ) : null}
+          {lastMessage ? (
+            <Text style={styles.time}>{getFormattedChatTime(lastMessage.messageTime)}</Text>
+          ) : null}
         </View>
       </Pressable>
     </View>
