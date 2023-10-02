@@ -2,14 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, Pressable, Text, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getFormattedDate } from '../../utils/date';
-import { joinEvent } from '../../utils/http';
+import { joinEvent, fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
+import GroupProfilePictures from '../GroupProfilePictures';
 
-function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
+function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [eventHostGradeTag, setEventHostGradeTag] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventStatus, setEventStatus] = useState(myStateInTheEvent);
+  const [eventParticipants, setEventParticipants] = useState([]);
+  const [isFetchingActivity, setIsFetchingActivity] = useState(true);
   
   const navigation = useNavigation();
 
@@ -27,6 +30,25 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
+
+  useEffect(() => {
+    async function getActivity() {
+      setIsFetchingActivity(true);
+      try {
+        const activity = await fetchActivity(eventId, token);
+        setEventParticipants(activity.participants);
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      setIsFetchingActivity(false);
+    };
+    
+    if (eventType === 'GROUP_EVENT') {
+      getActivity();
+    } else {
+      setIsFetchingActivity(false);
+    };
+  }, []);
 
   useEffect(() => {
     if (eventHost && eventHost.userTag) {
@@ -59,15 +81,27 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
     <View style={styles.container}>
       <Pressable onPress={eventDetailHandler} style={({pressed}) => [styles.leftContainer]}>
         <View style={styles.leftContainer}>
-          <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+          {eventType === 'ONE_TO_ONE' ? (
+            <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+          ) : null}
+          {eventType === 'GROUP_EVENT' ? (
+            <GroupProfilePictures host={eventHost} participants={eventParticipants} isSeparate={true} />
+          ) : null}
           <View style={styles.infoOuterContainer}>
-            <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-            <View style={styles.infoInnerContainer}>
-              <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text>
-              <View style={styles.sectorContainer}>
-                <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
+            {eventType === 'ONE_TO_ONE' ? (
+              <Text style={styles.name}>{eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+            ) : null}
+            {eventType === 'GROUP_EVENT' ? (
+              <Text style={styles.name}>{eventName}</Text>
+            ) : null}
+            {eventType === 'ONE_TO_ONE' ? (
+              <View style={styles.infoInnerContainer}>
+                <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text>
+                <View style={styles.sectorContainer}>
+                  <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text>
+                </View>
               </View>
-            </View>
+            ) : null}
             <View style={styles.infoInnerContainer}>
               <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
               <Text style={styles.date}>{getFormattedDate(eventStartTime)}</Text>
