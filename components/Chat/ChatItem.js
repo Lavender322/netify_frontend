@@ -23,7 +23,7 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
   
   useEffect(() => {
     setIsFetching(true);
-    if (chatRoomName.startsWith('One to one')) {
+    if (chatRoomType === 'ONE_TO_ONE_CHAT') {
       const user = chatRoomMember.filter(
         member => member.userId !== userInfo.userId
       );
@@ -36,7 +36,7 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
   }, [chatRoomMember]);
 
   useEffect(() => {
-    if (!chatRoomName.startsWith('One to one')) {
+    if (chatRoomType === 'GROUP_EVENT_CHAT') {
       async function getEventDetails() {
         setIsFetching(true);
         try {
@@ -56,10 +56,11 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
   function directToChatDetailHandler() {
     navigation.navigate('ChatDetail', {
       // closestEventId: closestEventId,
-      eventHost: chatRoomName.startsWith('One to one') ? userChattedTo[0] : eventDetails.eventHost,
+      eventHost: chatRoomType === 'ONE_TO_ONE_CHAT' ? userChattedTo[0] : eventDetails.eventHost,
       // eventParticipants: eventParticipants,
       eventDetails: eventDetails,
-      eventId: chatRoomId
+      eventId: chatRoomId,
+      eventType: chatRoomType === 'ONE_TO_ONE_CHAT' ? 'ONE_TO_ONE' : 'GROUP_EVENT',
     });
   };
 
@@ -89,7 +90,7 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
   return (
     <View style={styles.container}>
       <Pressable onPress={directToChatDetailHandler} style={({pressed}) => [styles.leftContainer, pressed && styles.pressed]}>
-        {chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
+        {chatRoomType === 'ONE_TO_ONE_CHAT' && userChattedTo && userChattedTo.length ? (
           <View style={styles.avatarContainer}>
             <Image source={{uri: userChattedTo[0].userImage[3]}} style={styles.avatar} />
             {currentUserUnReadMessage !== 0 && (
@@ -97,14 +98,14 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
             )}
           </View>
         ) : null}
-        {!chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
+        {chatRoomType === 'GROUP_EVENT_CHAT' && userChattedTo && userChattedTo.length ? (
           <GroupProfilePictures host={userChattedTo[0]} participants={userChattedTo.slice(1)} isSeparate={false} currentUserUnReadMessage={currentUserUnReadMessage} />
         ) : null}
         <View style={styles.infoOuterContainer}>
-          {chatRoomName.startsWith('One to one') && userChattedTo && userChattedTo.length ? (
+          {chatRoomType === 'ONE_TO_ONE_CHAT' && userChattedTo && userChattedTo.length ? (
             <Text style={styles.name}>{userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
           ) : null}
-          {!chatRoomName.startsWith('One to one') && eventDetails ? (
+          {chatRoomType === 'GROUP_EVENT_CHAT' && eventDetails ? (
             <Text style={styles.name}>{eventDetails.eventName}</Text>
           ) : null}
           {lastMessage ? (

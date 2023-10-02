@@ -18,7 +18,8 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
       eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags,
-      showRequest: eventHost.userId === userInfo.userId ? false : true,
+      showRequest: eventHost.userId === userInfo.userId || eventStatus === "REQUESTED" ? false : true,
+      showPending: eventStatus === "REQUESTED" ? true : false,
       previousScreen: 'Home'
     });
   };
@@ -76,7 +77,7 @@ function EventItem({ eventId, eventHost, myStateInTheEvent, eventStartTime, even
       
         {eventHost.userId !== userInfo.userId && (
           <TouchableWithoutFeedback>
-            <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={requestToJoinEventHandler.bind(this, token, eventId)} style={({pressed}) => eventStatus !== "REQUESTED" && pressed && styles.pressed}>
               {eventStatus === "REQUESTED" ? (
                 <View style={[styles.statusContainer, styles.pendingContainer]}>
                   <Text style={[styles.text, styles.pendingText]}>Pending</Text>

@@ -17,38 +17,36 @@ function UpcomingEventCards({ closestEventId, chatMessages }) {
 
   const { token } = useContext(AuthContext);
 
-  // console.log("closestEventId", closestEventId.length, closestEventId);
-
   useEffect(() => {
     setIsFetching(true);
-    closestEventId.map(eventId => {
-      async function getEventDetails() {
-        try {
-          const eventDetails = await fetchEvent(token, eventId);
-          // console.log("eventDetails123", eventDetails);
-          setUpcomingEvents(currentUpcomingEvents => [...currentUpcomingEvents, eventDetails]);
-        } catch (error) {
-          console.log(error.response.data);
+    if (closestEventId) {
+      closestEventId.map(eventId => {
+        async function getEventDetails() {
+          try {
+            const eventDetails = await fetchEvent(token, eventId);
+            setUpcomingEvents(currentUpcomingEvents => [...currentUpcomingEvents, eventDetails]);
+          } catch (error) {
+            console.log(error.response.data);
+          };
         };
-      };
-  
-      getEventDetails();
-    });
+    
+        getEventDetails();
+      });
+    };
+    
     setIsFetching(false);
   }, []);
   
-  if (upcomingEvents && upcomingEvents.length && !isFetching) {
-    return (
-      <SafeAreaView style={{flex: 1}}>
-        <FlatList 
-          data={upcomingEvents} 
-          renderItem={(item) => renderEventCard(item)} 
-          keyExtractor={(item) => item.id}
-          ListFooterComponent={<MessageList chatMessages={chatMessages} />}
-        />
-      </SafeAreaView>
-    )
-  };
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <FlatList 
+        data={upcomingEvents} 
+        renderItem={(item) => renderEventCard(item)} 
+        keyExtractor={(item) => item.id}
+        ListFooterComponent={<MessageList chatMessages={chatMessages} isFetchingMessages={isFetching} upcomingEvents={upcomingEvents} />}
+      />
+    </SafeAreaView>
+  );
 };
 
 export default UpcomingEventCards;

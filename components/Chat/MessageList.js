@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, View, StyleSheet } from 'react-native';
 import MessageItem from "./MessageItem";
 import LoadingOverlay from '../ui/LoadingOverlay';
 import { checkWhetherSameDate, getFormattedMessageDate } from '../../utils/date';
@@ -10,7 +10,7 @@ function renderMessageItem(itemData, isSameMessageTime) {
   );
 };
 
-function MessageList({ chatMessages, isFetchingMessages }) {
+function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
   if (isFetchingMessages) {
     return (
       <LoadingOverlay />
@@ -34,17 +34,24 @@ function MessageList({ chatMessages, isFetchingMessages }) {
       setIsSameMessageTime(checkWhetherSameDate(chatMessageTime));  
     };
   }, [isFormatting]);
- 
-  // console.log('chatMessages', chatMessages);
+
   if (chatMessages && chatMessages.length && isSameMessageTime) {
     return (
-      <FlatList 
-        data={chatMessages} 
-        renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
-        keyExtractor={(item) => item.id}
-      />
+      <View style={(!upcomingEvents || (upcomingEvents && !upcomingEvents.length)) && styles.container}>
+        <FlatList 
+          data={chatMessages} 
+          renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
+          keyExtractor={(item) => item.id}
+        />
+      </View>
     )
   };
 };
 
 export default MessageList;
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 24,
+  }
+});

@@ -19,13 +19,12 @@ function ChatScreen() {
       setIsFetchingChats(true);
       try {
         const chats = await fetchChats(token);
-        // console.log("chats", chats);
         const displayedChats = chats.filter(chat => 
           chat.lastMessage !== null
         );
         setLoadedChats(displayedChats);
       } catch (error) {
-        console.log(error.response.data);
+        console.log('fetchChats', error.response.data);
       };
       setIsFetchingChats(false);
     };
@@ -42,7 +41,7 @@ function ChatScreen() {
         isFetchingChats={isFetchingChats} />
     </View>
   )
-}
+};
 
 export default ChatScreen;
 
