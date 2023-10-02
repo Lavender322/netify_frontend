@@ -25,6 +25,7 @@ function EventDetailScreen({ navigation, route }) {
   const previousScreen = route.params && route.params.previousScreen;
   const showRequest = route.params?.showRequest;
   const showPending = route.params?.showPending;
+  const showJoined = route.params?.showJoined;
   const eventParticipants = route.params?.eventParticipants;
 
   // TO COMMENT OUT
@@ -219,6 +220,13 @@ function EventDetailScreen({ navigation, route }) {
           </View>
         </View>
       )}
+      {previousScreen && previousScreen === 'Home' && showJoined && (
+        <View style={styles.submitFormContainer}>
+          <View style={styles.joinedStatusContainer}>
+            <Text style={styles.statusText}>Joined</Text>
+          </View>
+        </View>
+      )}
       {previousScreen && previousScreen === 'Confirmed' && (
         <View style={styles.submitFormContainer}>
           <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
@@ -385,6 +393,10 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     backgroundColor: '#6AA173',
+    borderRadius: 8,
+    paddingVertical: 13,
+  },
+  joinedStatusContainer: {
     borderRadius: 8,
     paddingVertical: 13,
   },

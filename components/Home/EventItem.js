@@ -21,8 +21,9 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
       eventId: eventId,
       sectorTags: sectorTags,
       gradeTags: gradeTags,
-      showRequest: eventHost.userId === userInfo.userId || eventStatus === "REQUESTED" ? false : true,
+      showRequest: eventHost.userId === userInfo.userId || eventStatus === "REQUESTED" || eventStatus === "APPROVED" ? false : true,
       showPending: eventStatus === "REQUESTED" ? true : false,
+      showJoined: eventHost.userId !== userInfo.userId && eventStatus === "APPROVED" ? true: false,
       previousScreen: 'Home'
     });
   };
@@ -69,7 +70,11 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
     setIsSubmitting(true);
     try {
       await joinEvent(token, eventId);
-      setEventStatus('REQUESTED');
+      if (eventType === 'GROUP_EVENT') {
+        setEventStatus('APPROVED');
+      } else {
+        setEventStatus('REQUESTED');
+      };
     } catch (error) {
       console.log("error", error);
       // setError('Could not save data - please try again later!');
@@ -116,11 +121,17 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
                 <View style={[styles.statusContainer, styles.pendingContainer]}>
                   <Text style={[styles.text, styles.pendingText]}>Pending</Text>
                 </View>
-              ) : (
+              ) : null}
+              {eventStatus === "APPROVED" ? (
+                <View style={styles.statusContainer}>
+                  <Text style={[styles.text, styles.pendingText]}>Joined</Text>
+                </View>
+              ) : null}
+              {eventStatus !== "REQUESTED" && eventStatus !== "APPROVED" ? (
                 <View style={[styles.statusContainer, styles.requestContainer]}>
                   <Text style={[styles.text, styles.requestText]}>Request</Text>
                 </View>
-              )}
+              ) : null}
             </Pressable>
           </TouchableWithoutFeedback>
         )}
