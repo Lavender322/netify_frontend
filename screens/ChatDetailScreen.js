@@ -114,7 +114,7 @@ function ChatDetailScreen({ navigation, route }) {
         {eventType === 'GROUP_EVENT' ? (
           <>
             <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName ? eventName : eventDetails.eventName}</Text>
-            <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber && '(' + alreadyParticipatedNumber + ')'}</Text>
+            <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber ? '(' + alreadyParticipatedNumber + ')' : '(' + eventDetails.alreadyParticipatedNumber + ')'}</Text>
           </>
         ) : (
           <>
