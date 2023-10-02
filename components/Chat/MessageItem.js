@@ -2,11 +2,13 @@ import { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
 import { AuthContext } from '../../store/context/auth-context';
 import { getFormattedMessageTime, getFormattedMessageDate } from '../../utils/date';
+import { fetchOtherUserInfo } from '../../utils/http';
 
 function MessageItem({ id, senderId, content, messageTime, isSameMessageTime }) {
   const [isCurrentUser, setIsCurrentUser] = useState();
+  const [senderName, setSenderName] = useState();
 
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, token } = useContext(AuthContext);
 
   useEffect(() => {
     if (userInfo.userId === senderId) {
@@ -16,12 +18,32 @@ function MessageItem({ id, senderId, content, messageTime, isSameMessageTime }) 
     };
   }, []);
 
+  useEffect(() => {
+    async function getOtherUserInfo() {
+      // setIsFetching(true);
+      try {
+        const userInfo = await fetchOtherUserInfo(token, senderId);
+        // console.log('userInfo', userInfo);
+        setSenderName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
+        // AsyncStorage.setItem('user-info', JSON.stringify(userInfo));
+      } catch (error) {
+        console.log(error.response.data);
+      };
+      // setIsFetching(false);
+    };
+
+    getOtherUserInfo();
+  }, []);
+
   return (
     <View>
       {isSameMessageTime ? (
         <View style={styles.timeContainer}>
           <Text style={styles.time}>{getFormattedMessageDate(messageTime)}</Text>
         </View>
+      ) : null}
+      {!isCurrentUser ? (
+        <Text style={styles.senderName}>{senderName}</Text>
       ) : null}
       <View style={isCurrentUser ? styles.userTwoMsgContainer : styles.userOneMsgContainer}>
         <Text style={styles.msgText}>{content}</Text>
@@ -34,6 +56,14 @@ function MessageItem({ id, senderId, content, messageTime, isSameMessageTime }) 
 export default MessageItem;
 
 const styles = StyleSheet.create({
+  senderName: {
+    marginLeft: 35,
+    marginBottom: 2,
+    fontFamily: 'roboto',
+    fontSize: 12,
+    lineHeight: 14,
+    color: '#3B4852'
+  },
   userOneMsgContainer: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 16,

@@ -294,3 +294,17 @@ export async function fetchChatRoomInfo(chatRoomId, token) {
 
   return response.data.data;
 };
+
+export async function fetchOtherUserInfo(token, userId) {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/user/getOtherUserInfo?userId=${userId}`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};

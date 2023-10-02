@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import UpcomingEventCards from '../components/Chat/UpcomingEventCards';
 import { AuthContext } from '../store/context/auth-context';
@@ -66,7 +66,7 @@ function ChatDetailScreen({ navigation, route }) {
         try {
           const messages = await fetchMessages(chatRoomId, token);
           setChatMessages(messages);
-          console.log("messages", messages);
+          // console.log("messages", messages);
         } catch (error) {
           console.log(error.response.data);
         };
@@ -108,60 +108,62 @@ function ChatDetailScreen({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
-        {eventType === 'GROUP_EVENT' ? (
-          <>
-            <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName ? eventName : eventDetails.eventName}</Text>
-            <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber ? '(' + alreadyParticipatedNumber + ')' : '(' + eventDetails.alreadyParticipatedNumber + ')'}</Text>
-          </>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
+          {eventType === 'GROUP_EVENT' ? (
+            <>
+              <Text numberOfLines={1} style={[styles.name, styles.chatName]}>{eventName ? eventName : eventDetails.eventName}</Text>
+              <Text style={[styles.name, styles.leftGap]}>{alreadyParticipatedNumber ? '(' + alreadyParticipatedNumber + ')' : '(' + eventDetails.alreadyParticipatedNumber + ')'}</Text>
+            </>
+          ) : (
+            <>
+              {eventParticipants && eventParticipants[0] && (
+                <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
+              )}
+              {userInfo.userId !== eventHost.userId && (
+                <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
+              )}
+      
+              {userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
+                <Text style={styles.name}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
+              )}
+              {userInfo.userId !== eventHost.userId && (
+                <Text style={styles.name}>{' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
+              )}
+            </>
+          )}
+        </View>
+        {!(!isFetchingInfo && !isInitiating && !isFetchingMessages) ? (
+          <LoadingOverlay />
         ) : (
           <>
-            {eventParticipants && eventParticipants[0] && (
-              <Image source={{uri: eventParticipants[0].user.userImage[3]}} style={styles.avatar} />
-            )}
-            {userInfo.userId !== eventHost.userId && (
-              <Image source={{uri: eventHost.userImage[3]}} style={styles.avatar} />
-            )}
-    
-            {userInfo.userId === eventHost.userId && eventParticipants && eventParticipants[0] && (
-              <Text style={styles.name}>{' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname}</Text>
-            )}
-            {userInfo.userId !== eventHost.userId && (
-              <Text style={styles.name}>{' ' + eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-            )}
+            <View style={styles.mainContainer}>
+              {chatRoomInfo && (
+                <UpcomingEventCards 
+                  closestEventId={chatRoomInfo.closestEventId} 
+                  chatMessages={chatMessages} 
+                />
+              )}
+            </View>
+
+            <View style={styles.searchBar}>
+              <TextInput 
+                style={styles.searchInput}
+                placeholder=''
+                placeholderTextColor='#ADB5BD'
+                onChangeText={textInputHandler}
+                value={enteredText}
+              />
+              <Pressable onPress={sendMessageHandler}>
+                <Image style={styles.logo} source={require("../assets/send-icon.png")} />
+              </Pressable>
+            </View>
           </>
         )}
       </View>
-      {!(!isFetchingInfo && !isInitiating && !isFetchingMessages) ? (
-        <LoadingOverlay />
-      ) : (
-        <>
-          <View style={styles.mainContainer}>
-            {chatRoomInfo && (
-              <UpcomingEventCards 
-                closestEventId={chatRoomInfo.closestEventId} 
-                chatMessages={chatMessages} 
-              />
-            )}
-          </View>
-
-          <View style={styles.searchBar}>
-            <TextInput 
-              style={styles.searchInput}
-              placeholder=''
-              placeholderTextColor='#ADB5BD'
-              onChangeText={textInputHandler}
-              value={enteredText}
-            />
-            <Pressable onPress={sendMessageHandler}>
-              <Image style={styles.logo} source={require("../assets/send-icon.png")} />
-            </Pressable>
-          </View>
-        </>
-      )}
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -210,7 +212,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    marginTop: 16,
     paddingTop: 11,
     paddingHorizontal: 13,
     paddingBottom: 36,

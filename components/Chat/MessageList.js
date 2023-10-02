@@ -38,7 +38,7 @@ function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
   if (chatMessages && chatMessages.length && isSameMessageTime) {
     return (
       <View style={(!upcomingEvents || (upcomingEvents && !upcomingEvents.length)) && styles.container}>
-        <FlatList 
+        <FlatList
           data={chatMessages} 
           renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
           keyExtractor={(item) => item.id}
