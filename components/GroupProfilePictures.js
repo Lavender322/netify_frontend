@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, Text } from 'react-native';
 
 function GroupProfilePictures({ host, participants, isSeparate, currentUserUnReadMessage }) {
   if (!participants) {
@@ -49,7 +49,7 @@ function GroupProfilePictures({ host, participants, isSeparate, currentUserUnRea
     )
   };
 
-  if ((participants.length + 1) >= 4) {
+  if ((participants.length + 1) === 4) {
     return (
       <View style={styles.container}>
         <View style={styles.fourImages}>
@@ -73,7 +73,39 @@ function GroupProfilePictures({ host, participants, isSeparate, currentUserUnRea
         ) : null}
       </View>
     )
-  }
+  };
+
+  if ((participants.length + 1) > 4) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.fourImages}>
+          <Image source={{uri: host.userImage[3]}} style={[styles.smallAvatar, styles.verticalGap]} />
+          {isSeparate ? (
+            <>
+              <Image source={{uri: participants[0].user.userImage[3]}} style={[styles.smallAvatar, styles.verticalGap]} />
+              <Image source={{uri: participants[1].user.userImage[3]}} style={styles.smallAvatar} />
+              <View style={[styles.smallAvatar, styles.plusContainer]}>
+                {/* <Text style={styles.plusText}>+4</Text> */}
+                <Text style={styles.plusText}>+{participants.length - 2}</Text>
+              </View>
+            </>
+          ) : (
+            <>
+              <Image source={{uri: participants[0].userImage[3]}} style={[styles.smallAvatar, styles.verticalGap]} />
+              <Image source={{uri: participants[1].userImage[3]}} style={styles.smallAvatar} />
+              <View style={[styles.smallAvatar, styles.plusContainer]}>
+                {/* <Text style={styles.plusText}>+4</Text> */}
+                <Text style={styles.plusText}>+{participants.length - 2}</Text>
+              </View>
+            </>
+          )}
+        </View>
+        {currentUserUnReadMessage && currentUserUnReadMessage !== 0 ? (
+          <View style={styles.greenDot}></View>
+        ) : null}
+      </View>
+    )
+  };
 }
 
 export default GroupProfilePictures;
@@ -109,6 +141,15 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15
+  },
+  plusContainer: {
+    backgroundColor: '#92C77A',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  plusText: {
+    color: '#244E03E5',
+    fontFamily: 'roboto'
   },
   verticalGap: {
     marginBottom: 4
