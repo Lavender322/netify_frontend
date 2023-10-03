@@ -85,6 +85,11 @@ export function getFormattedChatTime(date) {
   return Moment(date).format('D MMM HH:mm');
 };
 
+export function getCurrentMonth() { 
+  var currentDate = new Date();
+  return Moment(currentDate).format('MMM, YYYY');
+};
+
 export function getFormattedMessageTime(date) { 
   return Moment(date).format('HH:mm');
 };

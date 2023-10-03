@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import DatePickerItem from './DatePickerItem';
-import { getEventDates } from '../../utils/date';
+import { getEventDates, getCurrentMonth } from '../../utils/date';
 
 function DatePicker({ setSelectedDate, setPreviewDate }) {
   const [isSelectedDate, setIsSelectedDate] = useState([false, false, false, false, false, false, false]);
@@ -21,7 +21,7 @@ function DatePicker({ setSelectedDate, setPreviewDate }) {
 
   return (
     <View style={styles.outerContainer}>
-      <Text style={styles.text}>Aug, 2023</Text>
+      <Text style={styles.text}>{getCurrentMonth()}</Text>
       <ScrollView horizontal style={styles.container}>
         {eventDates.map((date, idx) => (
           <DatePickerItem 
