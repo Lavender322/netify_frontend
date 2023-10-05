@@ -87,7 +87,7 @@ function CancelEventScreen({ navigation, route }) {
       await cancelEvent(eventId, token);
       navigation.navigate('ActivitiesConfirmed');
     } catch (error) {
-      console.log("error", error.respone.data);
+      console.log("cancelEvent", error.response.data);
       setIsSubmitting(false);
       // setError('Could not save data - please try again later!');
     };

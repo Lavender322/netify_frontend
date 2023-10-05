@@ -188,10 +188,10 @@ export function withdrawEvent(eventId, token) {
   });
 };
 
-export function cancelEvent(eventId, token) {  
+export function cancelEvent(eventId, token) { 
   return axios({
-    method: 'POST',
-    url: BACKEND_URL + `/event/cancel/${eventId}`,
+    method: 'GET',
+    url: BACKEND_URL + `/event/cancel${eventId}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
