@@ -143,12 +143,12 @@ const styles = StyleSheet.create({
     borderRadius: 15
   },
   plusContainer: {
-    backgroundColor: '#92C77A',
+    backgroundColor: '#CEF8D0',
     alignItems: 'center',
     justifyContent: 'center'
   },
   plusText: {
-    color: '#244E03E5',
+    color: '#000000',
     fontFamily: 'roboto'
   },
   verticalGap: {

@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
 import { cancelEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
+import GroupLargeProfilePictures from '../components/GroupLargeProfilePictures';
 
 function CancelEventScreen({ navigation, route }) {
   const [eventParticipantGradeTag, setEventParticipantGradeTag] = useState();
@@ -13,9 +14,11 @@ function CancelEventScreen({ navigation, route }) {
   const [eventHostSectorTag, setEventHostSectorTag] = useState();
   const [enteredText, setEnteredText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [participantsMessagedTo, setParticipantsMessagedTo] = useState([]);
+  const [hostMessagedTo, setHostMessagedTo] = useState();
 
   // TO COMMENT OUT
-  const { token } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';  
   
   const eventId = route.params?.eventId;
@@ -24,6 +27,22 @@ function CancelEventScreen({ navigation, route }) {
   const eventParticipants = route.params?.eventParticipants;
   const eventDetails = route.params?.eventDetails;
 
+  useEffect(() => {
+    if (eventDetails) {
+      if (eventDetails.eventHost.userId !== userInfo.userId) {
+        setHostMessagedTo(eventDetails.eventHost);
+      };
+    };
+  }, [eventDetails]);
+
+  useEffect(() => {
+    if (eventParticipants) {
+      const filteredParticipants = eventParticipants.filter(user => {
+        return user.user.userId !== userInfo.userId;
+      });
+      setParticipantsMessagedTo(filteredParticipants);
+    };
+  }, [eventParticipants]);
 
   useEffect(() => {
     if (eventParticipants && eventParticipants[0].user.userTag && gradeTags.length && sectorTags.length) {
@@ -85,46 +104,61 @@ function CancelEventScreen({ navigation, route }) {
         <View style={styles.mainContainer}>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>Cancel this session?</Text>
-            <Image 
-              source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} 
-              style={styles.avatar} 
-            />
-            <Text style={styles.name}>
-              {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
-              eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}
-            </Text>
-            <View style={[styles.detailInnerContainer, styles.roleContainer]}>
-              <View style={styles.gradeContainer}>
-                {eventParticipants && eventParticipants[0] ? (
-                  <Text style={styles.grade}>{eventParticipantGradeTag ? eventParticipantGradeTag : '--'}</Text> 
-                ) : (
-                  <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
-                )}
-              </View>
-              <View style={styles.sectorContainer}>
-                {eventParticipants && eventParticipants[0] ? (
-                  <Text style={styles.sector}>{eventParticipantSectorTag ? eventParticipantSectorTag : '--'}</Text>
-                ) : (
-                  <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text> 
-                )}
-              </View>
-            </View>
-            <View style={[styles.detailInnerContainer, styles.timeContainer]}>
-              <Feather name="calendar" size={18} color="#3C8722" />
-              <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
-              <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
-            </View>
-            {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
-              <View style={[styles.detailInnerContainer, styles.locationContainer]}>
-                <Feather name="map-pin" size={18} color="black" />
-                <Text style={styles.location}>{eventDetails.eventLocation}</Text>
-              </View>
+            {eventDetails.eventType === 'GROUP_EVENT' ? (
+              <Text style={styles.eventName}>{eventDetails.eventName}</Text>
+            ) : null}
+            {eventDetails.eventType !== 'GROUP_EVENT' ? (
+              <Image 
+                source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} 
+                style={styles.avatar} 
+              />
+            ) : (
+              <GroupLargeProfilePictures host={hostMessagedTo} participants={participantsMessagedTo} isSeparate={true} />
             )}
+            {eventDetails.eventType !== 'GROUP_EVENT' ? (
+              <>
+                <Text style={styles.name}>
+                  {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+                  eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}
+                </Text>
+                <View style={[styles.detailInnerContainer, styles.roleContainer]}>
+                  <View style={styles.gradeContainer}>
+                    {eventParticipants && eventParticipants[0] ? (
+                      <Text style={styles.grade}>{eventParticipantGradeTag ? eventParticipantGradeTag : '--'}</Text> 
+                    ) : (
+                      <Text style={styles.grade}>{eventHostGradeTag ? eventHostGradeTag : '--'}</Text> 
+                    )}
+                  </View>
+                  <View style={styles.sectorContainer}>
+                    {eventParticipants && eventParticipants[0] ? (
+                      <Text style={styles.sector}>{eventParticipantSectorTag ? eventParticipantSectorTag : '--'}</Text>
+                    ) : (
+                      <Text style={styles.sector}>{eventHostSectorTag ? eventHostSectorTag : '--'}</Text> 
+                    )}
+                  </View>
+                </View>
+                <View style={[styles.detailInnerContainer, styles.timeContainer]}>
+                  <Feather name="calendar" size={18} color="#3C8722" />
+                  <Text style={styles.period}>{eventDetails.eventStartTime.substring(11,16) + ' - ' + eventDetails.eventEndTime.substring(11,16)}</Text>
+                  <Text style={styles.date}>{getFormattedDate(eventDetails.eventStartTime, true)}</Text>
+                </View>
+                {eventDetails.eventLocation && eventDetails.eventLocation !== '' && (
+                  <View style={[styles.detailInnerContainer, styles.locationContainer]}>
+                    <Feather name="map-pin" size={18} color="black" />
+                    <Text style={styles.location}>{eventDetails.eventLocation}</Text>
+                  </View>
+                )}
+              </>
+            ) : null}
           </View>
 
           <View style={styles.textInputOuterContainer}>
-            <Text style={styles.note}>To {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
+            {eventDetails.eventType === 'GROUP_EVENT' ? (
+              <Text style={styles.note}>To all participants:</Text>
+            ) : (
+              <Text style={styles.note}>To {eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
               eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}:</Text>
+            )}
             <View style={styles.textInputContainer}>
               <TextInput 
                 multiline={true}
@@ -364,5 +398,11 @@ const styles = StyleSheet.create({
   textInputOuterContainer: {
     marginHorizontal: 40,
     marginTop: 40,
+  },
+  eventName: {
+    fontFamily: 'roboto-bold',
+    fontSize: 28,
+    color: '#000000E5',
+    marginVertical: 36
   }
 });
