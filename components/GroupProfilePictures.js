@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
   avatar: {
     width: 60,
     height: 60,
-    borderRadius: 30
+    borderRadius: 30,
+    marginRight: 10,
   },
   topAvatar: {
     marginHorizontal: 17

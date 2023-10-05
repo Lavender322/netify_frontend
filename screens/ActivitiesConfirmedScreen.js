@@ -20,7 +20,6 @@ function ActivitiesConfirmedScreen({ navigation, isFocused }) {
       try {
         const activitiesList = await fetchActivities('confirmed', token);
         setLoadedActivities(activitiesList);
-        // console.log("activitiesList", activitiesList);
       } catch (error) {
         console.log(error.response.data);
       };

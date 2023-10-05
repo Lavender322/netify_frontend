@@ -5,7 +5,8 @@ import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
 import { cancelEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
-import GroupLargeProfilePictures from '../components/GroupLargeProfilePictures';
+import GroupProfilePicturesForHost from '../components/GroupProfilePicturesForHost';
+import GroupProfilePicturesForParticipant from '../components/GroupProfilePicturesForParticipant';
 
 function CancelEventScreen({ navigation, route }) {
   const [eventParticipantGradeTag, setEventParticipantGradeTag] = useState();
@@ -15,7 +16,7 @@ function CancelEventScreen({ navigation, route }) {
   const [enteredText, setEnteredText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [participantsMessagedTo, setParticipantsMessagedTo] = useState([]);
-  const [hostMessagedTo, setHostMessagedTo] = useState();
+  const [isHost, setIsHost] = useState();
 
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
@@ -30,7 +31,9 @@ function CancelEventScreen({ navigation, route }) {
   useEffect(() => {
     if (eventDetails) {
       if (eventDetails.eventHost.userId !== userInfo.userId) {
-        setHostMessagedTo(eventDetails.eventHost);
+        setIsHost(false);
+      } else {
+        setIsHost(true);
       };
     };
   }, [eventDetails]);
@@ -103,18 +106,37 @@ function CancelEventScreen({ navigation, route }) {
 
         <View style={styles.mainContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.title}>Cancel this session?</Text>
-            {eventDetails.eventType === 'GROUP_EVENT' ? (
+            {eventDetails.eventType !== 'GROUP_EVENT' || isHost ? (
+              <Text style={styles.title}>Cancel this session?</Text>
+            ) : (
+              <Text style={styles.title}>Can't make this session?</Text>
+            )}
+            {eventDetails.eventType === 'GROUP_EVENT' && isHost ? (
               <Text style={styles.eventName}>{eventDetails.eventName}</Text>
             ) : null}
+            {eventDetails.eventType === 'GROUP_EVENT' && isHost === false ? (
+              <Text style={styles.eventNameNotHost}>{eventDetails.eventName}</Text>
+            ) : null}
+
             {eventDetails.eventType !== 'GROUP_EVENT' ? (
               <Image 
                 source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventDetails.eventHost.userImage[3]}} 
                 style={styles.avatar} 
               />
-            ) : (
-              <GroupLargeProfilePictures host={hostMessagedTo} participants={participantsMessagedTo} isSeparate={true} />
-            )}
+            ) : null}
+            {eventDetails.eventType === 'GROUP_EVENT' && isHost ? (
+              <GroupProfilePicturesForHost participants={participantsMessagedTo} isSeparate={true} />
+            ) : null}
+            {eventDetails.eventType === 'GROUP_EVENT' && isHost === false ? (
+              <>
+                <Image 
+                  source={{uri: eventDetails.eventHost.userImage[3]}} 
+                  style={styles.hostAvatar} 
+                />
+                <GroupProfilePicturesForParticipant participants={eventParticipants} isSeparate={true} />
+              </>
+            ) : null}
+
             {eventDetails.eventType !== 'GROUP_EVENT' ? (
               <>
                 <Text style={styles.name}>
@@ -334,6 +356,15 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#ffffff',
   },
+  hostAvatar: {
+    width: 90,
+    height: 90,
+    marginVertical: 24,
+    borderRadius: 66,
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderColor: '#ffffff',
+  },
   detailInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center'
@@ -403,6 +434,13 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold',
     fontSize: 28,
     color: '#000000E5',
-    marginVertical: 36
+    marginTop: 50,
+    marginBottom: 36
+  },
+  eventNameNotHost: {
+    fontFamily: 'roboto-bold',
+    fontSize: 28,
+    color: '#000000E5',
+    marginTop: 24
   }
 });
