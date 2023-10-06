@@ -193,11 +193,21 @@ function EventDetailScreen({ navigation, route }) {
           />
         )}
         {/* Functions */}
-        {previousScreen && previousScreen === 'Confirmed' && (
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <Pressable onPress={cancelEventHandler}>
             <Text style={styles.cancel}>Cancel</Text>
           </Pressable>
-        )}
+        ) : null}
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType !== 'ONE_TO_ONE' && userInfo.userId === eventDetails.eventHost.userId ? (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        ) : null}
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType !== 'ONE_TO_ONE' && userInfo.userId !== eventDetails.eventHost.userId ? (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Can't make it</Text>
+          </Pressable>
+        ) : null}
         {previousScreen && previousScreen === 'Sent' && (
           <Pressable onPress={withdrawEventHandler}>
             <Text style={styles.cancel}>Withdraw</Text>
