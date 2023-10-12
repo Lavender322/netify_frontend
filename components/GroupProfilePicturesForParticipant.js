@@ -45,7 +45,29 @@ function GroupProfilePicturesForParticipant({ participants, isSeparate }) {
     )
   };
 
-  if (participants.length >= 3) {
+  if (participants.length === 3) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.threeImages}>
+          {isSeparate ? (
+            <>
+              <Image source={{uri: participants[0].user.userImage[3]}} style={styles.smallAvatar} />
+              <Image source={{uri: participants[1].user.userImage[3]}} style={styles.smallAvatar} />
+              <Image source={{uri: participants[2].user.userImage[3]}} style={styles.smallAvatar} />
+            </>
+          ) : (
+            <>
+              <Image source={{uri: participants[0].userImage[3]}} style={styles.smallAvatar} />
+              <Image source={{uri: participants[1].userImage[3]}} style={styles.smallAvatar} />
+              <Image source={{uri: participants[2].userImage[3]}} style={styles.smallAvatar} />
+            </>
+          )}
+        </View>
+      </View>
+    )
+  };
+
+  if (participants.length > 3) {
     return (
       <View style={styles.container}>
         <View style={styles.threeImages}>

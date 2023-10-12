@@ -177,6 +177,7 @@ export function approveEvent(eventId, userId, token) {
 };
 
 export function withdrawEvent(eventId, token) {  
+  // let body = {eventId};
   return axios({
     method: 'POST',
     url: BACKEND_URL + `/event/withdraw/${eventId}`,
@@ -184,19 +185,22 @@ export function withdrawEvent(eventId, token) {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-    }
+    },
+    data: JSON.stringify(body)
   });
 };
 
-export function cancelEvent(eventId, token) { 
+export function cancelEvent(eventId, cancelMessage, token) { 
+  let body = {cancelMessage};
   return axios({
-    method: 'GET',
-    url: BACKEND_URL + `/event/cancel${eventId}`,
+    method: 'POST',
+    url: BACKEND_URL + `/event/cancel/${eventId}`,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-    }
+    },
+    data: JSON.stringify(body)
   });
 };
 
@@ -304,6 +308,22 @@ export async function fetchOtherUserInfo(token, userId) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     }
+  });
+
+  return response.data.data;
+};
+
+export async function addFeedback(content, contact, token) { 
+  let body = {content, contact}; 
+  const response = await axios({
+    method: 'POST',
+    url: BACKEND_URL + `/feedback/add`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
   });
 
   return response.data.data;

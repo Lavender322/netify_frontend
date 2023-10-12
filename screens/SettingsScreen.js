@@ -13,6 +13,10 @@ function SettingsScreen({ navigation }) {
     navigation.goBack();
   };
 
+  function directToFeedbackHandler() {
+    navigation.navigate('Feedback');
+  };
+
   function logoutHandler() {
     logout();
   };
@@ -25,13 +29,15 @@ function SettingsScreen({ navigation }) {
         <View style={styles.placeholder}></View>
       </View>
       <View style={styles.menu}>
-        <View style={[styles.menuItem, styles.border, styles.spaceBetween]}>
-          <View style={styles.menuInnerContainer}>
-            <Feather name="send" size={18} color="black" />
-            <Text style={styles.menuText}>Leave a feedback</Text>
+        <Pressable onPress={directToFeedbackHandler}>
+          <View style={[styles.menuItem, styles.border, styles.spaceBetween]}>
+            <View style={styles.menuInnerContainer}>
+              <Feather name="send" size={18} color="black" />
+              <Text style={styles.menuText}>Leave a feedback</Text>
+            </View>
+            <Feather name="chevron-right" size={24} color="#6A6A6A" />
           </View>
-          <Feather name="chevron-right" size={24} color="#6A6A6A" />
-        </View>
+        </Pressable>
         <View style={styles.menuItem}>
           <Feather name="coffee" size={18} color="black" />
           <Text style={styles.menuText}>Customer Support</Text>

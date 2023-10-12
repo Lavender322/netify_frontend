@@ -34,6 +34,7 @@ import AcceptEventScreen from './screens/AcceptEventScreen';
 import ChatDetailScreen from './screens/ChatDetailScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import MyActivitiesScreen from './screens/MyActivitiesScreen';
+import FeedbackScreen from './screens/FeedbackScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -181,6 +182,10 @@ function AuthenticatedStack() {
       <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="MyActivities" component={MyActivitiesScreen} />
+      <Stack.Screen name="Feedback" component={FeedbackScreen} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
+      }} />
     </Stack.Navigator>
   );
 }

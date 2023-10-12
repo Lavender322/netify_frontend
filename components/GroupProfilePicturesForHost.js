@@ -8,6 +8,24 @@ function GroupProfilePicturesForHost({ participants, isSeparate }) {
     )
   };
 
+  if (participants.length === 1) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.oneImage}>
+          {isSeparate ? (
+            <>
+              <Image source={{uri: participants[0].user.userImage[3]}} style={styles.smallAvatar} />
+            </>
+          ) : (
+            <>
+              <Image source={{uri: participants[0].userImage[3]}} style={styles.smallAvatar} />
+            </>
+          )}
+        </View>
+      </View>
+    )
+  };
+
   if (participants.length === 2) {
     return (
       <View style={styles.container}>
@@ -112,6 +130,12 @@ function GroupProfilePicturesForHost({ participants, isSeparate }) {
 export default GroupProfilePicturesForHost;
 
 const styles = StyleSheet.create({
+  oneImage: {
+    width: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   twoImages: {
     width: 128,
     flexDirection: 'row',

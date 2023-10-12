@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text, Image, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../utils/date';
-import { cancelEvent } from '../utils/http';
+import { cancelEvent, withdrawEvent } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 import GroupProfilePicturesForHost from '../components/GroupProfilePicturesForHost';
 import GroupProfilePicturesForParticipant from '../components/GroupProfilePicturesForParticipant';
@@ -81,21 +81,35 @@ function CancelEventScreen({ navigation, route }) {
     navigation.goBack();
   };
 
-  async function comfirmCancellationHandler(eventId, token) {
+  async function comfirmCancellationHandler(eventId, enteredText, token) {
     setIsSubmitting(true);
-    try {
-      await cancelEvent(eventId, token);
-      navigation.navigate('ActivitiesConfirmed');
-    } catch (error) {
-      console.log("cancelEvent", error.response.data);
-      setIsSubmitting(false);
-      // setError('Could not save data - please try again later!');
+    if (isHost) {
+      try {
+        await cancelEvent(eventId, enteredText, token);
+        navigation.navigate('ActivitiesConfirmed');
+        console.log('cancelEvent done');
+      } catch (error) {
+        console.log("cancelEvent", eventId, error.response.data);
+        setIsSubmitting(false);
+        // setError('Could not save data - please try again later!');
+      };
+    } else {
+      try {
+        await withdrawEvent(eventId, token);
+        navigation.navigate('ActivitiesConfirmed');
+      } catch (error) {
+        console.log("withdrawEvent", eventId, error.response.data);
+        setIsSubmitting(false);
+        // setError('Could not save data - please try again later!');
+      };
     };
   };
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={styles.container} behavior='padding'>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      {/* <ScrollView> */}
+      {/* <KeyboardAvoidingView style={styles.container} behavior='padding'> */}
         <View style={styles.headerContainer}>
           <Pressable onPress={previousStepHandler} style={({pressed}) => [pressed && styles.pressed, styles.placeholder, styles.closeBtnContainer]}>
             <View style={styles.closeBtn}>
@@ -196,13 +210,15 @@ function CancelEventScreen({ navigation, route }) {
         </View>
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={(comfirmCancellationHandler.bind(this, eventId, token))} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={(comfirmCancellationHandler.bind(this, eventId, enteredText, token))} style={({pressed}) => pressed && styles.pressed}>
             <View style={styles.submitFormBtnContainer}>
               <Text style={[styles.submitFormBtnText, styles.enabledText]}>Yes, cancel it</Text>
             </View>
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
+      {/* </ScrollView> */}
+    </KeyboardAvoidingView>
     </View>
   )
 }
