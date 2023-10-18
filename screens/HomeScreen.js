@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../store/context/auth-context';
 import { fetchOverallEventStatus, fetchEventList, fetchTags } from '../utils/http';
@@ -7,7 +7,7 @@ import EventsList from '../components/Home/EventsList';
 import EventFilters from '../components/Home/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 
-function HomeScreen() {
+function HomeScreen({ navigation }) {
   const [isFetching, setIsFetching] = useState(true);
   const [isFetchingEvents, setIsFetchingEvents] = useState(true);
   const [confirmedEvents, setConfirmedEvents] = useState(null);
@@ -101,6 +101,18 @@ function HomeScreen() {
     };
   }, [updateEventList]);
 
+  function directToConfirmedActivities() {
+    navigation.navigate('Activities', {screen: 'ActivitiesConfirmed'});
+  };
+  
+  function directToRequestedActivities() {
+    navigation.navigate('Activities', {screen: 'ActivitiesSent'});
+  };
+  
+  function directToReceivedActivities() {
+    navigation.navigate('Activities', {screen: 'ActivitiesReceived'});
+  };
+
   if (isFetching) {
     return <LoadingOverlay />
   };
@@ -110,16 +122,28 @@ function HomeScreen() {
       <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
       <View style={styles.outerPanelContainer}>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
-          <Text style={styles.panelText}>Confirmed Meeting</Text> 
+          <Pressable onPress={directToConfirmedActivities}>
+            <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
+          </Pressable>
+          <Pressable onPress={directToConfirmedActivities}>
+            <Text style={styles.panelText}>Confirmed Meeting</Text> 
+          </Pressable>
         </View>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Text style={styles.panelNumber}>{pendingRequests}</Text> 
-          <Text style={styles.panelText}>Pending Request</Text> 
+          <Pressable onPress={directToRequestedActivities}>
+            <Text style={styles.panelNumber}>{pendingRequests}</Text> 
+          </Pressable>
+          <Pressable onPress={directToRequestedActivities}>
+            <Text style={styles.panelText}>Pending Request</Text> 
+          </Pressable>
         </View>
         <View style={styles.innerPanelContainer}>
-          <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
-          <Text style={styles.panelText}>Invitations Received</Text> 
+          <Pressable onPress={directToReceivedActivities}>
+            <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
+          </Pressable>
+          <Pressable onPress={directToReceivedActivities}>
+            <Text style={styles.panelText}>Invitations Received</Text> 
+          </Pressable>
         </View>
       </View>
 

@@ -328,3 +328,17 @@ export async function addFeedback(content, contact, token) {
 
   return response.data.data;
 };
+
+export async function fetchTermsAndConditions(token) {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/announcement/getTermsAndConditions`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data.data;
+};

@@ -35,7 +35,7 @@ function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Chat</Text>
+      <Text style={styles.headerText}>Chats</Text>
       <ChatList 
         chats={loadedChats}
         isFetchingChats={isFetchingChats} />

@@ -35,6 +35,7 @@ import ChatDetailScreen from './screens/ChatDetailScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import MyActivitiesScreen from './screens/MyActivitiesScreen';
 import FeedbackScreen from './screens/FeedbackScreen';
+import TermsAndConditionsScreen from './screens/TermsAndConditionsScreen';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -113,7 +114,7 @@ export function UserOverview() {
         component={ChatScreen} 
         options={{
           tabBarIcon: ({color, size}) => <Feather name='message-square' color={color} size={size} />,
-          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Chat</Text>
+          tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Chats</Text>
         }}
       />
       <BottomTabs.Screen 
@@ -186,6 +187,7 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
     </Stack.Navigator>
   );
 }

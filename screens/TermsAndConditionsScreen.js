@@ -4,82 +4,36 @@ import IconButton from '../components/ui/IconButton';
 import { Feather } from '@expo/vector-icons';
 import { AuthContext } from '../store/context/auth-context';
 import { fetchTermsAndConditions } from '../utils/http';
+// import { marked } from 'marked';
 
 
-function SettingsScreen({ navigation }) {
+function TermsAndConditionsScreen({ navigation, route }) {
   const [termsAndConditions, setTermsAndConditions] = useState();
 
-  const { logout, token } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
+
+  const content = route.params?.content;
+  console.log('lala content', content);
 
   function previousStepHandler() {
     navigation.goBack();
-  };
-
-  function directToFeedbackHandler() {
-    navigation.navigate('Feedback');
-  };
-
-  function logoutHandler() {
-    logout();
-  };
-
-  async function openTermsHandler() {
-    try {
-      const content = await fetchTermsAndConditions(token);
-      // console.log('content', content[0].content);
-      setTermsAndConditions(content[0].content);
-      navigation.navigate('TermsAndConditions', {
-        content: content[0].content
-      });
-    } catch (error) {
-      console.log(error.response.data);
-      // setIsSubmitting(false);
-    };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler} />
-        <Text style={styles.headerText}>Settings</Text>
+        <Text style={styles.headerText}></Text>
         <View style={styles.placeholder}></View>
       </View>
-      <View style={styles.menu}>
-        <Pressable onPress={directToFeedbackHandler}>
-          <View style={[styles.menuItem, styles.border, styles.spaceBetween]}>
-            <View style={styles.menuInnerContainer}>
-              <Feather name="send" size={18} color="black" />
-              <Text style={styles.menuText}>Leave a feedback</Text>
-            </View>
-            <Feather name="chevron-right" size={24} color="#6A6A6A" />
-          </View>
-        </Pressable>
-        <View style={styles.menuItem}>
-          <Feather name="coffee" size={18} color="black" />
-          <Text style={styles.menuText}>Customer Support</Text>
-        </View>
-      </View>
-      <Pressable onPress={logoutHandler} style={styles.logoutContainer}>
-        <View style={styles.logoutContainer}>
-          <Text style={styles.logout}>Log out</Text>
-        </View>
-      </Pressable>
-
-      <View style={styles.linksContainer}>
-        <Pressable onPress={openTermsHandler}>
-          <View style={styles.linkContainer}>
-            <Text style={styles.link}>Terms and Conditions</Text>
-          </View>
-        </Pressable>
-        <View style={styles.linkContainer}>
-          <Text style={styles.link}>Privacy Policy</Text>
-        </View>
-      </View>
+      <ScrollView>
+        {/* <Text>{marked.parse(content)}</Text> */}
+      </ScrollView>
     </View>
   )
-};
+}
 
-export default SettingsScreen;
+export default TermsAndConditionsScreen;
 
 const styles = StyleSheet.create({
   container: {
