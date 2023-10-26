@@ -342,3 +342,17 @@ export async function fetchTermsAndConditions(token) {
 
   return response.data.data;
 };
+
+export function addPushToken(pushToken, token) { 
+  let body = {'token': pushToken}; 
+  return axios({
+    method: 'POST',
+    url: BACKEND_URL + `/notifications/addToken`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    data: JSON.stringify(body)
+  });
+};

@@ -17,9 +17,8 @@ export function getFormattedDate(date, withDayInfo) {
 
 export function getEventDates() {
   var eventDates = [];
-  // Moment.locale('en-gb');
           
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 31; i++) {
     var today = new Date();
     today = addMinutes(today, 15);
     var targetDate = addDays(today, i);
