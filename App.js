@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import * as Linking from 'expo-linking';
 import { Feather } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -36,6 +37,18 @@ import SettingsScreen from './screens/SettingsScreen';
 import MyActivitiesScreen from './screens/MyActivitiesScreen';
 import FeedbackScreen from './screens/FeedbackScreen';
 import TermsAndConditionsScreen from './screens/TermsAndConditionsScreen';
+import CustomerSupportScreen from './screens/CustomerSupportScreen';
+import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      shouldShowAlert: true,
+    };
+  }
+});
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -139,6 +152,8 @@ function AuthStack() {
       <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
     </Stack.Navigator>
   );
 }
@@ -187,7 +202,12 @@ function AuthenticatedStack() {
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}
       }} />
+      <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen} options={{
+        presentation: 'modal',
+        contentStyle: {backgroundColor: 'white'}
+      }} />
       <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
     </Stack.Navigator>
   );
 }

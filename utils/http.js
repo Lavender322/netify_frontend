@@ -329,14 +329,13 @@ export async function addFeedback(content, contact, token) {
   return response.data.data;
 };
 
-export async function fetchTermsAndConditions(token) {
+export async function fetchTermsAndConditions() {
   const response = await axios({
     method: 'GET',
     url: BACKEND_URL + `/announcement/getTermsAndConditions`,
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      'Content-Type': 'application/json'
     }
   });
 

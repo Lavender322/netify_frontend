@@ -7,8 +7,6 @@ import { fetchTermsAndConditions } from '../utils/http';
 
 
 function SettingsScreen({ navigation }) {
-  const [termsAndConditions, setTermsAndConditions] = useState();
-
   const { logout, token } = useContext(AuthContext);
 
   function previousStepHandler() {
@@ -19,6 +17,10 @@ function SettingsScreen({ navigation }) {
     navigation.navigate('Feedback');
   };
 
+  function directToCustomerSupportHandler() {
+    navigation.navigate('CustomerSupport');
+  };
+
   function logoutHandler() {
     logout();
   };
@@ -26,8 +28,6 @@ function SettingsScreen({ navigation }) {
   async function openTermsHandler() {
     try {
       const content = await fetchTermsAndConditions(token);
-      // console.log('content', content[0].content);
-      setTermsAndConditions(content[0].content);
       navigation.navigate('TermsAndConditions', {
         content: content[0].content
       });
@@ -54,10 +54,15 @@ function SettingsScreen({ navigation }) {
             <Feather name="chevron-right" size={24} color="#6A6A6A" />
           </View>
         </Pressable>
-        <View style={styles.menuItem}>
-          <Feather name="coffee" size={18} color="black" />
-          <Text style={styles.menuText}>Customer Support</Text>
-        </View>
+        <Pressable onPress={directToCustomerSupportHandler}>
+          <View style={[styles.menuItem, styles.spaceBetween]}>
+            <View style={styles.menuInnerContainer}>
+              <Feather name="coffee" size={18} color="black" />
+              <Text style={styles.menuText}>Customer Support</Text>
+            </View>
+            <Feather name="chevron-right" size={24} color="#6A6A6A" />
+          </View>
+        </Pressable>
       </View>
       <Pressable onPress={logoutHandler} style={styles.logoutContainer}>
         <View style={styles.logoutContainer}>

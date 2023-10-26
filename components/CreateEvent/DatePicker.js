@@ -4,7 +4,9 @@ import DatePickerItem from './DatePickerItem';
 import { getEventDates, getCurrentMonth } from '../../utils/date';
 
 function DatePicker({ setSelectedDate, setPreviewDate }) {
-  const [isSelectedDate, setIsSelectedDate] = useState([false, false, false, false, false, false, false]);
+  const [isSelectedDate, setIsSelectedDate] = useState([false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false]);
 
   const eventDates = getEventDates();
 

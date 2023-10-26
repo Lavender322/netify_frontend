@@ -1,5 +1,5 @@
 import { useEffect, useContext, useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Pressable } from 'react-native';
 import { AuthContext } from '../store/context/auth-context';
 import LoginButton from '../components/LoginButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
@@ -32,6 +32,25 @@ function LandingScreen({ navigation, route }) {
     };
   }, [state, code]);
 
+  // async function openTermsHandler() {
+  //   try {
+  //     const content = await fetchTermsAndConditions();
+  //     navigation.navigate('TermsAndConditions', {
+  //       content: content[0].content
+  //     });
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //   };
+  // };
+
+  function openTermsHandler() {
+    navigation.navigate('TermsAndConditions');
+  };
+
+  function openPrivacyHandler() {
+    navigation.navigate('PrivacyPolicy');
+  };
+
   if (isFetching) {
     return (
       <LoadingOverlay />
@@ -43,7 +62,14 @@ function LandingScreen({ navigation, route }) {
       <ImageBackground source={require('../assets/splash.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.signInContainer}>
           <Text style={styles.signInText}>Sign in or sign up</Text>
-          <Text style={styles.termsText}>By using our services you are agreeing to our Terms and Privacy Statement.</Text>
+          <Text style={styles.termsText}>By using our services you are agreeing to our <Pressable onPress={openTermsHandler}>
+              <Text style={styles.link}>Terms</Text> 
+            </Pressable>
+            and <Pressable onPress={openPrivacyHandler}>
+              <Text style={styles.link}>Privacy Statement</Text>
+            </Pressable>
+            .
+          </Text>
           <LoginButton />
         </View>
       </ImageBackground>
@@ -78,5 +104,8 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto',
     fontSize: 15,
     lineHeight: 22
+  },
+  link: {
+    textDecorationLine: 'underline'
   }
 });
