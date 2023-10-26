@@ -32,17 +32,6 @@ function LandingScreen({ navigation, route }) {
     };
   }, [state, code]);
 
-  // async function openTermsHandler() {
-  //   try {
-  //     const content = await fetchTermsAndConditions();
-  //     navigation.navigate('TermsAndConditions', {
-  //       content: content[0].content
-  //     });
-  //   } catch (error) {
-  //     console.log(error.response.data);
-  //   };
-  // };
-
   function openTermsHandler() {
     navigation.navigate('TermsAndConditions');
   };

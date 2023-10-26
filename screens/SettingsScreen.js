@@ -1,13 +1,12 @@
-import { useEffect, useContext, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
+import { useContext } from 'react';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 import IconButton from '../components/ui/IconButton';
 import { Feather } from '@expo/vector-icons';
 import { AuthContext } from '../store/context/auth-context';
-import { fetchTermsAndConditions } from '../utils/http';
 
 
 function SettingsScreen({ navigation }) {
-  const { logout, token } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
 
   function previousStepHandler() {
     navigation.goBack();
@@ -26,15 +25,7 @@ function SettingsScreen({ navigation }) {
   };
 
   async function openTermsHandler() {
-    try {
-      const content = await fetchTermsAndConditions(token);
-      navigation.navigate('TermsAndConditions', {
-        content: content[0].content
-      });
-    } catch (error) {
-      console.log(error.response.data);
-      // setIsSubmitting(false);
-    };
+    navigation.navigate('TermsAndConditions');
   };
 
   return (

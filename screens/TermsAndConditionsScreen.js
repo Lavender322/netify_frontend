@@ -4,19 +4,39 @@ import IconButton from '../components/ui/IconButton';
 import { Feather } from '@expo/vector-icons';
 import { AuthContext } from '../store/context/auth-context';
 import { fetchTermsAndConditions } from '../utils/http';
-// import { marked } from 'marked';
-
+import LoadingOverlay from '../components/ui/LoadingOverlay';
+// import Markdown from 'marked-react';
 
 function TermsAndConditionsScreen({ navigation, route }) {
   const [termsAndConditions, setTermsAndConditions] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { token } = useContext(AuthContext);
-
-  const content = route.params?.content;
-  console.log('lala content', content);
+  // console.log('lala content', content);
+  // const html = marked.parse(content);
+  // console.log('html content', html);
 
   function previousStepHandler() {
     navigation.goBack();
+  };
+
+  useEffect(() => {
+    async function getTermsAndConditions() {
+      setIsLoading(true);
+      try {
+        const content = await fetchTermsAndConditions();
+        setIsLoading(false);
+        setTermsAndConditions(content[0].content);
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error.response.data);
+      };
+    };
+
+    getTermsAndConditions();
+  }, []);
+
+  if (isLoading) {
+    return <LoadingOverlay />;
   };
 
   return (
@@ -27,6 +47,7 @@ function TermsAndConditionsScreen({ navigation, route }) {
         <View style={styles.placeholder}></View>
       </View>
       <ScrollView>
+        <Text>{termsAndConditions}</Text>
         {/* <Text>{marked.parse(content)}</Text> */}
       </ScrollView>
     </View>

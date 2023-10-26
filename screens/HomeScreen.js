@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Button } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../store/context/auth-context';
-import { fetchOverallEventStatus, fetchEventList, fetchTags } from '../utils/http';
+import { fetchOverallEventStatus, fetchEventList, fetchTags, addPushToken } from '../utils/http';
 import EventsList from '../components/Home/EventsList';
 import EventFilters from '../components/Home/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import * as Notifications from 'expo-notifications';
 
 function HomeScreen({ navigation }) {
   const [isFetching, setIsFetching] = useState(true);
@@ -27,6 +28,66 @@ function HomeScreen({ navigation }) {
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function configurePushNotifications() {
+      const { status } = await Notifications.getPermissionsAsync();
+      let finalStatus = status;
+
+      if (finalStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      };
+
+      if (finalStatus !== 'granted') {
+        Alert.alert(
+          'Permission required',
+          'Push notifications need the appropriate permissions.'
+        );
+        return;
+      };
+
+      // First time login call this
+      const pushTokenData = await Notifications.getExpoPushTokenAsync();
+      // console.log(pushTokenData);
+
+      try {
+        await addPushToken(pushTokenData.data, token);
+      } catch (error) {
+        console.log('addPushToken', error.response.data);
+      };
+
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.DEFAULT,
+        });
+      };
+    };
+
+    configurePushNotifications();
+  }, []);
+
+  // useEffect(() => {
+  //   const subscription1 = Notifications.addNotificationReceivedListener((notification) => {
+  //     console.log('NOTIFICATION RECEIVED');
+  //     console.log(notification);
+  //     const userName = notification.request.content.data.userName;
+  //     console.log(userName);
+  //   });
+
+  //   const subscription2 = Notifications.addNotificationResponseReceivedListener((response) => {
+  //     console.log('NOTIFICATION RESPONSE RECEIVED');
+  //     console.log(response);
+  //     const userName = response.notification.request.content.data.userName;
+  //     console.log(userName);
+  //   });
+
+  //   return () => {
+  //     subscription1.remove();
+  //     subscription2.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
     async function getOverallEventStatus() {
@@ -101,6 +162,19 @@ function HomeScreen({ navigation }) {
     };
   }, [updateEventList]);
 
+  // async function scheduleNotificationHandler() {
+  //   Notifications.scheduleNotificationAsync({
+  //     content: {
+  //       title: 'My first local Notification', 
+  //       body: 'This is the body of the notification.',
+  //       data: { userName: 'Max' }
+  //     },
+  //     trigger: {
+  //       seconds: 5
+  //     }
+  //   });
+  // };
+
   function directToConfirmedActivities() {
     navigation.navigate('Activities', {screen: 'ActivitiesConfirmed'});
   };
@@ -120,6 +194,7 @@ function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
+      {/* <Button title='Schedule' onPress={scheduleNotificationHandler} /> */}
       <View style={styles.outerPanelContainer}>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
           <Pressable onPress={directToConfirmedActivities}>
@@ -164,7 +239,7 @@ function HomeScreen({ navigation }) {
       />
     </View>
   )
-}
+};
 
 export default HomeScreen;
 
