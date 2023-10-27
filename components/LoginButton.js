@@ -44,7 +44,7 @@ function LoginButton() {
       onPress={connectToLinkedin}
     >
       <View style={styles.button}>
-        <Image style={styles.logo} source={require("../assets/LinkedIn_logo_initials.png")} />
+        <Image style={styles.logo} source={require("../assets/images/LinkedIn_logo_initials.png")} />
         <Text style={styles.buttonText}>Continue with LinkedIn</Text>
       </View>
     </Pressable>

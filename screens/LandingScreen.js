@@ -48,7 +48,7 @@ function LandingScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('../assets/splash.png')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../assets/images/splash.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.signInContainer}>
           <Text style={styles.signInText}>Sign in or sign up</Text>
           <Text style={styles.termsText}>By using our services you are agreeing to our <Pressable onPress={openTermsHandler}>

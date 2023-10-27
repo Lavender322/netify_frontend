@@ -157,7 +157,7 @@ function ChatDetailScreen({ navigation, route }) {
                 value={enteredText}
               />
               <Pressable onPress={sendMessageHandler}>
-                <Image style={styles.logo} source={require("../assets/send-icon.png")} />
+                <Image style={styles.logo} source={require("../assets/images/send-icon.png")} />
               </Pressable>
             </View>
           </>

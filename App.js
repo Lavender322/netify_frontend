@@ -269,6 +269,27 @@ function Root() {
     fetchLocalStorage();
   }, []);
 
+  // useEffect(() => {
+  //   const subscription1 = Notifications.addNotificationReceivedListener((notification) => {
+  //     console.log('NOTIFICATION RECEIVED');
+  //     console.log(notification);
+  //     const userName = notification.request.content.data.userName;
+  //     console.log(userName);
+  //   });
+
+  //   const subscription2 = Notifications.addNotificationResponseReceivedListener((response) => {
+  //     console.log('NOTIFICATION RESPONSE RECEIVED');
+  //     console.log(response);
+  //     const userName = response.notification.request.content.data.userName;
+  //     console.log(userName);
+  //   });
+
+  //   return () => {
+  //     subscription1.remove();
+  //     subscription2.remove();
+  //   };
+  // }, []);
+
   const onLayoutRootView = useCallback(async () => {
     if (!isTryingLogin) {
       // This tells the splash screen to hide immediately! If we call this after
