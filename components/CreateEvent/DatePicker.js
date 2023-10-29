@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import DatePickerItem from './DatePickerItem';
 import { getEventDates, getCurrentMonth } from '../../utils/date';
 
-function DatePicker({ setSelectedDate, setPreviewDate }) {
+function DatePicker({ setSelectedDate, setPreviewDate, setSelectedIndex, selectedIndex }) {
   const [isSelectedDate, setIsSelectedDate] = useState([false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false]);
+
+  useEffect(() => {
+    let updatedIsSelectedDate = [...isSelectedDate];
+    updatedIsSelectedDate[selectedIndex] = true;
+    setIsSelectedDate(updatedIsSelectedDate);
+  }, []);
 
   const eventDates = getEventDates();
 
@@ -19,6 +25,7 @@ function DatePicker({ setSelectedDate, setPreviewDate }) {
     setIsSelectedDate(updatedIsSelectedDate);
     setSelectedDate(eventDates[idx].fullDate);
     setPreviewDate(eventDates[idx].previewDate);
+    setSelectedIndex(idx);
   };
 
   return (

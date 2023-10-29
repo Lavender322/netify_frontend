@@ -29,6 +29,7 @@ function CreateEventForm() {
   const [selectedEndTime, setSelectedEndTime] = useState(initialTime);
   const [selectedDate, setSelectedDate] = useState();
   const [previewDate, setPreviewDate] = useState('Please Select');
+  const [selectedIndex, setSelectedIndex] = useState();
   const [selectedCapacity, setSelectedCapacity] = useState('∞');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [previewLocation, setPreviewLocation] = useState('Optional');
@@ -258,7 +259,7 @@ function CreateEventForm() {
         
           <CreateEventItem icon='calendar' text='Date' placeholder={previewDate} onPress={selectDateHandler} expanded={showDateSelector} />
           {showDateSelector && (
-            <DatePicker setSelectedDate={setSelectedDate} setPreviewDate={setPreviewDate} />
+            <DatePicker setSelectedDate={setSelectedDate} setPreviewDate={setPreviewDate} setSelectedIndex={setSelectedIndex} selectedIndex={selectedIndex} />
           )}
 
           <CreateEventItem icon='clock' text='Time' placeholder={previewTime} onPress={selectTimeHandler} expanded={showTimeSelector} />
