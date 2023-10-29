@@ -33,6 +33,7 @@ function TimePicker({ setPreviewTime, startTime, setStartTime, endTime, setEndTi
           is24Hour={true}
           minuteInterval={15}
           onChange={onStartTimeChange}
+          textColor='black'
         />
       </View>
       <View style={styles.innerContainer}>
@@ -44,6 +45,7 @@ function TimePicker({ setPreviewTime, startTime, setStartTime, endTime, setEndTi
           is24Hour={true}
           minuteInterval={15}
           onChange={onEndTimeChange}
+          textColor='black'
         />
       </View>
     </View>
