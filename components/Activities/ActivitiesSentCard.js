@@ -7,7 +7,7 @@ import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
 import GroupProfilePictures from '../GroupProfilePictures';
 
-function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags, isCancelled, isPast}) {
+function ActivitiesSentCard({ eventId, eventHost, eventType, alreadyParticipatedNumber, eventName, eventStartTime, eventEndTime, eventLocation, sectorTags, gradeTags, isCancelled, isPast}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(true);
   const [eventParticipants, setEventParticipants] = useState([]);
 
@@ -65,7 +65,8 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, eventName, eventSta
       eventParticipants: eventParticipants,
       eventId: eventId,
       eventType: eventType,
-      eventName: eventName
+      eventName: eventName,
+      alreadyParticipatedNumber: alreadyParticipatedNumber
     });
   };
 

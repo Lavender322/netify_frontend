@@ -28,6 +28,10 @@ function SettingsScreen({ navigation }) {
     navigation.navigate('TermsAndConditions');
   };
 
+  async function openPrivacyHandler() {
+    navigation.navigate('PrivacyPolicy');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -67,9 +71,11 @@ function SettingsScreen({ navigation }) {
             <Text style={styles.link}>Terms and Conditions</Text>
           </View>
         </Pressable>
-        <View style={styles.linkContainer}>
-          <Text style={styles.link}>Privacy Policy</Text>
-        </View>
+        <Pressable onPress={openPrivacyHandler}>
+          <View style={styles.linkContainer}>
+            <Text style={styles.link}>Privacy Policy</Text>
+          </View>
+        </Pressable>
       </View>
     </View>
   )

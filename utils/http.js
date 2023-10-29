@@ -342,6 +342,19 @@ export async function fetchTermsAndConditions() {
   return response.data.data;
 };
 
+export async function fetchPrivacyPolicy() {
+  const response = await axios({
+    method: 'GET',
+    url: BACKEND_URL + `/announcement/getPrivacyPolicy`,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return response.data.data;
+};
+
 export function addPushToken(pushToken, token) { 
   let body = {'token': pushToken}; 
   return axios({

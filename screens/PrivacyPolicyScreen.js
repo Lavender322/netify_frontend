@@ -1,21 +1,39 @@
 import { useEffect, useContext, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, ScrollView, Pressable } from 'react-native';
 import IconButton from '../components/ui/IconButton';
-import { Feather } from '@expo/vector-icons';
-import { AuthContext } from '../store/context/auth-context';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { fetchPrivacyPolicy } from '../utils/http';
 
 function PrivacyPolicyScreen({ navigation, route }) {
-  const [termsAndConditions, setTermsAndConditions] = useState();
+  const [privacyPolicy, setPrivacyPolicy] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { token } = useContext(AuthContext);
-
-  const content = route.params?.content;
   // console.log('lala content', content);
   // const html = marked.parse(content);
   // console.log('html content', html);
 
   function previousStepHandler() {
     navigation.goBack();
+  };
+
+  useEffect(() => {
+    async function getPrivacyPolicy() {
+      setIsLoading(true);
+      try {
+        const content = await fetchPrivacyPolicy();
+        setIsLoading(false);
+        setPrivacyPolicy(content[0].content);
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error.response.data);
+      };
+    };
+
+    getPrivacyPolicy();
+  }, []);
+
+  if (isLoading) {
+    return <LoadingOverlay />;
   };
   
   return (
@@ -26,7 +44,7 @@ function PrivacyPolicyScreen({ navigation, route }) {
         <View style={styles.placeholder}></View>
       </View>
       <ScrollView>
-        <Text>{content}</Text>
+        <Text>{privacyPolicy}</Text>
         {/* <Text>{marked.parse(content)}</Text> */}
       </ScrollView>
     </View>
