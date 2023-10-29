@@ -3,9 +3,11 @@ import { StyleSheet, View, Pressable, KeyboardAvoidingView, TextInput, Text } fr
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-function NotesScreen({ navigation }) {
+function NotesScreen({ navigation, route }) {
+  const notes = route.params && route.params.notes;
+
   const [flag, setFlag] = useState(false);
-  const [enteredText, setEnteredText] = useState('');
+  const [enteredText, setEnteredText] = useState(notes);
   const [previewText, setPreviewText] = useState('');
 
   useEffect(() => {

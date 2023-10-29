@@ -212,7 +212,9 @@ function CreateEventForm() {
   };
 
   function selectNotesHandler() {
-    navigation.navigate('Notes');
+    navigation.navigate('Notes', {
+      notes: notes
+    });
   };
 
   function selectVisibilityHandler() {
