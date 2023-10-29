@@ -54,7 +54,8 @@ function HomeScreen({ navigation }) {
       try {
         await addPushToken(pushTokenData.data, token);
       } catch (error) {
-        console.log('addPushToken', error.response.data);
+        console.log('addPushToken', error);
+        console.log(error.response.data);
       };
 
       if (Platform.OS === 'android') {
@@ -77,6 +78,7 @@ function HomeScreen({ navigation }) {
         setPendingRequests(eventStatus.pendingEventRequests);
         setReceivedInvitations(eventStatus.invitationsReceived);
       } catch (error) {
+        console.log('fetchOverallEventStatus', error);
         console.log(error.response.data);
       };
       setIsFetching(false);
@@ -99,6 +101,7 @@ function HomeScreen({ navigation }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);
@@ -115,6 +118,7 @@ function HomeScreen({ navigation }) {
         setLoadedEvents(eventList);
         // console.log("eventList", eventList)
       } catch (error) {
+        console.log('fetchEventList', error);
         console.log(error.response.data);
       };
       setIsFetchingEvents(false);
@@ -131,6 +135,7 @@ function HomeScreen({ navigation }) {
           const eventList = await fetchEventList(selectedGrade, selectedIndustry, selectedGroup, token);
           setLoadedEvents(eventList);
         } catch (error) {
+          console.log('fetchEventList', error);
           console.log(error.response.data);
         };
         setIsFetchingEvents(false);

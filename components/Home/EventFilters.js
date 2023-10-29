@@ -27,10 +27,11 @@ function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelecte
     async function getEventFilters() {
       try {
         const eventFilters = await fetchEventFilters(token);
-        setGradeFilters(eventFilters.experienceTypeList);
-        setIndustryFilters(eventFilters.sectorTypeList);
+        // setGradeFilters(eventFilters.experienceTypeList);
+        // setIndustryFilters(eventFilters.sectorTypeList);
         setGroupFilters(eventFilters.meetingTypeList);
       } catch (error) {
+        console.log('fetchEventFilters', error);
         console.log(error.response.data);
       };
     };
@@ -89,7 +90,7 @@ function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelecte
   return (
     <View style={[styles.outerContainer, style]}>
       <View style={styles.container}>
-        <Pressable onPress={onToggleGradeFilters} style={({pressed}) => pressed && styles.pressed}>
+        {/* <Pressable onPress={onToggleGradeFilters} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.dropdownContainer, gradeFilterApplied && styles.colorContainer]}>
             <Text style={[styles.filterText, gradeFilterApplied && styles.colorText]}>Grade</Text>
               <View style={styles.numSelectedContainer}>
@@ -110,7 +111,7 @@ function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelecte
                 </View>
             <Feather name="chevron-down" size={24} color={industryFilterApplied ? 'white' : '#1A1A1A'} />
           </View>
-        </Pressable>
+        </Pressable> */}
         <Pressable onPress={onToggleGroupFilters} style={({pressed}) => pressed && styles.pressed}>
           <View style={[styles.dropdownContainer, groupFilterApplied && styles.colorContainer]}>
             <Text style={[styles.filterText, groupFilterApplied && styles.colorText]}>Meeting Type</Text>
@@ -139,7 +140,8 @@ function EventFilters({ style, setSelectedGrade, setSelectedIndustry, setSelecte
           setUpdateEventList={setUpdateEventList} 
         />
       </View>
-      <View style={[!showGroup && styles.hide, styles.filtersContainer, styles.groupFiltersContainer]}>
+      {/* <View style={[!showGroup && styles.hide, styles.filtersContainer, styles.groupFiltersContainer]}> */}
+      <View style={[!showGroup && styles.hide, styles.filtersContainer]}>
         <EventFilter 
           filters={groupFilters} 
           isGroupFilters={true} 

@@ -37,6 +37,7 @@ function UserInfoScreen({ navigation }) {
           setUserInfo(userInfo);
           AsyncStorage.setItem('user-info', JSON.stringify(userInfo));
         } catch (error) {
+          console.log('fetchUserInfo', error);
           console.log(error.response.data);
         };
         setIsFetching(false);

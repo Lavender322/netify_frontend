@@ -48,7 +48,8 @@ function WithdrawEventScreen({ navigation, route }) {
       await withdrawEvent(eventId, token);
       navigation.navigate('ActivitiesSent');
     } catch (error) {
-      console.log("error", error.response.data);
+      console.log("withdrawEvent", error);
+      console.log(error.response.data);
       setIsSubmitting(false);
       // setError('Could not save data - please try again later!');
     };

@@ -5,21 +5,27 @@ import { Ionicons } from '@expo/vector-icons';
 import { fetchTags } from '../utils/http';
 import VisibilityFilter from '../components/CreateEvent/VisibilityFilter';
 
-function VisibilityScreen({ navigation }) {
+function VisibilityScreen({ navigation, route }) {
+  const grade = route.params && route.params.selectedGrade;
+  const industry = route.params && route.params.selectedIndustry;
+
   const [flag, setFlag] = useState(true);
   const [isEnabled, setIsEnabled] = useState(true);
   const [showGrade, setShowGrade] = useState(false);
   const [showSector, setShowSector] = useState(false);
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState([]);
-  const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState(grade);
+  const [selectedIndustry, setSelectedIndustry] = useState(industry);
   const [numSelectedGrade, setNumSelectedGrade] = useState();
   const [numSelectedIndustry, setNumSelectedIndustry] = useState();
   const [gradeFilterApplied, setGradeFilterApplied] = useState(false);
   const [industryFilterApplied, setIndustryFilterApplied] = useState(false);
   const [showSelectedGrade, setShowSelectedGrade] = useState(false);
   const [showSelectedIndustry, setShowSelectedIndustry] = useState(false);
+
+  // console.log('numSelectedGrade', numSelectedGrade);
+  // console.log('numSelectedIndustry', numSelectedIndustry);
 
   useEffect(() => {
     async function getTags() {
@@ -35,6 +41,7 @@ function VisibilityScreen({ navigation }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);
@@ -59,14 +66,14 @@ function VisibilityScreen({ navigation }) {
     navigation.goBack();
   };
 
-  console.log("selectedGrade", selectedGrade.length, selectedGrade);
-  console.log("selectedIndustry", selectedIndustry.length, selectedIndustry);
-
   function comfirmVisibilityHandler() {
-    navigation.navigate('CreateEvent', {
-      gradeVisibility: selectedGrade,
-      sectorVisibility: selectedIndustry,
-    });
+    if (flag) {
+      navigation.navigate('CreateEvent', {
+        gradeVisibility: selectedGrade,
+        sectorVisibility: selectedIndustry,
+        previewVisibility: (selectedGrade.length + selectedIndustry.length !== 0 && selectedGrade.length + selectedIndustry.length !== 13) && selectedGrade.length + selectedIndustry.length + ' criteria applied'
+      });
+    };
   };
 
   function toggleGradeAccordionHandler() {
@@ -83,24 +90,25 @@ function VisibilityScreen({ navigation }) {
     setShowSector(!showSector);
   };
 
-  function selectGradeFilterHandler() {
-    setNumSelectedGrade(numFilters);
-    if (numFilters > 0) {
-      setGradeFilterApplied(true);
-    } else {
-      setGradeFilterApplied(false);
-    };
-    setShowSelectedGrade(false);
+  function selectGradeFilterHandler(numFilters) {
+    // console.log('grade', numFilters);
+    // setNumSelectedGrade(numFilters);
+    // if (numFilters > 0) {
+    //   setGradeFilterApplied(true);
+    // } else {
+    //   setGradeFilterApplied(false);
+    // };
+    // setShowSelectedGrade(false);
   };
 
-  function selectIndustryFilterHandler() {
-    setNumSelectedIndustry(numFilters);
-    if (numFilters > 0) {
-      setIndustryFilterApplied(true);
-    } else {
-      setIndustryFilterApplied(false);
-    };
-    setShowSelectedIndustry(false);
+  function selectIndustryFilterHandler(numFilters) {
+    // setNumSelectedIndustry(numFilters);
+    // if (numFilters > 0) {
+    //   setIndustryFilterApplied(true);
+    // } else {
+    //   setIndustryFilterApplied(false);
+    // };
+    // setShowSelectedIndustry(false);
   };
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -181,7 +189,7 @@ function VisibilityScreen({ navigation }) {
         </ScrollView>
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={(comfirmVisibilityHandler)} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={(comfirmVisibilityHandler)} style={({pressed}) => pressed && flag && styles.pressed}>
             <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
               <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Done</Text>
             </View>

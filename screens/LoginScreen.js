@@ -18,6 +18,7 @@ function LoginScreen({ navigation, route }) {
           authenticate(token);
           navigation.navigate('UserInfo');
         } catch (error) {
+          console.log('authenticateUser', error);
           console.log(error.response.data);
           Alert.alert("error", JSON.stringify(error.response.data));
         }

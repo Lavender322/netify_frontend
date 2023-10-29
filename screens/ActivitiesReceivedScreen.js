@@ -25,6 +25,7 @@ function ActivitiesReceivedScreen({ navigation }) {
         setLoadedActivities(displayedActivitiesList);
         // console.log("activitiesList", displayedActivitiesList);
       } catch (error) {
+        console.log('fetchActivities', error);
         console.log(error.response.data);
       };
       setIsFetchingActivities(false);
@@ -47,6 +48,7 @@ function ActivitiesReceivedScreen({ navigation }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);

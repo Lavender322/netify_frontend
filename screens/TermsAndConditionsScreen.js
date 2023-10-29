@@ -28,6 +28,7 @@ function TermsAndConditionsScreen({ navigation, route }) {
         setTermsAndConditions(content[0].content);
       } catch (error) {
         setIsLoading(false);
+        console.log('fetchTermsAndConditions', error);
         console.log(error.response.data);
       };
     };

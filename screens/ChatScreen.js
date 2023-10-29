@@ -24,7 +24,8 @@ function ChatScreen() {
         );
         setLoadedChats(displayedChats);
       } catch (error) {
-        console.log('fetchChats', error.response.data);
+        console.log('fetchChats', error);
+        console.log(error.response.data);
       };
       setIsFetchingChats(false);
     };

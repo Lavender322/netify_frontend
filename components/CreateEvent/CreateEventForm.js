@@ -36,6 +36,7 @@ function CreateEventForm() {
   const [notes, setNotes] = useState('');
   const [previewNotes, setPreviewNotes] = useState('Optional');
   const [visibility, setVisibility] = useState('All');
+  const [previewVisibility, setPreviewVisibility] = useState('Visible to all');
   const [autoAccept, setAutoAccept] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -83,6 +84,7 @@ function CreateEventForm() {
         setAllSectorTagIds(sectorTagIds);
         setAllGradeTagIds(gradeTagIds);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);
@@ -96,6 +98,7 @@ function CreateEventForm() {
       const activityCapacity = route.params.activityCapacity ? route.params.activityCapacity : '∞';
       const notes = route.params.notes ? route.params.notes : '';
       const previewNotes = route.params.previewNotes ? route.params.previewNotes : 'Optional';
+      const previewVisibility = route.params.previewVisibility ? route.params.previewVisibility : 'Visible to all';
       const gradeVisibility = route.params.gradeVisibility && route.params.gradeVisibility;
       const sectorVisibility = route.params.sectorVisibility && route.params.sectorVisibility;
       setSelectedCapacity(activityCapacity);
@@ -114,6 +117,7 @@ function CreateEventForm() {
           setSectorTagIds(sectorVisibility);
         };
       };
+      setPreviewVisibility(previewVisibility);
     };
   }, [route, isFocused]);
 
@@ -174,6 +178,7 @@ function CreateEventForm() {
         await createEvent(body, token);
         navigation.goBack();
       } catch (error) {
+        console.log('createEvent', error);
         console.log(error.response.data);
         setIsSubmitting(false);
       };  
@@ -219,7 +224,10 @@ function CreateEventForm() {
   };
 
   function selectVisibilityHandler() {
-    navigation.navigate('Visibility');
+    navigation.navigate('Visibility', {
+      selectedGrade: gradeTagIds,
+      selectedIndustry: sectorTagIds
+    });
   };
 
   function onHideModal() {
@@ -270,7 +278,6 @@ function CreateEventForm() {
               endTime={selectedEndTime}
               setEndTime={setSelectedEndTime}
               setPreviewTime={setPreviewTime}
-            
             />
           )}
 
@@ -290,7 +297,7 @@ function CreateEventForm() {
             </View>
           )}
 
-          <CreateEventItem icon='eye' text='Visibility' placeholder='Visible to all' onPress={selectVisibilityHandler}/>
+          <CreateEventItem icon='eye' text='Visibility' placeholder={previewVisibility} onPress={selectVisibilityHandler}/>
           
           <CreateEventItem icon='file-text' text='Notes' placeholder={previewNotes} onPress={selectNotesHandler}/>
         </ScrollView>

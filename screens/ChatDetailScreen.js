@@ -33,7 +33,8 @@ function ChatDetailScreen({ navigation, route }) {
         const id = await createNewChat(eventId, token);
         setChatRoomId(id);
       } catch (error) {
-        console.log("createNewChat", eventId, error.response.data);
+        console.log("createNewChat", error);
+        console.log(error.response.data);
       };
       setIsInitiating(false);
     };
@@ -50,7 +51,8 @@ function ChatDetailScreen({ navigation, route }) {
           setChatRoomInfo(info);
           // console.log("info", info);
         } catch (error) {
-          console.log('fetchChatRoomInfo', error.response.data);
+          console.log('fetchChatRoomInfo', error);
+          console.log(error.response.data);
         };
         setIsFetchingInfo(false);
       };
@@ -68,6 +70,7 @@ function ChatDetailScreen({ navigation, route }) {
           setChatMessages(messages);
           // console.log("messages", messages);
         } catch (error) {
+          console.log('fetchMessages', error);
           console.log(error.response.data);
         };
         setIsFetchingMessages(false);
@@ -102,7 +105,8 @@ function ChatDetailScreen({ navigation, route }) {
         setChatMessages(prev => [...prev, newMessage]);
         await sendMessage(body, token);
       } catch (error) {
-        console.log('sendMessage', error.response.data);
+        console.log('sendMessage', error);
+        console.log(error.response.data);
       }; 
     };
   };

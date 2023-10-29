@@ -43,6 +43,7 @@ function UserTagsScreen({ navigation }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       setIsFetching(false);
@@ -98,6 +99,7 @@ function UserTagsScreen({ navigation }) {
         await setTags([sector.tagId.toString(), grade.tagId.toString()], tempToken);
         authenticate(tempToken);
       } catch (error) {
+        console.log('setTags', error);
         console.log(error.response.data);
         setIsFetching(false);
       };    

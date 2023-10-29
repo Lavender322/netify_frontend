@@ -36,6 +36,7 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
         setEventParticipants(activity.participants);
         // console.log('participants', activity.participants);
       } catch (error) {
+        console.log('fetchActivity', error);
         console.log(error.response.data);
       };
       setIsFetchingActivity(false);

@@ -23,6 +23,7 @@ function LandingScreen({ navigation, route }) {
           setTempToken(token);
           navigation.navigate('UserInfo');
         } catch (error) {
+          console.log('authenticateUser', error);
           console.log(error.response.data);
           setIsFetching(false);
         }

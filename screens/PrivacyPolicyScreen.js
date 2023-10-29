@@ -25,6 +25,7 @@ function PrivacyPolicyScreen({ navigation, route }) {
         setPrivacyPolicy(content[0].content);
       } catch (error) {
         setIsLoading(false);
+        console.log('fetchPrivacyPolicy', error);
         console.log(error.response.data);
       };
     };

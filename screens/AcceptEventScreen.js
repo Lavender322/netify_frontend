@@ -29,7 +29,8 @@ function AcceptEventScreen({ navigation, route }) {
         await approveEvent(eventId, user.userId, token);
         // console.log("eventDetails", eventId, eventDetails);
       } catch (error) {
-        console.log('approveEventError', error.response.data);
+        console.log('approveEvent', error);
+        console.log(error.response.data);
       };
       setIsFetching(false);
     };
@@ -43,8 +44,8 @@ function AcceptEventScreen({ navigation, route }) {
       try {
         const eventDetails = await fetchEvent(token, eventId);
         setEventDetails(eventDetails);
-        console.log("eventDetails", eventDetails);
       } catch (error) {
+        console.log('fetchEvent', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);

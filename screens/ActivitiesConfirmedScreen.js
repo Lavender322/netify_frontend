@@ -21,6 +21,7 @@ function ActivitiesConfirmedScreen({ navigation, isFocused }) {
         const activitiesList = await fetchActivities('confirmed', token);
         setLoadedActivities(activitiesList);
       } catch (error) {
+        console.log('fetchActivities', error);
         console.log(error.response.data);
       };
       setIsFetchingActivities(false);
@@ -43,6 +44,7 @@ function ActivitiesConfirmedScreen({ navigation, isFocused }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);

@@ -40,6 +40,7 @@ function EventDetailScreen({ navigation, route }) {
         setEventDetails(eventDetails);
         // console.log("eventDetails", eventDetails);
       } catch (error) {
+        console.log('fetchEvent', error);
         console.log(error.response.data);
       };
       setIsFetching(false);
@@ -70,7 +71,8 @@ function EventDetailScreen({ navigation, route }) {
       navigation.goBack();
     } catch (error) {
       // setError('Could not save data - please try again later!');
-      console.log("error", error);
+      console.log("joinEvent", error);
+      console.log(error.response.data);
       setIsSubmitting(false);
     };
   };

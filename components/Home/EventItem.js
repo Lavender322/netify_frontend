@@ -39,6 +39,7 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
       } catch (error) {
+        console.log('fetchActivity', error);
         console.log(error.response.data);
       };
       setIsFetchingActivity(false);
@@ -76,7 +77,8 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
         setEventStatus('REQUESTED');
       };
     } catch (error) {
-      console.log("error", error);
+      console.log("joinEvent", error);
+      console.log(error.response.data);
       // setError('Could not save data - please try again later!');
     };
     setIsSubmitting(false);

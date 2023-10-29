@@ -25,6 +25,7 @@ function ActivitiesSentCard({ eventId, eventHost, eventType, alreadyParticipated
         // console.log("activity", activity);
         setEventParticipants(activity.participants);
       } catch (error) {
+        console.log('fetchActivity', error);
         console.log(error.response.data);
       };
       setIsFetchingActivity(false);

@@ -21,6 +21,7 @@ function MyActivitiesScreen({ navigation }) {
         setMyActivities(activities);
         // console.log('activities', activities);
       } catch (error) {
+        console.log('fetchMyActivities', error);
         console.log(error.response.data);
       };
       setIsFetchingActivities(false);
@@ -43,6 +44,7 @@ function MyActivitiesScreen({ navigation }) {
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);

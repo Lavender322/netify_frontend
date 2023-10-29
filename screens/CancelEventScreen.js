@@ -89,7 +89,8 @@ function CancelEventScreen({ navigation, route }) {
         navigation.navigate('ActivitiesConfirmed');
         console.log('cancelEvent done');
       } catch (error) {
-        console.log("cancelEvent", eventId, error.response.data);
+        console.log("cancelEvent", error);
+        console.log(error.response.data);
         setIsSubmitting(false);
         // setError('Could not save data - please try again later!');
       };
@@ -98,7 +99,8 @@ function CancelEventScreen({ navigation, route }) {
         await withdrawEvent(eventId, token);
         navigation.navigate('ActivitiesConfirmed');
       } catch (error) {
-        console.log("withdrawEvent", eventId, error.response.data);
+        console.log("withdrawEvent", error);
+        console.log(error.response.data);
         setIsSubmitting(false);
         // setError('Could not save data - please try again later!');
       };

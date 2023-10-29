@@ -31,7 +31,8 @@ function CustomerSupportScreen({ navigation }) {
       await addFeedback(enteredText, userInfo.email, token);
       navigation.goBack();
     } catch (error) {
-      console.log('addFeedback', error.response.data);
+      console.log('addFeedback', error);
+      console.log(error.response.data);
       // setIsSubmitting(false);
     };  
   };

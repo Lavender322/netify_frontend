@@ -20,6 +20,7 @@ function MyActivitiesCard({ eventId, eventHost, eventType, eventName, eventStart
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
       } catch (error) {
+        console.log('fetchActivity', error);
         console.log(error.response.data);
       };
       // setIsFetchingActivity(false);
