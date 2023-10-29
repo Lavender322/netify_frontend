@@ -27,6 +27,7 @@ function MessageItem({ id, senderId, content, messageTime, isSameMessageTime }) 
         setSenderName(userInfo.localizedfirstname + ' ' + userInfo.localizedlastname);
         // AsyncStorage.setItem('user-info', JSON.stringify(userInfo));
       } catch (error) {
+        console.log('fetchOtherUserInfo', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);

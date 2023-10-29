@@ -26,6 +26,7 @@ function UpcomingEventCards({ closestEventId, chatMessages }) {
             const eventDetails = await fetchEvent(token, eventId);
             setUpcomingEvents(currentUpcomingEvents => [...currentUpcomingEvents, eventDetails]);
           } catch (error) {
+            console.log('fetchEvent', error);
             console.log(error.response.data);
           };
         };

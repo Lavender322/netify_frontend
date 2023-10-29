@@ -89,7 +89,7 @@ function ActivitiesConfirmedScreen({ navigation, isFocused }) {
               <Text style={[styles.categoryText, styles.categoryActiveText]}>Confirmed</Text>
             </View>
           </Pressable>
-          <Pressable onPress={directToPastHandler}>
+          {/* <Pressable onPress={directToPastHandler}>
             <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
               <Text style={[styles.categoryText, styles.categoryInactiveText]}>Past</Text>
             </View>
@@ -98,7 +98,7 @@ function ActivitiesConfirmedScreen({ navigation, isFocused }) {
             <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
               <Text style={[styles.categoryText, styles.categoryInactiveText]}>Cancelled</Text>
             </View>
-          </Pressable>
+          </Pressable> */}
         </ScrollView>
       </View>
       <View style={styles.mainContainer}>

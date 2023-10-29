@@ -30,6 +30,7 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
         setSectorTags(fetchedSectorTags);
         setGradeTags(fetchedGradeTags);
       } catch (error) {
+        console.log('fetchTags', error);
         console.log(error.response.data);
       };
       // setIsFetching(false);
@@ -46,6 +47,7 @@ function UpcomingEventCard({ eventId, eventType, eventStartTime, eventEndTime, e
         setEventParticipants(activity.participants);
         // console.log('participants', activity);
       } catch (error) {
+        console.log('fetchActivity', error);
         console.log(error.response.data);
       };
       // setIsFetchingActivity(false);
