@@ -48,7 +48,7 @@ function CancelEventScreen({ navigation, route }) {
   }, [eventParticipants]);
 
   useEffect(() => {
-    if (eventParticipants && eventParticipants[0].user.userTag && gradeTags.length && sectorTags.length) {
+    if (eventParticipants && eventParticipants[0] && eventParticipants[0].user.userTag && gradeTags.length && sectorTags.length) {
       const eventParticipantGradeTag = gradeTags.filter((gradeTag) => {
         return eventParticipants[0].user.userTag.includes(gradeTag.tagId);
       });
@@ -87,7 +87,6 @@ function CancelEventScreen({ navigation, route }) {
       try {
         await cancelEvent(eventId, enteredText, token);
         navigation.navigate('ActivitiesConfirmed');
-        console.log('cancelEvent done');
       } catch (error) {
         console.log("cancelEvent", error);
         console.log(error.response.data);

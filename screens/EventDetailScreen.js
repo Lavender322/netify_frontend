@@ -139,7 +139,7 @@ function EventDetailScreen({ navigation, route }) {
           </>
         )}
         {/* Name */}
-        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' && eventParticipants.length ? (
+        {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <Text style={styles.name}>Your One to One session with 
             <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? ' ' + eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
             ' ' + eventDetails.eventHost.localizedfirstname + ' ' + eventDetails.eventHost.localizedlastname}</Text>

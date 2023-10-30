@@ -8,7 +8,7 @@ import { AuthContext } from '../../store/context/auth-context';
 import GroupProfilePictures from '../GroupProfilePictures';
 
 function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
-  const [isFetchingActivity, setIsFetchingActivity] = useState(true);
+  const [isFetchingActivity, setIsFetchingActivity] = useState(false);
   const [eventParticipants, setEventParticipants] = useState([]);
   const [eventDetails, setEventDetails] = useState();
   
@@ -34,7 +34,6 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
       try {
         const activity = await fetchActivity(eventId, token);
         setEventParticipants(activity.participants);
-        // console.log('participants', activity.participants);
       } catch (error) {
         console.log('fetchActivity', error);
         console.log(error.response.data);
