@@ -98,26 +98,26 @@ function CreateEventForm() {
       const activityCapacity = route.params.activityCapacity ? route.params.activityCapacity : '∞';
       const notes = route.params.notes ? route.params.notes : '';
       const previewNotes = route.params.previewNotes ? route.params.previewNotes : 'Optional';
-      const previewVisibility = route.params.previewVisibility ? route.params.previewVisibility : 'Visible to all';
-      const gradeVisibility = route.params.gradeVisibility && route.params.gradeVisibility;
-      const sectorVisibility = route.params.sectorVisibility && route.params.sectorVisibility;
+      // const previewVisibility = route.params.previewVisibility ? route.params.previewVisibility : 'Visible to all';
+      // const gradeVisibility = route.params.gradeVisibility && route.params.gradeVisibility;
+      // const sectorVisibility = route.params.sectorVisibility && route.params.sectorVisibility;
       setSelectedCapacity(activityCapacity);
       setPreviewNotes(previewNotes);
       setNotes(notes);
-      if (gradeVisibility && sectorVisibility) {
-        if (gradeVisibility === ['All']) {
-          setGradeTagIds(allGradeTagIds);
-        } else {
-          setGradeTagIds(gradeVisibility);
-        };
+      // if (gradeVisibility && sectorVisibility) {
+      //   if (gradeVisibility === ['All']) {
+      //     setGradeTagIds(allGradeTagIds);
+      //   } else {
+      //     setGradeTagIds(gradeVisibility);
+      //   };
         
-        if (sectorVisibility === ['All']) {
-          setSectorTagIds(allSectorTagIds);
-        } else {
-          setSectorTagIds(sectorVisibility);
-        };
-      };
-      setPreviewVisibility(previewVisibility);
+      //   if (sectorVisibility === ['All']) {
+      //     setSectorTagIds(allSectorTagIds);
+      //   } else {
+      //     setSectorTagIds(sectorVisibility);
+      //   };
+      // };
+      // setPreviewVisibility(previewVisibility);
     };
   }, [route, isFocused]);
 
@@ -155,13 +155,15 @@ function CreateEventForm() {
     setIsOneToOne(false);
   };
 
-  async function createEventHandler(token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept) {
+  async function createEventHandler(token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept) {
     if (flag) {
       let [eventStartTime, eventEndTime] = getEventStartEndTime(selectedDate, selectedStartTime, selectedEndTime);
       let body = {
         eventName: meetingTitle,
-        eventTeam: sectorTagIds,
-        eventGrade: gradeTagIds,
+        // eventTeam: sectorTagIds,
+        // eventGrade: gradeTagIds,
+        eventTeam: allSectorTagIds,
+        eventGrade: allGradeTagIds,
         eventType: isOneToOne ? 'ONE_TO_ONE' : 'GROUP_EVENT',
         allowedParticipantsNumber: isOneToOne ? 2 : (selectedCapacity === '∞') ? 10000 : Number(selectedCapacity),
         eventStartTime: eventStartTime,
@@ -226,7 +228,9 @@ function CreateEventForm() {
   function selectVisibilityHandler() {
     navigation.navigate('Visibility', {
       selectedGrade: gradeTagIds,
-      selectedIndustry: sectorTagIds
+      selectedIndustry: sectorTagIds,
+      allGrade: allGradeTagIds,
+      allIndustry: allSectorTagIds
     });
   };
 
@@ -297,7 +301,7 @@ function CreateEventForm() {
             </View>
           )}
 
-          <CreateEventItem icon='eye' text='Visibility' placeholder={previewVisibility} onPress={selectVisibilityHandler}/>
+          {/* <CreateEventItem icon='eye' text='Visibility' placeholder={previewVisibility} onPress={selectVisibilityHandler}/> */}
           
           <CreateEventItem icon='file-text' text='Notes' placeholder={previewNotes} onPress={selectNotesHandler}/>
         </ScrollView>
@@ -315,14 +319,14 @@ function CreateEventForm() {
                 />
                 <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
               </View>
-              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
+              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
                 <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                   <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
                 </View>
               </Pressable>
             </View>
           ) : (
-            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, sectorTagIds, gradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>

@@ -8,9 +8,13 @@ import VisibilityFilter from '../components/CreateEvent/VisibilityFilter';
 function VisibilityScreen({ navigation, route }) {
   const grade = route.params && route.params.selectedGrade;
   const industry = route.params && route.params.selectedIndustry;
+  const allGrade = route.params && route.params.allGrade;
+  const allIndustry = route.params && route.params.allIndustry;
+
+  // console.log('selected', grade.length, industry.length, allGrade.length, allIndustry.length);
 
   const [flag, setFlag] = useState(true);
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState((!!grade && !!industry && (grade.length !== 6 || industry.length !== 7)) ? false : true);
   const [showGrade, setShowGrade] = useState(false);
   const [showSector, setShowSector] = useState(false);
   const [sectorTags, setSectorTags] = useState([]);
@@ -53,6 +57,8 @@ function VisibilityScreen({ navigation, route }) {
   useEffect(() => {
     if (isEnabled) {
       setFlag(true);
+      setSelectedGrade(allGrade);
+      setSelectedIndustry(allIndustry);
     } else {
       if (selectedGrade && selectedGrade.length && selectedIndustry && selectedIndustry.length) {
         setFlag(true);
@@ -68,6 +74,8 @@ function VisibilityScreen({ navigation, route }) {
 
   function comfirmVisibilityHandler() {
     if (flag) {
+      // console.log('selectedGrade', selectedGrade)
+      // console.log('selectedIndustry', selectedIndustry)
       navigation.navigate('CreateEvent', {
         gradeVisibility: selectedGrade,
         sectorVisibility: selectedIndustry,
