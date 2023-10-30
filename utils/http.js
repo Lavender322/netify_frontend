@@ -177,7 +177,7 @@ export function approveEvent(eventId, userId, token) {
 };
 
 export function withdrawEvent(eventId, token) {  
-  // let body = {eventId};
+  let body = {eventId};
   return axios({
     method: 'POST',
     url: BACKEND_URL + `/event/withdraw/${eventId}`,
