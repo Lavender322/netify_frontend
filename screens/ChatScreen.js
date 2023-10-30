@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; 
+import { StyleSheet, View, Text } from 'react-native';
 import ChatList from '../components/Chat/ChatList';
 import { fetchChats } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
@@ -36,7 +35,9 @@ function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Chats</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Chats</Text>
+      </View>
       <ChatList 
         chats={loadedChats}
         isFetchingChats={isFetchingChats} />
@@ -49,15 +50,21 @@ export default ChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 16,
-    paddingHorizontal: 7
+    paddingTop: 16
+  },
+  headerContainer: {
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 16
   },
   headerText: {
     fontSize: 24,
     fontFamily: 'roboto-bold',
     marginTop: 58,
-    marginLeft: 13,
-    color: '#000000E5'
+    marginLeft: 4,
+    color: '#000000E5',
+    paddingBottom: 16
   },
   searchBar: {
     flexDirection: 'row',

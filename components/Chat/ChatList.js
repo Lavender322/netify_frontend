@@ -20,7 +20,7 @@ function ChatList({ chats, isFetchingChats }) {
       <View style={styles.fallbackContainer}>
         <Text style={styles.fallback}>You don't have any existing chat.</Text>
       </View>
-    )
+    );
   };
 
   return (
@@ -30,7 +30,7 @@ function ChatList({ chats, isFetchingChats }) {
       keyExtractor={(item) => item.chatRoomId}
     />
   )
-}
+};
 
 export default ChatList;
 

@@ -27,7 +27,6 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
       const user = chatRoomMember.filter(
         member => member.userId !== userInfo.userId
       );
-      // console.log("chatRoomName", chatRoomName, chatRoomMember, userInfo.userId);
       setUserChattedTo(user);
     } else {
       setUserChattedTo(chatRoomMember);
@@ -42,8 +41,8 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
         try {
           const eventDetails = await fetchEvent(token, chatRoomId);
           setEventDetails(eventDetails);
-          // console.log("eventDetails1", chatRoomId, eventDetails);
         } catch (error) {
+          console.log('fetchEvent', error);
           console.log(error.response.data);
         };
         setIsFetching(false);
@@ -55,33 +54,12 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
 
   function directToChatDetailHandler() {
     navigation.navigate('ChatDetail', {
-      // closestEventId: closestEventId,
       eventHost: chatRoomType === 'ONE_TO_ONE_CHAT' ? userChattedTo[0] : eventDetails.eventHost,
-      // eventParticipants: eventParticipants,
       eventDetails: eventDetails,
       eventId: chatRoomId,
       eventType: chatRoomType === 'ONE_TO_ONE_CHAT' ? 'ONE_TO_ONE' : 'GROUP_EVENT',
     });
   };
-
-  // console.log("eventHost123", chatRoomMember);
- 
-  // useEffect(() => {
-  //   if (eventHost && eventHost.userTag) {
-  //     const eventHostGradeTag = gradeTags.filter((gradeTag) => {
-  //       return eventHost.userTag.includes(gradeTag.tagId.toString());
-  //     });
-    
-  //     const eventHostSectorTag = sectorTags.filter((sectorTag) => {
-  //       return eventHost.userTag.includes(sectorTag.tagId.toString());
-  //     });
-  
-  //     setEventHostGradeTag(eventHostGradeTag[0] && eventHostGradeTag[0].tagName);
-  //     setEventHostSectorTag(eventHostSectorTag[0] && eventHostSectorTag[0].tagName);
-  //   };
-  // }, [eventHost]);
-
-  // console.log("chatRoomMember", lastMessage);
 
   if (!isFetching && !userChattedTo.length) {
     return <View></View>
@@ -103,13 +81,13 @@ function ChatItem({ chatRoomId, chatRoomType, chatRoomMember, chatRoomName, last
         ) : null}
         <View style={styles.infoOuterContainer}>
           {chatRoomType === 'ONE_TO_ONE_CHAT' && userChattedTo && userChattedTo.length ? (
-            <Text style={styles.name}>{userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
+            <Text numberOfLines={1} style={styles.name}>{userChattedTo[0].localizedfirstname + ' ' + userChattedTo[0].localizedlastname}</Text>
           ) : null}
           {chatRoomType === 'GROUP_EVENT_CHAT' && eventDetails ? (
-            <Text style={styles.name}>{eventDetails.eventName}</Text>
+            <Text numberOfLines={1} style={styles.name}>{eventDetails.eventName}</Text>
           ) : null}
           {lastMessage ? (
-            <Text style={styles.msg}>{lastMessage.content}</Text>
+            <Text numberOfLines={1} style={styles.msg}>{lastMessage.content}</Text>
           ) : null}
           {lastMessage ? (
             <Text style={styles.time}>{getFormattedChatTime(lastMessage.messageTime)}</Text>
@@ -126,11 +104,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     paddingVertical: 20,
-    marginRight: 8,
     borderBottomColor: '#E0E0E0',
     borderBottomWidth: 1, 
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginHorizontal: 16
   },
   leftContainer: {
     flexDirection: 'row',
@@ -167,8 +145,9 @@ const styles = StyleSheet.create({
   },
   infoOuterContainer: {
     flexDirection: 'column',
+    flex: 1,
     padding: 4,
-    marginRight: 30,
+    marginRight: 70
   },  
   name: {
     fontFamily: 'roboto-bold',
@@ -178,7 +157,10 @@ const styles = StyleSheet.create({
   msg: {
     color: '#3B4852',
     fontFamily: 'roboto',
+    fontSize: 15,
     lineHeight: 20,
+    flexShrink: 1,
+    marginVertical: 4
   },
   time: {
     color: '#3B4852',
