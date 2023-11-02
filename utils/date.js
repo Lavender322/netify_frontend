@@ -24,13 +24,17 @@ export function getEventDates() {
     var targetDate = addDays(today, i);
     var targetPreviewDate = Moment(targetDate).format('ddd, D MMM YYYY');
     var targetDay = Moment(targetDate).format('llll').split(', ')[0];
+    var targetMonth = Moment(targetDate).format('llll').split(', ')[1].split(' ')[0];
+    var targetYear = Moment(targetDate).format('llll').split(', ')[2].split(' ')[0];
     var targetDateNum = Moment(targetDate).format('llll').split(', ')[1].split(' ')[1];
     eventDates.push({
       fullDate: targetDate.toString(),
       day: targetDay,
       date: targetDateNum,
+      month: targetMonth, // Nov
+      year: targetYear, // 2023
       previewDate: targetPreviewDate
-    })
+    });
   };
   return eventDates;
 };

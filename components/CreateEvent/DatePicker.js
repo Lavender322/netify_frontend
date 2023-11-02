@@ -7,6 +7,7 @@ function DatePicker({ setSelectedDate, setPreviewDate, setSelectedIndex, selecte
   const [isSelectedDate, setIsSelectedDate] = useState([false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false]);
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
 
   useEffect(() => {
     let updatedIsSelectedDate = [...isSelectedDate];
@@ -26,11 +27,12 @@ function DatePicker({ setSelectedDate, setPreviewDate, setSelectedIndex, selecte
     setSelectedDate(eventDates[idx].fullDate);
     setPreviewDate(eventDates[idx].previewDate);
     setSelectedIndex(idx);
+    setSelectedMonth(eventDates[idx].month + ', ' + eventDates[idx].year)
   };
 
   return (
     <View style={styles.outerContainer}>
-      <Text style={styles.text}>{getCurrentMonth()}</Text>
+      <Text style={styles.text}>{selectedMonth}</Text>
       <ScrollView horizontal style={styles.container}>
         {eventDates.map((date, idx) => (
           <DatePickerItem 
