@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },  
   miniAvatar: {
-    width: 30,
-    height: 30,
+    width: 48,
+    height: 48,
     borderRadius: 42,
     overflow: 'hidden'
   },
