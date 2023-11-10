@@ -29,8 +29,8 @@ import ActivityCapacityScreen from './screens/ActivityCapacityScreen';
 // import ActivitiesReceivedScreen from './screens/ActivitiesReceivedScreen';
 // import ActivitiesSentScreen from './screens/ActivitiesSentScreen';
 // import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
-// import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
-// import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
+import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
+import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 import CancelEventScreen from './screens/CancelEventScreen';
 import WithdrawEventScreen from './screens/WithdrawEventScreen';
 import AcceptEventScreen from './screens/AcceptEventScreen';
@@ -201,6 +201,12 @@ function AuthenticatedStack() {
       <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="MyActivities" component={MyActivitiesScreen} />
+      <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
+        animation: 'none'
+      }} />
+      <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
+        animation: 'none'
+      }} />
       <Stack.Screen name="Feedback" component={FeedbackScreen} options={{
         presentation: 'modal',
         contentStyle: {backgroundColor: 'white'}

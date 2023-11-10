@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
+import IconButton from '../components/ui/IconButton';
 import ActivitiesSentCards from '../components/Activities/ActivitiesSentCards';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
@@ -57,16 +58,8 @@ function ActivitiesPastScreen({ navigation }) {
     getTags();
   }, []);
 
-  function directToReceivedHandler() {
-    navigation.navigate('ActivitiesReceived');
-  };
-
-  function directToSentHandler() {
-    navigation.navigate('ActivitiesSent');
-  };
-
-  function directToConfirmedHandler() {
-    navigation.navigate('ActivitiesConfirmed');
+  function previousStepHandler() {
+    navigation.navigate('Profile');
   };
 
   function directToCancelledHandler() {
@@ -75,35 +68,19 @@ function ActivitiesPastScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Activities</Text>
-      <View>
-        <ScrollView horizontal>
-          <Pressable onPress={directToReceivedHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Received</Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={directToSentHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Sent</Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={directToConfirmedHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Confirmed</Text>
-            </View>
-          </Pressable>
-          <Pressable>
-            <View style={[styles.categoryItemContainer, styles.categoryItemActiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryActiveText]}>Past</Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={directToCancelledHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Cancelled</Text>
-            </View>
-          </Pressable>
-        </ScrollView>
+      <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
+      <Text style={styles.headerText}>Past Activities</Text>
+      <View style={styles.menu}>
+        <Pressable style={[styles.categoryItemContainer, styles.categoryItemActiveContainer]}>
+          <View style={styles.menuItem}>
+            <Text style={[styles.categoryText, styles.categoryActiveText]}>Past</Text>
+          </View>
+        </Pressable>
+        <Pressable style={[styles.categoryItemContainer,styles.categoryItemInactiveContainer]} onPress={directToCancelledHandler}>
+          <View style={styles.menuItem}>
+            <Text style={[styles.categoryText, styles.categoryInactiveText]}>Cancelled</Text>
+          </View>
+        </Pressable>
       </View>
       <View style={styles.mainContainer}>
         <ActivitiesSentCards 
@@ -115,29 +92,36 @@ function ActivitiesPastScreen({ navigation }) {
         />
       </View>
     </View>
-  )
-}
+  );
+};
 
 export default ActivitiesPastScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 16
+  },
+  goBackButton: {
+    marginTop: 56,
+    marginLeft: 16
   },
   headerText: {
     fontSize: 24,
     fontFamily: 'roboto-bold',
-    marginTop: 58,
+    marginTop: 24,
     marginLeft: 20,
     marginBottom: 16,
     color: '#000000E5'
   },
+  menu: {
+    flexDirection: 'row'
+  },
   categoryItemContainer: {
     height: 48,
-    paddingHorizontal: 16,
+    width: '50%',
     borderBottomWidth: 2,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   categoryItemActiveContainer: {
     borderBottomColor: '#3C8722'

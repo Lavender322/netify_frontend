@@ -68,6 +68,10 @@ function ProfileScreen({ navigation }) {
     navigation.navigate('MyActivities');
   };
 
+  function directToMPastActivitiesHandler() {
+    navigation.navigate('ActivitiesPast');
+  };
+
   if (isFetchingTags) {
     return (
       <LoadingOverlay />
@@ -114,6 +118,18 @@ function ProfileScreen({ navigation }) {
             <Pressable onPress={directToCreateEventHandler} style={({pressed}) => pressed && styles.pressed}>
               <View style={styles.submitFormBtnContainer}>
                 <Text style={[styles.submitFormBtnText, styles.enabledText]}>Create event</Text>
+              </View>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.pastActivities}>
+          <View style={styles.pastActivitiesHeader}>
+            <Text style={styles.activitiesTitle}>Past activities</Text>
+            <Pressable onPress={directToMPastActivitiesHandler}>
+              <View style={styles.viewContainer}>
+                <Text style={styles.viewText}>View all</Text>
+                <Feather name="chevron-right" size={24} color="#6A6A6A" />
               </View>
             </Pressable>
           </View>
@@ -192,11 +208,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     width: '100%',
   },
+  pastActivities: {
+    marginTop: 24,
+    backgroundColor: '#ffffff',
+    width: '100%',
+  },
   activitiesHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
+    paddingLeft: 12
+  }, 
+  pastActivitiesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 24,
     paddingLeft: 12
   }, 
   activitiesTitle: {
