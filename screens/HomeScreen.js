@@ -178,8 +178,7 @@ function HomeScreen({ navigation }) {
 
   useEffect(() => {
     if (count === 10) {
-      __DEV__ = true;
-      BACKEND_URL = __DEV__ ? 'https://netify.iqust.top' : 'https://prod-netify.iqust.top';
+      BACKEND_URL = 'https://netify.iqust.top';
       setCount(0);
     };
   }, [count]);
