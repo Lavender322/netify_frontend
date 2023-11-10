@@ -27,7 +27,7 @@ function LoginButton() {
     if (!returnedUrl) {
       axios({
         method: 'GET',
-        url: 'https://netify.iqust.top/linkedin/sso',
+        url: __DEV__ ? 'https://netify.iqust.top/linkedin/sso' : 'https://prod-netify.iqust.top/linkedin/sso',
       })
         .then((res) => {
           setReturnedUrl(res.data.data.url);

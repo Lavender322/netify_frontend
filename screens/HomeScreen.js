@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View, Text, Pressable, Button } from 'react-native';
+import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../store/context/auth-context';
 import { fetchOverallEventStatus, fetchEventList, fetchTags, addPushToken } from '../utils/http';
@@ -21,6 +21,7 @@ function HomeScreen({ navigation }) {
   const [selectedIndustry, setSelectedIndustry] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
   const [updateEventList, setUpdateEventList] = useState(false);
+  const [count, setCount] = useState(0);
 
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
@@ -49,7 +50,7 @@ function HomeScreen({ navigation }) {
 
       // First time login call this
       const pushTokenData = await Notifications.getExpoPushTokenAsync();
-      // console.log(pushTokenData);
+      // console.log('pushTokenData', pushTokenData);
 
       try {
         await addPushToken(pushTokenData.data, token);
@@ -171,13 +172,27 @@ function HomeScreen({ navigation }) {
     navigation.navigate('Activities', {screen: 'ActivitiesReceived'});
   };
 
+  function envChangeHandler() {
+    setCount(count+1);
+  };
+
+  useEffect(() => {
+    if (count === 10) {
+      __DEV__ = true;
+      BACKEND_URL = __DEV__ ? 'https://netify.iqust.top' : 'https://prod-netify.iqust.top';
+      setCount(0);
+    };
+  }, [count]);
+
   if (isFetching) {
     return <LoadingOverlay />
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
+      <TouchableWithoutFeedback onPress={envChangeHandler}>
+        <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
+      </TouchableWithoutFeedback>
       {/* <Button title='Schedule' onPress={scheduleNotificationHandler} /> */}
       <View style={styles.outerPanelContainer}>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>

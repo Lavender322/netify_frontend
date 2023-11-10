@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BACKEND_URL = 'https://netify.iqust.top';
+BACKEND_URL = __DEV__ ? 'https://netify.iqust.top' : 'https://prod-netify.iqust.top';
 
 export async function authenticateUser(state, code) {
   let body = {state, code};
