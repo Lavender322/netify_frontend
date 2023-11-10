@@ -49,7 +49,8 @@ export default ActivitiesReceivedCards;
 const styles = StyleSheet.create({
   fallbackContainer: {
     marginHorizontal: 40,
-    marginTop: 35
+    // marginTop: 35
+    marginTop: 24
   },
   fallback: {
     color: '#3B4852',

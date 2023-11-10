@@ -160,17 +160,17 @@ function HomeScreen({ navigation }) {
   //   });
   // };
 
-  function directToConfirmedActivities() {
-    navigation.navigate('Activities', {screen: 'ActivitiesConfirmed'});
+  function directToActivities() {
+    navigation.navigate('Activities');
   };
   
-  function directToRequestedActivities() {
-    navigation.navigate('Activities', {screen: 'ActivitiesSent'});
-  };
+  // function directToRequestedActivities() {
+  //   navigation.navigate('Activities', {screen: 'ActivitiesSent'});
+  // };
   
-  function directToReceivedActivities() {
-    navigation.navigate('Activities', {screen: 'ActivitiesReceived'});
-  };
+  // function directToReceivedActivities() {
+  //   navigation.navigate('Activities', {screen: 'ActivitiesReceived'});
+  // };
 
   function envChangeHandler() {
     setCount(count+1);
@@ -196,26 +196,26 @@ function HomeScreen({ navigation }) {
       {/* <Button title='Schedule' onPress={scheduleNotificationHandler} /> */}
       <View style={styles.outerPanelContainer}>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Pressable onPress={directToConfirmedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
           </Pressable>
-          <Pressable onPress={directToConfirmedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelText}>Confirmed Meeting</Text> 
           </Pressable>
         </View>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
-          <Pressable onPress={directToRequestedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelNumber}>{pendingRequests}</Text> 
           </Pressable>
-          <Pressable onPress={directToRequestedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelText}>Pending Request</Text> 
           </Pressable>
         </View>
         <View style={styles.innerPanelContainer}>
-          <Pressable onPress={directToReceivedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
           </Pressable>
-          <Pressable onPress={directToReceivedActivities}>
+          <Pressable onPress={directToActivities}>
             <Text style={styles.panelText}>Invitations Received</Text> 
           </Pressable>
         </View>

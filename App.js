@@ -13,10 +13,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContextProvider, { AuthContext } from './store/context/auth-context';
 import LandingScreen from './screens/LandingScreen';
+import LoginScreen from './screens/LoginScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import UserTagsScreen from './screens/UserTagsScreen';
 import HomeScreen from './screens/HomeScreen';
-import ActivitiesReceivedScreen from './screens/ActivitiesReceivedScreen';
+import ActivitiesScreen from './screens/ActivitiesScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ChatScreen from './screens/ChatScreen';
 import EventDetailScreen from './screens/EventDetailScreen';
@@ -25,10 +26,11 @@ import NotesScreen from './screens/NotesScreen';
 import VisibilityScreen from './screens/VisibilityScreen';
 import IconButton from './components/ui/IconButton';
 import ActivityCapacityScreen from './screens/ActivityCapacityScreen';
-import ActivitiesSentScreen from './screens/ActivitiesSentScreen';
-import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
-import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
-import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
+// import ActivitiesReceivedScreen from './screens/ActivitiesReceivedScreen';
+// import ActivitiesSentScreen from './screens/ActivitiesSentScreen';
+// import ActivitiesConfirmedScreen from './screens/ActivitiesConfirmedScreen';
+// import ActivitiesPastScreen from './screens/ActivitiesPastScreen';
+// import ActivitiesCancelledScreen from './screens/ActivitiesCancelledScreen';
 import CancelEventScreen from './screens/CancelEventScreen';
 import WithdrawEventScreen from './screens/WithdrawEventScreen';
 import AcceptEventScreen from './screens/AcceptEventScreen';
@@ -56,31 +58,31 @@ const BottomTabs = createBottomTabNavigator();
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-export function Activities() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}
-    >
-      <Stack.Screen name="ActivitiesReceived" component={ActivitiesReceivedScreen} options={{
-        // animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesSent" component={ActivitiesSentScreen} options={{
-        animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesConfirmed" component={ActivitiesConfirmedScreen} options={{
-        animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
-        animation: 'none'
-      }} />
-      <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
-        animation: 'none'
-      }} />
-    </Stack.Navigator>
-  )
-};
+// export function Activities() {
+//   return (
+//     <Stack.Navigator
+//       screenOptions={{
+//         headerShown: false
+//       }}
+//     >
+//       <Stack.Screen name="ActivitiesReceived" component={ActivitiesReceivedScreen} options={{
+//         // animation: 'none'
+//       }} />
+//       <Stack.Screen name="ActivitiesSent" component={ActivitiesSentScreen} options={{
+//         animation: 'none'
+//       }} />
+//       <Stack.Screen name="ActivitiesConfirmed" component={ActivitiesConfirmedScreen} options={{
+//         animation: 'none'
+//       }} />
+//       <Stack.Screen name="ActivitiesPast" component={ActivitiesPastScreen} options={{
+//         animation: 'none'
+//       }} />
+//       <Stack.Screen name="ActivitiesCancelled" component={ActivitiesCancelledScreen} options={{
+//         animation: 'none'
+//       }} />
+//     </Stack.Navigator>
+//   )
+// };
 
 export function UserOverview() {
   return (
@@ -101,7 +103,7 @@ export function UserOverview() {
       />
       <BottomTabs.Screen 
         name='Activities' 
-        component={Activities} 
+        component={ActivitiesScreen} 
         options={{
           tabBarIcon: ({color, size}) => <Feather name='check-square' color={color} size={size} />,
           tabBarLabel: ({focused, color, size}) => focused ? <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>•</Text> : <Text style={{color, fontFamily: 'roboto-medium', fontSize: 11}}>Activities</Text>
@@ -150,6 +152,7 @@ function AuthStack() {
       }}
     >
       <Stack.Screen name="Landing" component={LandingScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="UserInfo" component={UserInfoScreen} />
       <Stack.Screen name="UserTags" component={UserTagsScreen} />
       <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
@@ -234,7 +237,7 @@ function Navigation() {
   };
 
   const linking = {
-    prefixes: [Linking.createURL('/'), 'https://netify.iqust.top'],
+    prefixes: [Linking.createURL('/'), 'https://netify.iqust.top', 'https://prod-netify.iqust.top'],
     config,
   };
 

@@ -59,14 +59,14 @@ function ActivitiesReceivedCard({ eventId, eventHost, eventType, eventName, even
       <Pressable onPress={cardToggleHandler}>
         <View style={styles.container}>
           <View>
-            <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'Your One to One session' : eventName}</Text>
+            {/* <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'Your One to One session' : eventName}</Text> */}
             <View style={styles.detailInnerContainer}>
               <Feather name="calendar" size={18} color="#3C8722" />
               <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
               <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
             </View>
             
-            <View style={styles.detailInnerContainer}>
+            <View style={[styles.detailInnerContainer, styles.topMargin]}>
               <TouchableWithoutFeedback>
                 <Pressable onPress={directToEventDetails}>
                   <Text style={styles.details}>Details</Text>
@@ -127,8 +127,10 @@ const styles = StyleSheet.create({
   detailInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4
   }, 
+  topMargin: {
+    marginTop: 4
+  },
   period: {
     color: '#3C8722',
     fontFamily: 'roboto-medium',

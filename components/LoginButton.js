@@ -1,24 +1,32 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, Pressable, Linking, Alert, Text } from 'react-native';
+import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 function LoginButton() {
   const [returnedUrl, setReturnedUrl] = useState(null);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     if (returnedUrl) {
-      async function openURL() {
-        const supported = await Linking.canOpenURL(returnedUrl);
+      // async function openURL() {
+      //   const supported = await Linking.canOpenURL(returnedUrl);
   
-        if (supported) {
-          // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-          // by some browser in the mobile
-          await Linking.openURL(returnedUrl);
-        } else {
-          Alert.alert(`Don't know how to open this URL: ${returnedUrl}`);
-        }
-      };
-      openURL();
+      //   if (supported) {
+      //     // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      //     // by some browser in the mobile
+      //     await Linking.openURL(returnedUrl);
+      //   } else {
+      //     Alert.alert(`Don't know how to open this URL: ${returnedUrl}`);
+      //   }
+      // };
+      // openURL();
+
+      navigation.navigate('Login', {
+        returnedUrl: returnedUrl
+      });
+
       setReturnedUrl(null);
     };
   }, [returnedUrl]);
@@ -48,10 +56,10 @@ function LoginButton() {
         <Text style={styles.buttonText}>Continue with LinkedIn</Text>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
-export default LoginButton
+export default LoginButton;
 
 const styles = StyleSheet.create({
   button: {
@@ -75,5 +83,5 @@ const styles = StyleSheet.create({
   },
   pressedItem: {
     opacity: 0.75
-  },
+  }
 });

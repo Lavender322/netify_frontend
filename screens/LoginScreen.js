@@ -1,36 +1,21 @@
-import { useEffect, useContext } from 'react';
-import { Alert } from 'react-native';
-import { AuthContext } from '../store/context/auth-context';
-import { authenticateUser } from '../utils/http';
-import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
 
-function LoginScreen({ navigation, route }) {
-  const state = route.params?.state;
-  const code = route.params?.code;
-
-  const { authenticate } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (state && code) {
-      async function login() {
-        try {
-          const token = await authenticateUser(state, code);
-          authenticate(token);
-          navigation.navigate('UserInfo');
-        } catch (error) {
-          console.log('authenticateUser', error);
-          console.log(error.response.data);
-          Alert.alert("error", JSON.stringify(error.response.data));
-        }
-      };
-
-      login();
-    };
-  }, [state, code]);
+function LoginScreen({ route }) {
+  const returnedUrl = route.params?.returnedUrl;
 
   return (
-    <LoadingOverlay />
-  )
-}
+    <WebView
+      style={styles.container}
+      source={{ uri: returnedUrl }}
+    />
+  );
+};
 
 export default LoginScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
