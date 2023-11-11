@@ -180,10 +180,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#0000001A',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
+    borderBottomColor: '#E9E9E9',
+    borderBottomWidth: 1
   },
   avatarContainer: {
     width: 60,

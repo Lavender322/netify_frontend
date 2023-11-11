@@ -24,7 +24,7 @@ function HomeScreen({ navigation }) {
   const [count, setCount] = useState(0);
 
   // TO COMMENT OUT
-  const { token, userInfo } = useContext(AuthContext);
+  const { token, userInfo, logout } = useContext(AuthContext);
   // const { userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
@@ -180,6 +180,7 @@ function HomeScreen({ navigation }) {
     if (count === 10) {
       BACKEND_URL = 'https://netify.iqust.top';
       setCount(0);
+      logout();
     };
   }, [count]);
 

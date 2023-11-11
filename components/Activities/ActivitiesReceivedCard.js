@@ -114,10 +114,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#0000001A',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
+    borderBottomColor: '#E9E9E9',
+    borderBottomWidth: 1
   },
   title: {
     color: '#1A1A1A',
@@ -173,7 +171,8 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto',
     fontSize: 15,
     lineHeight: 20,
-    padding: 8
+    padding: 8,
+    backgroundColor: '#fff'
   }
 });
 
