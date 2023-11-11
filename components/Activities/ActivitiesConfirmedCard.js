@@ -1,16 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getFormattedDate } from '../../utils/date';
 import { useNavigation } from '@react-navigation/native';
-import { fetchActivity, fetchEvent } from '../../utils/http';
+import { fetchActivity } from '../../utils/http';
 import { AuthContext } from '../../store/context/auth-context';
-import GroupProfilePictures from '../GroupProfilePictures';
 
-function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
+function ActivitiesConfirmedCard({ eventId, eventHost, eventType, alreadyParticipatedNumber, eventName, eventStartTime, eventEndTime, sectorTags, gradeTags}) {
   const [isFetchingActivity, setIsFetchingActivity] = useState(false);
   const [eventParticipants, setEventParticipants] = useState([]);
-  const [eventDetails, setEventDetails] = useState();
   
   // TO COMMENT OUT
   const { token, userInfo } = useContext(AuthContext);
@@ -47,101 +45,94 @@ function ActivitiesConfirmedCard({ eventId, eventHost, eventType, eventName, eve
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.avatarContainer}>
-        {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
+    <Pressable onPress={directToEventDetails} style={({pressed}) => pressed && styles.pressed}>
+      <View style={eventType === 'GROUP_EVENT' ? styles.groupContainer : styles.container}>
+        {!isFetchingActivity && eventType === 'GROUP_EVENT' ? (
+          <View style={styles.titleContainer}>
+            <Text style={styles.title} numberOfLines={2}>{eventName}</Text>
+          </View>
+        ) :  null}
+        {!isFetchingActivity && eventType === 'ONE_TO_ONE' ? (
           <Image source={{uri: eventParticipants && eventParticipants[0] ? eventParticipants[0].user.userImage[3] : eventHost.userImage[3]}} style={styles.avatar} />
-        )}
-        {!isFetchingActivity && eventType === 'GROUP_EVENT' && (
-          <GroupProfilePictures host={eventHost} participants={eventParticipants} isSeparate={true} />
-        )}
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{eventType === 'ONE_TO_ONE' ? 'Your One to One session with ' : eventName}
-          {!isFetchingActivity && eventType === 'ONE_TO_ONE' && (
-            <Text style={styles.match}>{eventParticipants && eventParticipants[0] ? eventParticipants[0].user.localizedfirstname + ' ' + eventParticipants[0].user.localizedlastname :
-            eventHost.localizedfirstname + ' ' + eventHost.localizedlastname}</Text>
-          )}
-        </Text>
-        <View style={styles.detailInnerContainer}>
-          <Feather name="calendar" size={18} color="#3C8722" />
-          <Text style={styles.period}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+        ) : null}
+        <Text style={styles.time}>{eventStartTime.substring(11,16) + ' - ' + eventEndTime.substring(11,16)}</Text>
+        <View style={styles.dateContainer}>
           <Text style={styles.date}>{getFormattedDate(eventStartTime, true)}</Text>
+          {!isFetchingActivity && eventType === 'GROUP_EVENT' ? (
+            <View style={styles.numContainer}>
+              <Feather name="user" size={13} color="#FFAE10" />
+              <Text style={styles.num}>{alreadyParticipatedNumber}</Text>
+            </View>
+          ) : null}
         </View>
-        
-        <View style={styles.detailInnerContainer}>
-          <TouchableWithoutFeedback>
-            <Pressable onPress={directToEventDetails}>
-              <Text style={styles.details}>Details</Text>
-            </Pressable>
-          </TouchableWithoutFeedback>
-          <Feather name="chevron-right" size={24} color="#6A6A6A" />
-        </View>
-      </View> 
-    </View>
-  )
-}
+      </View>
+    </Pressable>
+  );
+};
 
 export default ActivitiesConfirmedCard;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    flexDirection: 'row',
+    backgroundColor: '#F1F5EF',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    shadowColor: '#0000001A',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    height: 113,
+    width: 120
   },
-  avatarContainer: {
-    width: 60,
+  groupContainer: {
+    backgroundColor: '#F1F5EF',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginHorizontal: 8,
+    height: 113,
+    width: 164
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30
+    width: 48,
+    height: 48,
+    marginVertical: 8,
+    borderRadius: 42
   },
-  textContainer: {
-    flex: 1,
-    padding: 4,
-    marginLeft: 10,
-  },
-  title: {
-    color: '#1A1A1A',
-    fontSize: 16,
-    fontFamily: 'roboto-bold',
-    lineHeight: 21.8
-  },
-  match: {
-    color: '#3C8722'
-  },
-  detailInnerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4
-  }, 
-  period: {
-    color: '#3C8722',
+  time: {
     fontFamily: 'roboto-medium',
-    fontSize: 16,
-    marginHorizontal: 8
+    color: '#3C8722',
+    fontSize: 16
   },
   date: {
     color: '#3C8722',
     fontFamily: 'roboto-medium',
-    fontSize: 16
+    fontSize: 13,
   },
-  details: {
+  titleContainer: {
+    height: 64,
+    justifyContent: 'center'
+  },
+  title: {
+    fontSize: 17,
+    fontFamily: 'roboto-bold',
+    color: '#1A1A1A',
+    paddingHorizontal: 16,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 8
+  },
+  numContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 8
+  },
+  num: {
     fontFamily: 'roboto',
-    fontSize: 15,
-    lineHeight: 18.2,
-    color: '#6A6A6A',
-    marginRight: 4,
-    textDecorationLine: 'underline'
+    fontSize: 13,
+    color: '#000000'
   },
+  pressed: {
+    opacity: 0.75
+  }
 });
 

@@ -1,14 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import ActivitiesReceivedCards from '../components/Activities/ActivitiesReceivedCards.js';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
-import UpcomingActivity from '../components/Activities/UpcomingActivity.js';
+import ActivitiesReceivedCards from '../components/Activities/ActivitiesReceivedCards.js';
+import ActivitiesConfirmedCards from '../components/Activities/ActivitiesConfirmedCards.js';
+import ActivitiesSentCards from '../components/Activities/ActivitiesSentCards.js';
 
 function ActivitiesScreen({ navigation }) {
-  const [isFetchingActivities, setIsFetchingActivities] = useState(true);
-  const [loadedActivities, setLoadedActivities] = useState([]);
+  const [isFetchingReceivedActivities, setIsFetchingReceivedActivities] = useState(true);
+  const [isFetchingConfirmedActivities, setIsFetchingConfirmedActivities] = useState(true);
+  const [isFetchingSentActivities, setIsFetchingSentActivities] = useState(true);
+  const [loadedReceivedActivities, setLoadedReceivedActivities] = useState([]);
+  const [loadedConfirmedActivities, setLoadedConfirmedActivities] = useState([]);
+  const [loadedSentActivities, setLoadedSentActivities] = useState([]);
   const [sectorTags, setSectorTags] = useState([]);
   const [gradeTags, setGradeTags] = useState([]);
 
@@ -20,19 +25,54 @@ function ActivitiesScreen({ navigation }) {
 
   useEffect(() => {
     async function getActivityList() {
-      setIsFetchingActivities(true);
+      setIsFetchingReceivedActivities(true);
       try {
         const activitiesList = await fetchActivities('received', token);
         const displayedActivitiesList = activitiesList.filter(activity => 
           activity.eventType !== 'GROUP_EVENT'
         );
-        setLoadedActivities(displayedActivitiesList);
+        setLoadedReceivedActivities(displayedActivitiesList);
         // console.log("activitiesList", displayedActivitiesList);
       } catch (error) {
         console.log('fetchActivities', error);
         console.log(error.response.data);
       };
-      setIsFetchingActivities(false);
+      setIsFetchingReceivedActivities(false);
+    };
+    
+    getActivityList();
+  }, [isFocused]);
+
+  useEffect(() => {
+    async function getActivityList() {
+      setIsFetchingConfirmedActivities(true);
+      try {
+        const activitiesList = await fetchActivities('confirmed', token);
+        setLoadedConfirmedActivities(activitiesList);
+      } catch (error) {
+        console.log('fetchActivities', error);
+        console.log(error.response.data);
+      };
+      setIsFetchingConfirmedActivities(false);
+    };
+    
+    getActivityList();
+  }, [isFocused]);
+
+  useEffect(() => {
+    async function getActivityList() {
+      setIsFetchingSentActivities(true);
+      try {
+        const activitiesList = await fetchActivities('sent', token);
+        const displayedActivitiesList = activitiesList.filter(activity =>
+          activity.eventType === "ONE_TO_ONE"
+        );
+        setLoadedSentActivities(displayedActivitiesList);
+      } catch (error) {
+        console.log('fetchActivities', error);
+        console.log(error.response.data);
+      };
+      setIsFetchingSentActivities(false);
     };
     
     getActivityList();
@@ -64,51 +104,41 @@ function ActivitiesScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Activities</Text>
-      <View style={styles.header}>
-        {/* <ScrollView horizontal>
-          <Pressable>
-            <View style={[styles.categoryItemContainer, styles.categoryItemActiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryActiveText]}>Received</Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={directToSentHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Sent</Text>
-            </View>
-          </Pressable>
-          <Pressable onPress={directToConfirmedHandler}>
-            <View style={[styles.categoryItemContainer, styles.categoryItemInactiveContainer]}>
-              <Text style={[styles.categoryText, styles.categoryInactiveText]}>Confirmed</Text>
-            </View>
-          </Pressable>
-        </ScrollView> */}
-        <View style={styles.innerContainer}>
+      <ScrollView nestedScrollEnabled>
+        <View style={styles.firstInnerContainer}>
           <Text style={styles.title}>Upcoming activities</Text>
-          <ScrollView horizontal style={styles.upcomingActivity}>
-            <UpcomingActivity />
-            <UpcomingActivity isGroupEvent />
-            <UpcomingActivity />
-          </ScrollView>
-        </View>
-
-        <View style={styles.innerContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Received requests</Text>
-          </View>
-          <ActivitiesReceivedCards 
-            activities={loadedActivities} 
-            isFetchingActivities={isFetchingActivities} 
+          <ActivitiesConfirmedCards 
+            activities={loadedConfirmedActivities} 
+            isFetchingActivities={isFetchingConfirmedActivities} 
             sectorTags={sectorTags} 
             gradeTags={gradeTags} 
           />
         </View>
 
-        <View style={styles.innerContainer}>
+        <View style={styles.secondInnerContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Received requests</Text>
+          </View>
+          {/* <ActivitiesReceivedCards 
+            activities={loadedReceivedActivities} 
+            isFetchingActivities={isFetchingReceivedActivities} 
+            sectorTags={sectorTags} 
+            gradeTags={gradeTags} 
+          /> */}
+        </View>
+
+        <View style={styles.secondInnerContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Sent requests</Text>
           </View>
+          <ActivitiesSentCards 
+            activities={loadedSentActivities} 
+            isFetchingActivities={isFetchingSentActivities} 
+            sectorTags={sectorTags} 
+            gradeTags={gradeTags} 
+          />
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -119,9 +149,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 16,
-  },
-  header: {
-    // height: 48,
   },
   headerText: {
     fontSize: 24,
@@ -154,9 +181,6 @@ const styles = StyleSheet.create({
   categoryActiveText: {
     color: '#3C8722'
   },
-  // mainContainer: {
-  //   flex: 1,
-  // },
   title: {
     fontFamily: 'roboto-bold',
     color: '#1A1A1A',
@@ -168,18 +192,26 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E9E9E9',
     borderBottomWidth: 1
   },
-  innerContainer: {
+  firstInnerContainer: {
     borderRadius: 8,
     backgroundColor: '#fff',
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 16,
     shadowColor: '#0000001A',
     shadowOffset: {width: 4, height: 4},
     shadowOpacity: 0.8,
     shadowRadius: 10,
     marginBottom: 36
   },
-  upcomingActivity: {
-    paddingHorizontal: 8,
+  secondInnerContainer: {
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    paddingTop: 16,
+    paddingBottom: 16,
+    shadowColor: '#0000001A',
+    shadowOffset: {width: 4, height: 4},
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    marginBottom: 36
   }
 });

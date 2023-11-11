@@ -37,6 +37,7 @@ function ActivitiesConfirmedCards({ activities, isFetchingActivities, sectorTags
 
   return (
     <FlatList 
+      horizontal
       data={activities} 
       renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
