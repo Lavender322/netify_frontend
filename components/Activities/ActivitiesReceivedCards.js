@@ -26,14 +26,43 @@ function ActivitiesReceivedCards({ activities, isFetchingActivities, loadedConfi
 
   if ((!activities || activities.length === 0) && !isFetchingActivities) {
     return (
-      <View style={styles.fallbackContainer}>
-        <Text>
-          <Text style={styles.fallback}>You don't have any upcoming events. </Text>
-          <Pressable onPress={redirectHandler}>
-            <Text style={styles.fallbackHighlight}>Host one!</Text>
-          </Pressable>
-        </Text>
-      </View>
+      <>
+        <View style={styles.firstInnerContainer}>
+          <Text style={styles.title}>Upcoming activities</Text>
+          <ActivitiesConfirmedCards 
+            activities={loadedConfirmedActivities} 
+            isFetchingActivities={isFetchingConfirmedActivities} 
+            sectorTags={sectorTags} 
+            gradeTags={gradeTags} 
+          />
+        </View>
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Received requests</Text>
+        </View>
+      
+        <View style={styles.fallbackContainer}>
+          <Text>
+            <Text style={styles.fallback}>You don't have any upcoming events. </Text>
+            <Pressable onPress={redirectHandler}>
+              <Text style={styles.fallbackHighlight}>Host one!</Text>
+            </Pressable>
+          </Text>
+        </View>
+
+        <View style={styles.footerContainer}></View>
+          <View style={styles.secondInnerContainer}>
+            <View style={styles.sentTitleContainer}>
+              <Text style={styles.title}>Sent requests</Text>
+            </View>
+            <ActivitiesSentCards 
+              activities={loadedSentActivities} 
+              isFetchingActivities={isFetchingSentActivities} 
+              sectorTags={sectorTags} 
+              gradeTags={gradeTags} 
+            />
+          </View>
+      </>
     )
   };
 
@@ -83,9 +112,10 @@ export default ActivitiesReceivedCards;
 
 const styles = StyleSheet.create({
   fallbackContainer: {
-    marginHorizontal: 40,
+    backgroundColor: '#fff',
+    paddingHorizontal: 40,
     // marginTop: 35
-    marginTop: 24
+    paddingVertical: 24
   },
   fallback: {
     color: '#3B4852',
