@@ -1,13 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { fetchActivities, fetchTags } from '../utils/http';
 import { AuthContext } from '../store/context/auth-context';
 import ActivitiesReceivedCards from '../components/Activities/ActivitiesReceivedCards.js';
-import ActivitiesConfirmedCards from '../components/Activities/ActivitiesConfirmedCards.js';
-import ActivitiesSentCards from '../components/Activities/ActivitiesSentCards.js';
 
-function ActivitiesScreen({ navigation }) {
+function ActivitiesScreen() {
   const [isFetchingReceivedActivities, setIsFetchingReceivedActivities] = useState(true);
   const [isFetchingConfirmedActivities, setIsFetchingConfirmedActivities] = useState(true);
   const [isFetchingSentActivities, setIsFetchingSentActivities] = useState(true);
@@ -104,41 +102,16 @@ function ActivitiesScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Activities</Text>
-      <ScrollView nestedScrollEnabled>
-        <View style={styles.firstInnerContainer}>
-          <Text style={styles.title}>Upcoming activities</Text>
-          <ActivitiesConfirmedCards 
-            activities={loadedConfirmedActivities} 
-            isFetchingActivities={isFetchingConfirmedActivities} 
-            sectorTags={sectorTags} 
-            gradeTags={gradeTags} 
-          />
-        </View>
-
-        <View style={styles.secondInnerContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Received requests</Text>
-          </View>
-          {/* <ActivitiesReceivedCards 
-            activities={loadedReceivedActivities} 
-            isFetchingActivities={isFetchingReceivedActivities} 
-            sectorTags={sectorTags} 
-            gradeTags={gradeTags} 
-          /> */}
-        </View>
-
-        <View style={styles.secondInnerContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Sent requests</Text>
-          </View>
-          <ActivitiesSentCards 
-            activities={loadedSentActivities} 
-            isFetchingActivities={isFetchingSentActivities} 
-            sectorTags={sectorTags} 
-            gradeTags={gradeTags} 
-          />
-        </View>
-      </ScrollView>
+      <ActivitiesReceivedCards 
+        activities={loadedReceivedActivities} 
+        isFetchingActivities={isFetchingReceivedActivities} 
+        loadedConfirmedActivities={loadedConfirmedActivities}
+        isFetchingConfirmedActivities={isFetchingConfirmedActivities}
+        loadedSentActivities={loadedSentActivities} 
+        isFetchingSentActivities={isFetchingSentActivities}
+        sectorTags={sectorTags} 
+        gradeTags={gradeTags} 
+      />
     </View>
   );
 };
@@ -157,61 +130,5 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: 16,
     color: '#000000E5'
-  },
-  categoryItemContainer: {
-    height: 48,
-    paddingHorizontal: 16,
-    borderBottomWidth: 2,
-    justifyContent: 'center'
-  },
-  categoryItemActiveContainer: {
-    borderBottomColor: '#3C8722'
-  },
-  categoryItemInactiveContainer: {
-    borderBottomColor: '#C6C6C6'
-  },
-  categoryText: {
-    fontFamily: 'roboto-medium',
-    fontSize: 15,
-    lineHeight: 21
-  },
-  categoryInactiveText: {
-    color: '#6A6A6A'
-  },
-  categoryActiveText: {
-    color: '#3C8722'
-  },
-  title: {
-    fontFamily: 'roboto-bold',
-    color: '#1A1A1A',
-    fontSize: 17,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-  },
-  titleContainer: {
-    borderBottomColor: '#E9E9E9',
-    borderBottomWidth: 1
-  },
-  firstInnerContainer: {
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    paddingTop: 16,
-    paddingBottom: 16,
-    shadowColor: '#0000001A',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    marginBottom: 36
-  },
-  secondInnerContainer: {
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    paddingTop: 16,
-    paddingBottom: 16,
-    shadowColor: '#0000001A',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    marginBottom: 36
   }
 });
