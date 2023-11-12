@@ -23,7 +23,8 @@ function EventItem({ eventType, eventId, eventName, eventHost, myStateInTheEvent
       gradeTags: gradeTags,
       showRequest: eventHost.userId === userInfo.userId || eventStatus === "REQUESTED" || eventStatus === "APPROVED" ? false : true,
       showPending: eventStatus === "REQUESTED" ? true : false,
-      showJoined: eventHost.userId !== userInfo.userId && eventStatus === "APPROVED" ? true: false,
+      showJoinedWithParticipants: eventStatus === "APPROVED" && eventParticipants && eventParticipants.length ? true : false,
+      showJoined: eventStatus === "APPROVED",
       previousScreen: 'Home'
     });
   };

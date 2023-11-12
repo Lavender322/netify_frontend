@@ -25,6 +25,7 @@ function EventDetailScreen({ navigation, route }) {
   const previousScreen = route.params && route.params.previousScreen;
   const showRequest = route.params?.showRequest;
   const showPending = route.params?.showPending;
+  const showJoinedWithParticipants = route.params?.showJoinedWithParticipants;
   const showJoined = route.params?.showJoined;
   const eventParticipants = route.params?.eventParticipants;
 
@@ -195,6 +196,27 @@ function EventDetailScreen({ navigation, route }) {
           />
         )}
         {/* Functions */}
+        {previousScreen && previousScreen === 'Home' && showJoined && eventDetails.eventType === 'ONE_TO_ONE' ? (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        ) : null}
+        {previousScreen && previousScreen === 'Home' && showJoined && eventDetails.eventType !== 'ONE_TO_ONE' && userInfo.userId === eventDetails.eventHost.userId ? (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        ) : null}
+        {previousScreen && previousScreen === 'Home' && showJoined && eventDetails.eventType !== 'ONE_TO_ONE' && userInfo.userId !== eventDetails.eventHost.userId ? (
+          <Pressable onPress={cancelEventHandler}>
+            <Text style={styles.cancel}>Can't make it</Text>
+          </Pressable>
+        ) : null}
+        {previousScreen && previousScreen === 'Home' && showPending && (
+          <Pressable onPress={withdrawEventHandler}>
+            <Text style={styles.cancel}>Withdraw</Text>
+          </Pressable>
+        )}
+
         {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <Pressable onPress={cancelEventHandler}>
             <Text style={styles.cancel}>Cancel</Text>
@@ -232,11 +254,18 @@ function EventDetailScreen({ navigation, route }) {
           </View>
         </View>
       )}
-      {previousScreen && previousScreen === 'Home' && showJoined && (
+      {previousScreen && previousScreen === 'Home' && showJoinedWithParticipants && (
+        // <View style={styles.submitFormContainer}>
+        //   <View style={styles.joinedStatusContainer}>
+        //     <Text style={styles.statusText}>Joined</Text>
+        //   </View>
+        // </View>
         <View style={styles.submitFormContainer}>
-          <View style={styles.joinedStatusContainer}>
-            <Text style={styles.statusText}>Joined</Text>
-          </View>
+          <Pressable onPress={directToMessageHandler} style={({pressed}) => pressed && styles.pressed}>
+            <View style={styles.submitBtnContainer}>
+              <Text style={styles.submitBtnText}>Message</Text>
+            </View>
+          </Pressable>
         </View>
       )}
       {previousScreen && previousScreen === 'Confirmed' && (
