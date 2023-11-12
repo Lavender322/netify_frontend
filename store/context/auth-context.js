@@ -13,6 +13,7 @@ function AuthContextProvider({ children }) {
   const [authToken, setAuthToken] = useState();
   const [tempToken, setTempToken] = useState();
   const [userInfo, setUserInfo] = useState();
+  const [isDevServer, setIsDevServer] = useState(false);
 
   function authenticate(token) {
     setAuthToken(token);
@@ -33,12 +34,14 @@ function AuthContextProvider({ children }) {
     authenticate: authenticate,
     logout: logout,
     userInfo,
-    setUserInfo
+    setUserInfo,
+    isDevServer,
+    setIsDevServer
   }
 
   return (
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  )
-}
+  );
+};
 
 export default AuthContextProvider;

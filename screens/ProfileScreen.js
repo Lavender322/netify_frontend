@@ -12,7 +12,7 @@ function ProfileScreen({ navigation }) {
   const [gradeTags, setGradeTags] = useState([]);
   const [userGradeTag, setUserGradeTag] = useState();
   const [userSectorTag, setUserSectorTag] = useState();
-  const [isFetchingTags, setIsFetchingTags] = useState(true);
+  const [isFetchingTags, setIsFetchingTags] = useState(false);
 
   const { userInfo } = useContext(AuthContext);
 

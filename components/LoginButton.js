@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Image, Pressable, Text } from 'react-native';
 import axios from 'axios';
+import { AuthContext } from '../store/context/auth-context';
 import { useNavigation } from '@react-navigation/native';
 
 function LoginButton() {
   const [returnedUrl, setReturnedUrl] = useState(null);
+
+  const { isDevServer } = useContext(AuthContext);
 
   const navigation = useNavigation();
 
@@ -35,7 +38,7 @@ function LoginButton() {
     if (!returnedUrl) {
       axios({
         method: 'GET',
-        url: __DEV__ ? 'https://netify.iqust.top/linkedin/sso' : 'https://prod-netify.iqust.top/linkedin/sso',
+        url: (__DEV__ || isDevServer) ? 'https://netify.iqust.top/linkedin/sso' : 'https://prod-netify.iqust.top/linkedin/sso',
       })
         .then((res) => {
           setReturnedUrl(res.data.data.url);

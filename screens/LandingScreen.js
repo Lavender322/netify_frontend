@@ -53,9 +53,8 @@ function LandingScreen({ navigation, route }) {
         <View style={styles.signInContainer}>
           <Text style={styles.signInText}>Sign in or sign up</Text>
           <Text style={styles.termsText}>By using our services you are agreeing to our <Pressable onPress={openTermsHandler}>
-              <Text style={styles.link}>Terms</Text> 
-            </Pressable>
-            and <Pressable onPress={openPrivacyHandler}>
+            <Text style={styles.link}>Terms</Text> 
+            </Pressable> and <Pressable onPress={openPrivacyHandler}>
               <Text style={styles.link}>Privacy Statement</Text>
             </Pressable>
             .
