@@ -46,7 +46,7 @@ function WithdrawEventScreen({ navigation, route }) {
     setIsSubmitting(true);
     try {
       await withdrawEvent(eventId, token);
-      navigation.navigate('ActivitiesSent');
+      navigation.navigate('Activities');
     } catch (error) {
       console.log("withdrawEvent", error);
       console.log(error.response.data);

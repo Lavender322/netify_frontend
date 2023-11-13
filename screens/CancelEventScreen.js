@@ -86,7 +86,7 @@ function CancelEventScreen({ navigation, route }) {
     if (isHost) {
       try {
         await cancelEvent(eventId, enteredText, token);
-        navigation.navigate('ActivitiesConfirmed');
+        navigation.navigate('Activities');
       } catch (error) {
         console.log("cancelEvent", error);
         console.log(error.response.data);
@@ -96,7 +96,7 @@ function CancelEventScreen({ navigation, route }) {
     } else {
       try {
         await withdrawEvent(eventId, token);
-        navigation.navigate('ActivitiesConfirmed');
+        navigation.navigate('Activities');
       } catch (error) {
         console.log("withdrawEvent", error);
         console.log(error.response.data);
