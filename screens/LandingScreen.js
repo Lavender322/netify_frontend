@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ImageBackground, Pressable } from 'react-native
 import { AuthContext } from '../store/context/auth-context';
 import LoginButton from '../components/LoginButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
-import { authenticateUser } from '../utils/http';
+import { authenticateUser, fetchUserInfo } from '../utils/http';
 
 function LandingScreen({ navigation, route }) {
   const state = route.params?.state;
@@ -11,7 +11,7 @@ function LandingScreen({ navigation, route }) {
 
   const [isFetching, setIsFetching] = useState(false);
 
-  const { setTempToken } = useContext(AuthContext);
+  const { setTempToken, tempToken, setUserInfo } = useContext(AuthContext);
 
   useEffect(() => {
     if (state && code) {
@@ -19,19 +19,41 @@ function LandingScreen({ navigation, route }) {
         setIsFetching(true);
         try {
           const token = await authenticateUser(state, code);
-          // authenticate(token);
           setTempToken(token);
-          navigation.navigate('UserInfo');
         } catch (error) {
           console.log('authenticateUser', error);
           console.log(error.response.data);
           setIsFetching(false);
-        }
+        };
       };
 
       login();
     };
   }, [state, code]);
+
+  useEffect(() => {
+    if (tempToken) {
+      async function getUserInfo() {
+        setIsFetching(true);
+        try {
+          const userInfo = await fetchUserInfo(tempToken);
+          if (userInfo && userInfo.userTag && userInfo.userTag.length === 2) {
+            setUserInfo(userInfo);
+            AsyncStorage.setItem('user-info', JSON.stringify(userInfo));
+            authenticate(tempToken); // if user already exists
+          } else {
+            navigation.navigate('UserInfo'); // if user does not exist
+          };
+        } catch (error) {
+          console.log('fetchUserInfo', error);
+          console.log(error.response.data);
+          setIsFetching(false);
+        };
+      };
+
+      getUserInfo();
+    };
+  }, [tempToken]);
 
   function openTermsHandler() {
     navigation.navigate('TermsAndConditions');
@@ -44,7 +66,7 @@ function LandingScreen({ navigation, route }) {
   if (isFetching) {
     return (
       <LoadingOverlay />
-    )
+    );
   };
 
   return (
@@ -63,8 +85,8 @@ function LandingScreen({ navigation, route }) {
         </View>
       </ImageBackground>
     </View>
-  )
-}
+  );
+};
 
 export default LandingScreen
 
