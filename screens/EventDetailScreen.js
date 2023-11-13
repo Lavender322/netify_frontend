@@ -120,7 +120,15 @@ function EventDetailScreen({ navigation, route }) {
       <IconButton icon="arrow-left" size={24} color="black" style={styles.goBackButton} onPress={previousStepHandler}/>
       <ScrollView style={styles.mainContainer}>
         {/* Title */}
-        <Text style={styles.headerText}>{previousScreen && previousScreen === 'Sent' ? 'Meeting ' + eventDetails.eventHost.localizedfirstname : eventDetails.eventName}</Text> 
+        {previousScreen && previousScreen === 'Sent' ? (
+          <Text style={styles.headerText}>{'Meeting ' + eventDetails.eventHost.localizedfirstname}</Text> 
+        ) : (
+          <>
+            {eventDetails.eventName && eventDetails.eventName !== '' ? (
+              <Text style={styles.headerText}>{eventDetails.eventName}</Text> 
+            ) : null}
+          </>
+        )}
         {/* Avatar(s) */}
         {previousScreen && previousScreen === 'Confirmed' && eventDetails.eventType === 'ONE_TO_ONE' ? (
           <View style={styles.avatarsContainer}>
