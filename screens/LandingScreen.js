@@ -1,5 +1,6 @@
 import { useEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, View, ImageBackground, Pressable } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../store/context/auth-context';
 import LoginButton from '../components/LoginButton';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
@@ -12,6 +13,8 @@ function LandingScreen({ navigation, route }) {
   const [isFetching, setIsFetching] = useState(false);
 
   const { setTempToken, tempToken, setUserInfo, authenticate } = useContext(AuthContext);
+  // const { setTempToken, setUserInfo, authenticate } = useContext(AuthContext);
+  // const tempToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
   useEffect(() => {
     if (state && code) {
