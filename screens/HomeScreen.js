@@ -1,12 +1,51 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable, TouchableWithoutFeedback } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
+import Constants from 'expo-constants';
+import * as Device from 'expo-device'
 import { AuthContext } from '../store/context/auth-context';
 import { fetchOverallEventStatus, fetchEventList, fetchTags, addPushToken } from '../utils/http';
 import EventsList from '../components/Home/EventsList';
 import EventFilters from '../components/Home/EventFilters';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import * as Notifications from 'expo-notifications';
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.DEFAULT,
+    });
+  };
+
+  if (Device.isDevice) {
+    const { status } = await Notifications.getPermissionsAsync();
+    let finalStatus = status;
+
+    if (finalStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    };
+
+    if (finalStatus !== 'granted') {
+      Alert.alert(
+        'Permission required',
+        'Push notifications need the appropriate permissions.'
+      );
+      return;
+    };
+
+    // First time login call this
+    token = await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig.extra.eas.projectId,
+    });
+    // console.log('pushTokenData', token);
+
+    return token.data;
+  };
+};
 
 function HomeScreen({ navigation }) {
   const [isFetching, setIsFetching] = useState(true);
@@ -22,6 +61,10 @@ function HomeScreen({ navigation }) {
   const [selectedGroup, setSelectedGroup] = useState([]);
   const [updateEventList, setUpdateEventList] = useState(false);
   const [count, setCount] = useState(0);
+  const [expoPushToken, setExpoPushToken] = useState();
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   // TO COMMENT OUT
   const { token, userInfo, logout, setIsDevServer } = useContext(AuthContext);
@@ -31,44 +74,36 @@ function HomeScreen({ navigation }) {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    async function configurePushNotifications() {
-      const { status } = await Notifications.getPermissionsAsync();
-      let finalStatus = status;
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
-      if (finalStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      };
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
 
-      if (finalStatus !== 'granted') {
-        Alert.alert(
-          'Permission required',
-          'Push notifications need the appropriate permissions.'
-        );
-        return;
-      };
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
 
-      // First time login call this
-      const pushTokenData = await Notifications.getExpoPushTokenAsync();
-      // console.log('pushTokenData', pushTokenData);
-
-      try {
-        await addPushToken(pushTokenData.data, token);
-      } catch (error) {
-        console.log('addPushToken', error);
-        console.log(error.response.data);
-      };
-
-      if (Platform.OS === 'android') {
-        Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.DEFAULT,
-        });
-      };
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
     };
-
-    configurePushNotifications();
   }, []);
+
+  useEffect(() => {
+    if (expoPushToken) {
+      async function addPushNotificationsToken() {
+        try {
+          await addPushToken(expoPushToken, token);
+        } catch (error) {
+          console.log('addPushToken', error);
+          console.log(error.response.data);
+        };
+      };
+      
+      addPushNotificationsToken();
+    };
+  }, [expoPushToken])
 
   useEffect(() => {
     async function getOverallEventStatus() {
