@@ -201,7 +201,7 @@ function HomeScreen({ navigation }) {
             <Text style={styles.panelNumber}>{confirmedEvents}</Text> 
           </Pressable>
           <Pressable onPress={directToActivities}>
-            <Text style={styles.panelText}>Confirmed Meeting</Text> 
+            <Text style={styles.panelText}>{confirmedEvents === 1 ? "Upcoming Activity" : "Upcoming Activities"}</Text> 
           </Pressable>
         </View>
         <View style={[styles.innerPanelContainer, styles.innerPanel]}>
@@ -209,7 +209,7 @@ function HomeScreen({ navigation }) {
             <Text style={styles.panelNumber}>{pendingRequests}</Text> 
           </Pressable>
           <Pressable onPress={directToActivities}>
-            <Text style={styles.panelText}>Pending Request</Text> 
+            <Text style={styles.panelText}>{pendingRequests === 1 ? "Sent Request" : "Sent Requests"}</Text> 
           </Pressable>
         </View>
         <View style={styles.innerPanelContainer}>
@@ -217,7 +217,7 @@ function HomeScreen({ navigation }) {
             <Text style={styles.panelNumber}>{receivedInvitations}</Text> 
           </Pressable>
           <Pressable onPress={directToActivities}>
-            <Text style={styles.panelText}>Invitations Received</Text> 
+            <Text style={styles.panelText}>{receivedInvitations === 1 ? "Received request" : "Received requests"}</Text> 
           </Pressable>
         </View>
       </View>
