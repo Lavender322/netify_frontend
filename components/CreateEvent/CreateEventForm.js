@@ -132,13 +132,13 @@ function CreateEventForm() {
 
   useEffect(() => {
     // console.log(meetingTitle, selectedDate, selectedStartTime, selectedEndTime, visibility, selectedCapacity);
-    if (meetingTitle.length !== 0 && selectedDate && selectedStartTime && selectedEndTime && visibility) {
+    if (selectedDate && selectedStartTime && selectedEndTime && visibility) {
       if (!isOneToOne) {
-        if (selectedCapacity) {
+        if (selectedCapacity && meetingTitle.length !== 0) {
           setFlag(true);
         } else {
           setFlag(false);
-        }
+        };
       };
       setFlag(true);
     } else {
@@ -262,7 +262,7 @@ function CreateEventForm() {
             <TextInput 
               style={styles.textInput} 
               maxLength={30}
-              placeholder="Please Enter"
+              placeholder={isOneToOne ? "Optional" : "Please Enter"}
               placeholderTextColor="#6A6A6A"
               value={meetingTitle}
               onChangeText={meetingTitleInputHandler}
