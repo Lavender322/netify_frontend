@@ -29,12 +29,12 @@ function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
   if ((!eventsDisplayed || eventsDisplayed.length === 0) && !isFetchingEvents) {
     return (
       <View style={styles.fallbackContainer}>
-        <Text>
-          <Text style={styles.fallback}>There are no upcoming events around you. </Text>
-          <Pressable onPress={redirectHandler}>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
-          </Pressable>
-        </Text>
+        <Text style={styles.fallback}>There are no upcoming events around you. </Text>
+        <Pressable onPress={redirectHandler} style={styles.fallbackHighlightContainer}>
+          <View style={styles.fallbackHighlightContainer}>
+            <Text style={styles.fallbackHighlight}>Host one!</Text>
+          </View>
+        </Pressable>
       </View>
     )
   };
@@ -45,8 +45,8 @@ function EventsList({ events, isFetchingEvents, sectorTags, gradeTags }) {
       renderItem={(item) => renderEventItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
-  )
-}
+  );
+};
 
 export default EventsList;
 
@@ -67,6 +67,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#3C8722',
     textDecorationLine: 'underline',
-    lineHeight: 20
+    lineHeight: 20,
+    textAlign: 'center'
+  },
+  fallbackHighlightContainer: {
+    alignSelf: 'center'
   }
 });

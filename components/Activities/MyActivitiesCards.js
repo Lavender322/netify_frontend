@@ -26,12 +26,12 @@ function MyActivitiesCards({ isFetchingActivities, activities, sectorTags, grade
   if ((!activities || activities.length === 0) && !isFetchingActivities) {
     return (
       <View style={styles.fallbackContainer}>
-        <Text>
           <Text style={styles.fallback}>You don't have any activities.</Text>
-          <Pressable onPress={redirectHandler}>
+          <Pressable onPress={redirectHandler} style={styles.fallbackHighlightContainer}>
+          <View style={styles.fallbackHighlightContainer}>
             <Text style={styles.fallbackHighlight}>Host one!</Text>
+          </View>
           </Pressable>
-        </Text>
       </View>
     )
   };
@@ -42,8 +42,8 @@ function MyActivitiesCards({ isFetchingActivities, activities, sectorTags, grade
       renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
-  )
-}
+  );
+};
 
 export default MyActivitiesCards;
 
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontFamily: 'roboto',
-    lineHeight: 20
+    lineHeight: 20,
   },
   fallbackHighlight: {
     fontFamily: 'roboto-bold',
@@ -65,5 +65,9 @@ const styles = StyleSheet.create({
     color: '#3C8722',
     textDecorationLine: 'underline',
     lineHeight: 20,
+    textAlign: 'center'
+  },
+  fallbackHighlightContainer: {
+    alignSelf: 'center'
   }
 });

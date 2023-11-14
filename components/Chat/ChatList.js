@@ -12,7 +12,7 @@ function ChatList({ chats, isFetchingChats }) {
   if (isFetchingChats) {
     return (
       <LoadingOverlay />
-    )
+    );
   };
 
   if ((!chats || chats.length === 0) && !isFetchingChats) {
@@ -29,7 +29,7 @@ function ChatList({ chats, isFetchingChats }) {
       renderItem={(item) => renderChatItem(item)} 
       keyExtractor={(item) => item.chatRoomId}
     />
-  )
+  );
 };
 
 export default ChatList;

@@ -24,19 +24,19 @@ function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gra
 
   if ((!activities || activities.length === 0) && !isFetchingActivities) {
     return (
-      <View style={styles.fallbackContainer}>
-        <Text>
-          {(!isPast && !isCancelled) ? (
-            <Text style={styles.fallback}>You don't have any upcoming events. </Text>
-          ) : (
-            <Text style={styles.fallback}>You don't have any events. </Text>
-          )}
-          <Pressable onPress={redirectHandler}>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
-          </Pressable>
-        </Text>
+      <View style={!isPast && !isCancelled ? styles.fallbackContainer : styles.fallbackPastContainer}>
+        {(!isPast && !isCancelled) ? (
+          <Text style={styles.fallback}>You don't have any upcoming events.</Text>
+        ) : (
+          <Text style={styles.fallback}>You don't have any events.</Text>
+        )}
+        <Pressable onPress={redirectHandler} style={styles.fallbackHighlightContainer}>
+          <View style={styles.fallbackHighlightContainer}>
+            <Text style={styles.fallbackHighlight}>Host one!</Text>
+          </View>
+        </Pressable>
       </View>
-    )
+    );
   };
 
   return (
@@ -45,15 +45,19 @@ function ActivitiesSentCards({ activities, isFetchingActivities, sectorTags, gra
       renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags, isCancelled, isPast)} 
       keyExtractor={(item) => item.id}
     />
-  )
-}
+  );
+};
 
 export default ActivitiesSentCards;
 
 const styles = StyleSheet.create({
   fallbackContainer: {
     marginHorizontal: 40,
-    marginTop: 35
+    paddingVertical: 24,
+  },
+  fallbackPastContainer: {
+    marginHorizontal: 40,
+    paddingTop: 35
   },
   fallback: {
     color: '#3B4852',
@@ -67,6 +71,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#3C8722',
     textDecorationLine: 'underline',
-    lineHeight: 20
+    lineHeight: 20,
+    textAlign: 'center'
+  },
+  fallbackHighlightContainer: {
+    alignSelf: 'center'
   }
 });

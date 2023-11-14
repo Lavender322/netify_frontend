@@ -25,14 +25,14 @@ function ActivitiesConfirmedCards({ activities, isFetchingActivities, sectorTags
   if ((!activities || activities.length === 0) && !isFetchingActivities) {
     return (
       <View style={styles.fallbackContainer}>
-        <Text>
-          <Text style={styles.fallback}>You don't have any upcoming events. </Text>
-          <Pressable onPress={redirectHandler}>
-          <Text style={styles.fallbackHighlight}>Host one!</Text>
+          <Text style={styles.fallback}>You don't have any upcoming events.</Text>
+          <Pressable onPress={redirectHandler} style={styles.fallbackHighlightContainer}>
+          <View style={styles.fallbackHighlightContainer}>
+            <Text style={styles.fallbackHighlight}>Host one!</Text>
+          </View>
           </Pressable>
-        </Text>
       </View>
-    )
+    );
   };
 
   return (
@@ -42,8 +42,8 @@ function ActivitiesConfirmedCards({ activities, isFetchingActivities, sectorTags
       renderItem={(item) => renderActivityItem(item, sectorTags, gradeTags)} 
       keyExtractor={(item) => item.id}
     />
-  )
-}
+  );
+};
 
 export default ActivitiesConfirmedCards;
 
@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
     color: '#3C8722',
     textDecorationLine: 'underline',
     lineHeight: 20,
-    marginTop: 4
+    textAlign: 'center'
+  },
+  fallbackHighlightContainer: {
+    alignSelf: 'center'
   }
 });

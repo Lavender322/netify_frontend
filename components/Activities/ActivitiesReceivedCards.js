@@ -42,12 +42,12 @@ function ActivitiesReceivedCards({ activities, isFetchingActivities, loadedConfi
         </View>
       
         <View style={styles.fallbackContainer}>
-          <Text>
-            <Text style={styles.fallback}>You don't have any upcoming events. </Text>
-            <Pressable onPress={redirectHandler}>
+          <Text style={styles.fallback}>You don't have any upcoming events.</Text>
+          <Pressable onPress={redirectHandler} style={styles.fallbackHighlightContainer}>
+            <View style={styles.fallbackHighlightContainer}>
               <Text style={styles.fallbackHighlight}>Host one!</Text>
-            </Pressable>
-          </Text>
+            </View>
+          </Pressable>
         </View>
 
         <View style={styles.footerContainer}></View>
@@ -130,6 +130,10 @@ const styles = StyleSheet.create({
     color: '#3C8722',
     textDecorationLine: 'underline',
     lineHeight: 20,
+    textAlign: 'center'
+  },
+  fallbackHighlightContainer: {
+    alignSelf: 'center'
   },
   firstInnerContainer: {
     borderRadius: 8,
