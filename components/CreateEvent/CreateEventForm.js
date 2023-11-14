@@ -319,14 +319,14 @@ function CreateEventForm() {
                 />
                 <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
               </View>
-              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
+              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && flag && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
                 <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                   <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
                 </View>
               </Pressable>
             </View>
           ) : (
-            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && flag && styles.pressed}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>

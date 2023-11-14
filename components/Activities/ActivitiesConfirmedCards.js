@@ -50,7 +50,7 @@ export default ActivitiesConfirmedCards;
 const styles = StyleSheet.create({
   fallbackContainer: {
     marginHorizontal: 40,
-    marginTop: 35
+    marginVertical: 24
   },
   fallback: {
     color: '#3B4852',

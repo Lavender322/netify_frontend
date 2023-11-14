@@ -19,7 +19,7 @@ function ActivitiesReceivedList({ applications, isFetchingApplications, eventId,
   if ((!applications || applications.length === 0) && !isFetchingApplications) {
     return (
       <View style={styles.fallbackContainer}>
-        <Text style={styles.fallback}>No one's requested your event yet.</Text>
+        <Text style={styles.fallback}>No requests yet.</Text>
       </View>
     )
   };

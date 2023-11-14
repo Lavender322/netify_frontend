@@ -84,7 +84,9 @@ export async function fetchEventList(gradeFilters, industryFilters, groupFilters
     sectorTypeList: industryFilters,
     meetingTypeList: groupFilters,
     start: 0,
-    end: 100
+    end: 100,
+    orderBy: 'event_start_time',
+    order: 'ASC'
   };
   
   const response = await axios({

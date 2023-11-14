@@ -24,9 +24,11 @@ function ActivityCapacityScreen({ navigation }) {
   }, [enteredNumber]);
 
   function comfirmCapacityHandler() {
-    navigation.navigate('CreateEvent', {
-      activityCapacity: enteredNumber,
-    });
+    if (flag) {
+      navigation.navigate('CreateEvent', {
+        activityCapacity: enteredNumber,
+      });
+    };
   };
 
   return (
@@ -46,7 +48,7 @@ function ActivityCapacityScreen({ navigation }) {
         </View>
 
         <View style={styles.noteContainer}>
-          <Text style={styles.note}>Please set a desired participant limit for your event. Our default event format is a one-to-one coffee chat.</Text>
+          <Text style={styles.note}>Please set a desired participant limit for your event. If left blank, it will default to unlimited participants.</Text>
         </View> 
 
         <View style={styles.capacityContainer}>
@@ -58,12 +60,13 @@ function ActivityCapacityScreen({ navigation }) {
             keyboardType='number-pad'
             onChangeText={numberInputHandler}
             value={enteredNumber}
+            autoFocus
           />
           <Text style={styles.capacityText}>participants</Text>
         </View> 
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={comfirmCapacityHandler} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={comfirmCapacityHandler} style={({pressed}) => flag && pressed && styles.pressed}>
             <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
               <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Done</Text>
             </View>

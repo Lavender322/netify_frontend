@@ -32,10 +32,12 @@ function NotesScreen({ navigation, route }) {
   };
 
   function comfirmNotesHandler() {
-    navigation.navigate('CreateEvent', {
-      previewNotes: previewText,
-      notes: enteredText
-    });
+    if (flag) {
+      navigation.navigate('CreateEvent', {
+        previewNotes: previewText,
+        notes: enteredText
+      });
+    };
   };
 
   return (
@@ -71,7 +73,7 @@ function NotesScreen({ navigation, route }) {
         </View>
 
         <View style={styles.submitFormContainer}>
-          <Pressable onPress={comfirmNotesHandler} style={({pressed}) => pressed && styles.pressed}>
+          <Pressable onPress={comfirmNotesHandler} style={({pressed}) => flag && pressed && styles.pressed}>
             <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
               <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Done</Text>
             </View>
