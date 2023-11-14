@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createRef } from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import MessageItem from "./MessageItem";
 import LoadingOverlay from '../ui/LoadingOverlay';
@@ -11,11 +11,7 @@ function renderMessageItem(itemData, isSameMessageTime) {
 };
 
 function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
-  if (isFetchingMessages) {
-    return (
-      <LoadingOverlay />
-    )
-  };
+  // const listRef = createRef(null);
 
   const [chatMessageTime, setChatMessageTime] = useState([]);
   const [isSameMessageTime, setIsSameMessageTime] = useState([]);
@@ -35,6 +31,12 @@ function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
     };
   }, [isFormatting]);
 
+  if (isFetchingMessages) {
+    return (
+      <LoadingOverlay />
+    );
+  };
+
   if (chatMessages && chatMessages.length && isSameMessageTime) {
     return (
       <View style={(!upcomingEvents || (upcomingEvents && !upcomingEvents.length)) && styles.container}>
@@ -42,6 +44,9 @@ function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
           data={chatMessages} 
           renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
           keyExtractor={(item) => item.id}
+          // ref={listRef}
+          // onContentSizeChange={() => listRef.current.scrollToEnd({animated: true})}
+          // onLayout={ () => { listRef.current.scrollToEnd({animated: true}) } }
         />
       </View>
     )

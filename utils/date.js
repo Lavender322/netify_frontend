@@ -102,7 +102,7 @@ export function getFormattedMessageTime(date) {
 };
 
 export function getFormattedMessageDate(date) { 
-  return Moment(date).format('D MMM YYYY') + ' BST';
+  return Moment(date).format('D MMM YYYY');
 };
 
 export function checkWhetherSameDate(dates) {
