@@ -67,7 +67,7 @@ function HomeScreen({ navigation }) {
   const responseListener = useRef();
 
   // TO COMMENT OUT
-  const { token, userInfo, logout, setIsDevServer } = useContext(AuthContext);
+  const { token, userInfo, logout, setIsDevServer, isDevServer } = useContext(AuthContext);
   // const { userInfo } = useContext(AuthContext);
   // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNmE5YTZmMy02YjZkLTQ4ZGYtOTk2OS1hZDYxYWQ3ZDlkOGEiLCJpYXQiOjE2OTE3NDU2MTYsImV4cCI6MjU1NTc0NTYxNn0.c1hFaFFIxbI0dl8xq7kCRSMP1HAUZDCmsLeIQ6HFlxMnniypZveeiv4aopwNbLcK6zvp3ofod5G1B4Pu8A7FGg';
 
@@ -227,7 +227,7 @@ function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={envChangeHandler}>
-        <Text style={styles.headerText}>Hi, {userInfo.localizedfirstname}</Text>
+        <Text style={[styles.headerText, isDevServer ? styles.devServer : styles.prodServer]}>Hi, {userInfo.localizedfirstname}</Text>
       </TouchableWithoutFeedback>
       {/* <Button title='Schedule' onPress={scheduleNotificationHandler} /> */}
       <View style={styles.outerPanelContainer}>
@@ -289,6 +289,11 @@ const styles = StyleSheet.create({
     fontFamily: 'roboto-bold',
     marginTop: 58,
     marginLeft: 13,
+  },
+  devServer: {
+    color: '#587505'
+  },
+  prodServer: {
     color: '#000000E5'
   },
   outerPanelContainer: {
