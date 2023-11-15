@@ -1,4 +1,4 @@
-import { useEffect, useState, createRef } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import MessageItem from "./MessageItem";
 import LoadingOverlay from '../ui/LoadingOverlay';
@@ -11,8 +11,6 @@ function renderMessageItem(itemData, isSameMessageTime) {
 };
 
 function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
-  // const listRef = createRef(null);
-
   const [chatMessageTime, setChatMessageTime] = useState([]);
   const [isSameMessageTime, setIsSameMessageTime] = useState([]);
   const [isFormatting, setIsFormatting] = useState(true);
@@ -44,9 +42,6 @@ function MessageList({ chatMessages, isFetchingMessages, upcomingEvents }) {
           data={chatMessages} 
           renderItem={({item, index}) => renderMessageItem(item, isSameMessageTime[index])} 
           keyExtractor={(item) => item.id}
-          // ref={listRef}
-          // onContentSizeChange={() => listRef.current.scrollToEnd({animated: true})}
-          // onLayout={ () => { listRef.current.scrollToEnd({animated: true}) } }
         />
       </View>
     )

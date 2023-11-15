@@ -241,7 +241,7 @@ function CreateEventForm() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={styles.container} behavior='height'>
+      <KeyboardAvoidingView style={styles.container} behavior='position'>
         <ScrollView>
           <View style={styles.meetingTypes}>
             <Pressable 
@@ -298,43 +298,42 @@ function CreateEventForm() {
                   setSelectedLocation={setSelectedLocation} 
                 />
               )}
-            </View>
+            </View> 
           )}
 
           {/* <CreateEventItem icon='eye' text='Visibility' placeholder={previewVisibility} onPress={selectVisibilityHandler}/> */}
           
           <CreateEventItem icon='file-text' text='Notes' placeholder={previewNotes} onPress={selectNotesHandler}/>
         </ScrollView>
+      </KeyboardAvoidingView>
 
-        <View style={styles.submitFormContainer}>
-          {isOneToOne ? (
-            <View style={styles.submitFormOuterContainer}>
-              <View style={[styles.submitFormInnerContainer, styles.submitFormInnerLeftContainer]}>
-                <Switch
-                  trackColor={{false: '#919191', true: '#3C8722'}}
-                  thumbColor={autoAccept ? '#FFFFFF' : '#FFFFFF'}
-                  ios_backgroundColor="#919191"
-                  onValueChange={toggleSwitch}
-                  value={autoAccept}
-                />
-                <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
-              </View>
-              <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && flag && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
-                <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
-                  <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
-                </View>
-              </Pressable>
+      <View style={styles.submitFormContainer}>
+        {isOneToOne ? (
+          <View style={styles.submitFormOuterContainer}>
+            <View style={[styles.submitFormInnerContainer, styles.submitFormInnerLeftContainer]}>
+              <Switch
+                trackColor={{false: '#919191', true: '#3C8722'}}
+                thumbColor={autoAccept ? '#FFFFFF' : '#FFFFFF'}
+                ios_backgroundColor="#919191"
+                onValueChange={toggleSwitch}
+                value={autoAccept}
+              />
+              <Text style={styles.switchText}>Auto accept the first applicant's request.</Text>
             </View>
-          ) : (
-            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && flag && styles.pressed}>
+            <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => [pressed && flag && styles.pressed, styles.submitFormInnerContainer, styles.submitFormInnerRightContainer]}>
               <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
                 <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
               </View>
             </Pressable>
-          )}
-        </View>
-
-      </KeyboardAvoidingView>
+          </View>
+        ) : (
+          <Pressable onPress={createEventHandler.bind(this, token, isOneToOne, meetingTitle, allSectorTagIds, allGradeTagIds, selectedCapacity, selectedDate, selectedStartTime, selectedEndTime, notes, selectedLocation, autoAccept)} style={({pressed}) => pressed && flag && styles.pressed}>
+            <View style={[styles.submitFormBtnContainer, flag && styles.enabledContainer]}>
+              <Text style={[styles.submitFormBtnText, flag && styles.enabledText]}>Create event</Text>
+            </View>
+          </Pressable>
+        )}
+      </View>
 
       <Modal
         animationType="fade"
@@ -358,8 +357,8 @@ function CreateEventForm() {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 export default CreateEventForm;
 

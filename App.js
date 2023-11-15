@@ -141,7 +141,7 @@ export function UserOverview() {
         }}
       />
     </BottomTabs.Navigator> 
-  )
+  );
 };
 
 function AuthStack() {
@@ -159,7 +159,7 @@ function AuthStack() {
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
     </Stack.Navigator>
   );
-}
+};
 
 function AuthenticatedStack() {
   return (
