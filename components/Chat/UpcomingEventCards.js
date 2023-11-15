@@ -1,5 +1,5 @@
-import { useEffect, useState, useContext } from 'react';
-import { FlatList, Text, StyleSheet, View, SafeAreaView } from 'react-native';
+import { useEffect, useState, useContext, useRef } from 'react';
+import { FlatList, SafeAreaView } from 'react-native';
 import { fetchEvent } from '../../utils/http';
 import UpcomingEventCard from './UpcomingEventCard';
 import { AuthContext } from '../../store/context/auth-context';
@@ -11,7 +11,10 @@ function renderEventCard(itemData) {
   );
 };
 
-function UpcomingEventCards({ closestEventId, chatMessages }) {
+function UpcomingEventCards({ closestEventId, chatMessages, setIsInputOnFocus, isInputOnFocus }) {
+  let listViewRef;
+  // const listViewRef = useRef();
+
   const [isFetching, setIsFetching] = useState(true);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
@@ -37,14 +40,31 @@ function UpcomingEventCards({ closestEventId, chatMessages }) {
     
     setIsFetching(false);
   }, []);
+
+  useEffect(() => {
+    if (isInputOnFocus) {
+      // console.log('scroll');
+      listViewRef.scrollToEnd({animated: true});
+      setIsInputOnFocus(false);
+    };
+  }, [isInputOnFocus]);
+
+  const renderItem = (item) => renderEventCard(item);
+  const listFooterComponent = <MessageList chatMessages={chatMessages} isFetchingMessages={isFetching} upcomingEvents={upcomingEvents} />;
   
   return (
     <SafeAreaView style={{flex: 1}}>
       <FlatList 
         data={upcomingEvents} 
-        renderItem={(item) => renderEventCard(item)} 
+        renderItem={renderItem} 
         keyExtractor={(item) => item.id}
-        ListFooterComponent={<MessageList chatMessages={chatMessages} isFetchingMessages={isFetching} upcomingEvents={upcomingEvents} />}
+        ListFooterComponent={listFooterComponent}
+        ref={(ref) => {
+          listViewRef = ref;
+        }}
+        onContentSizeChange={() => { 
+          listViewRef.scrollToEnd({animated: true});
+        }}
       />
     </SafeAreaView>
   );

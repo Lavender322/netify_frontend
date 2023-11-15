@@ -23,6 +23,7 @@ function ChatDetailScreen({ navigation, route }) {
   const [isFetchingMessages, setIsFetchingMessages] = useState(true);
   const [isInitiating, setIsInitiating] = useState(true);
   const [isFetchingInfo, setIsFetchingInfo] = useState(true);
+  const [isInputOnFocus, setIsInputOnFocus] = useState();
 
   const { token, userInfo } = useContext(AuthContext);
 
@@ -80,6 +81,19 @@ function ChatDetailScreen({ navigation, route }) {
     };
   }, [chatRoomId]);
 
+  useEffect(() => {
+    if (chatMessages) {
+      // console.log('lala');
+      const scrollToEnd = setTimeout(onFocusHandler, 1000);
+
+      return () => {
+        clearTimeout(scrollToEnd);
+      };
+    };
+
+    
+  }, [chatMessages]);
+
   function previousStepHandler() {
     navigation.goBack();
   };
@@ -100,7 +114,8 @@ function ChatDetailScreen({ navigation, route }) {
         var newMessage = {
           content: enteredText,
           senderId: userInfo.userId,
-          messageTime: new Date()
+          messageTime: new Date(),
+          id: Math.random()
         };
         setChatMessages(prev => [...prev, newMessage]);
         await sendMessage(body, token);
@@ -109,6 +124,10 @@ function ChatDetailScreen({ navigation, route }) {
         console.log(error.response.data);
       }; 
     };
+  };
+
+  function onFocusHandler() {
+    setIsInputOnFocus(true);
   };
 
   return (
@@ -148,6 +167,8 @@ function ChatDetailScreen({ navigation, route }) {
                 <UpcomingEventCards 
                   closestEventId={chatRoomInfo.closestEventId} 
                   chatMessages={chatMessages} 
+                  setIsInputOnFocus={setIsInputOnFocus}
+                  isInputOnFocus={isInputOnFocus}
                 />
               )}
             </View>
@@ -159,6 +180,7 @@ function ChatDetailScreen({ navigation, route }) {
                 placeholderTextColor='#ADB5BD'
                 onChangeText={textInputHandler}
                 value={enteredText}
+                onFocus={onFocusHandler}
               />
               <Pressable onPress={sendMessageHandler}>
                 <Image style={styles.logo} source={require("../assets/images/send-icon.png")} />
