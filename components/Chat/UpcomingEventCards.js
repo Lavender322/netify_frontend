@@ -50,7 +50,7 @@ function UpcomingEventCards({ closestEventId, chatMessages, setIsInputOnFocus, i
   }, [isInputOnFocus]);
 
   const renderItem = (item) => renderEventCard(item);
-  const listFooterComponent = <MessageList chatMessages={chatMessages} isFetchingMessages={isFetching} upcomingEvents={upcomingEvents} />;
+  const listHeaderComponent = <MessageList chatMessages={chatMessages} isFetchingMessages={isFetching} upcomingEvents={upcomingEvents} />;
   
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -58,13 +58,14 @@ function UpcomingEventCards({ closestEventId, chatMessages, setIsInputOnFocus, i
         data={upcomingEvents} 
         renderItem={renderItem} 
         keyExtractor={(item) => item.id}
-        ListFooterComponent={listFooterComponent}
+        ListHeaderComponent={listHeaderComponent}
         ref={(ref) => {
           listViewRef = ref;
         }}
         onContentSizeChange={() => { 
           listViewRef.scrollToEnd({animated: true});
         }}
+        inverted
       />
     </SafeAreaView>
   );
